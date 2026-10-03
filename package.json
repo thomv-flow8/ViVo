@@ -7,7 +7,7 @@
     "preview": "node tools/serve.mjs",
     "logo": "node logo/genereer-merk.mjs",
     "screenshots": "node tools/screenshots.mjs",
-    "bouw": "node site/bouw.mjs"
+    "bouw": "node site/bouw.mjs && node site/preview-motion.mjs && node site/publiceer-preview.mjs"
   },
   "devDependencies": {
     "geist": "^1.7.2",
