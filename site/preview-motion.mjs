@@ -192,8 +192,8 @@ const html = `<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ViVo — motion-preview v10</title>
-<script>document.documentElement.classList.add('js')</script>
+<title>ViVo — motion-preview v11</title>
+<script>document.documentElement.classList.add('js'); if (!matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('intro')</script>
 <link rel="stylesheet" href="../docs/css/vivo.css">
 <style>
   /* ── Hero (donker) ── */
@@ -205,6 +205,11 @@ const html = `<!doctype html>
   .mhero .label { color: var(--grijs-n); } .mhero .label::before { background: var(--maan); }
   .mhero .cirkel { margin-top: 36px; } .mhero .cirkel:hover .rond { background: var(--maan); color: var(--nacht); border-color: var(--maan); }
   .podium { position: absolute; inset: 0; z-index: 1; overflow: hidden; }
+  /* Intro (Baunfire): wit vlak met zwarte letters; het donker schuift er van links naar rechts onder vandaan */
+  .intro-wit { display: none; position: absolute; inset: 0; z-index: 5; overflow: hidden; background: var(--papier); clip-path: inset(0 0 0 0); }
+  .intro .intro-wit { display: block; animation: intro-vangnet .4s 6s forwards; } .intro-wit .letters { color: var(--inkt); }
+  @keyframes intro-vangnet { to { visibility: hidden; opacity: 0; } } /* laden de scripts niet, dan blijft het niet wit */
+  .mhero .w-r { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: .08em; margin-bottom: -.08em; } .mhero .w-r > span { display: inline-block; }
   .letters { position: absolute; right: clamp(-2vw, 3vw, 80px); top: calc(50% - 70svh); width: 37svh; height: 140svh; color: #1d2027; }
   .letters svg { position: absolute; left: 50%; top: 50%; width: 140svh; height: auto; transform: translate(-50%, -50%) rotate(-90deg); }
   .ring { position: absolute; width: min(70vw, 760px); aspect-ratio: 1; border-radius: 50%; border: 1px solid var(--lijn-n); right: -8vw; top: 50%; margin-top: calc(min(70vw, 760px) / -2); }
@@ -453,10 +458,16 @@ const html = `<!doctype html>
 </style>
 </head>
 <body>
-<header class="kop"><div class="w"><a class="logo morf" href="#" aria-label="ViVo — naar boven"><span class="lm-merk">${logo('vivo-beeldmerk')}</span><span class="lm-woord">${logo('vivo-woordmerk')}</span></a><nav><span class="nav-pil" aria-hidden="true"></span><a href="#diensten">Diensten</a><a href="#techniek">Techniek</a><a href="#werkwijze">Werkwijze</a><a href="#projecten">Projecten</a></nav><a class="pil" href="#contact">Contact</a></div></header>
+<header class="kop"><div class="w"><a class="logo morf" href="#" aria-label="ViVo — naar boven"><span class="lm-merk">${logo('vivo-beeldmerk')}</span><span class="lm-woord">${logo('vivo-woordmerk')}</span></a><nav><span class="nav-pil" aria-hidden="true"></span><a href="#diensten">Diensten</a><a href="#techniek">Techniek</a><a href="#werkwijze">Werkwijze</a><a href="#projecten">Projecten</a></nav><a class="pil" href="#contact">Contact</a><button class="menuknop" type="button" aria-label="Menu openen" aria-expanded="false" aria-controls="menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9h18M8 15h13" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></button></div></header>
+<div class="menu" id="menu" role="dialog" aria-modal="true" aria-label="Menu">
+  <div class="boven">${logo('vivo-horizontaal', 'logo-svg')}<button class="menuknop" type="button" aria-label="Menu sluiten" data-sluit><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></button></div>
+  <ul>${[['Diensten', '#diensten'], ['Techniek', '#techniek'], ['Werkwijze', '#werkwijze'], ['Projecten', '#projecten'], ['Contact', '#contact']].map(([t, h]) => `<li><a href="${h}" data-sluit>${t}</a></li>`).join('')}</ul>
+  <p class="onder">Een website laten maken?<br><a href="mailto:info@vivoproducts.nl">info@vivoproducts.nl</a> · <a href="tel:+31628702422">06-28702422</a></p>
+</div>
 
 <section class="mhero" aria-labelledby="hero-kop">
   <div class="podium" aria-hidden="true"><div class="ring"></div><div class="letters">${logo('vivo-woordmerk')}</div></div>
+  <div class="intro-wit" aria-hidden="true"><div class="letters">${logo('vivo-woordmerk')}</div></div>
   <div class="chev3d" aria-hidden="true"><div class="draai"><div class="zweef">${chevron3d()}</div></div></div>
   <div class="stip-groep" style="left:44%;top:22%" aria-hidden="true">${'<i></i>'.repeat(10)}</div>
   <div class="w inhoud"><div class="tekst">
@@ -513,9 +524,10 @@ const html = `<!doctype html>
     <div class="afsl-onder"><small>© 2026 ViVo Products</small><span><a href="../docs/privacy/">Privacy</a><a href="../docs/voorwaarden/">Voorwaarden</a></span></div>
   </div>
 </footer>
-<div class="noot">Motion-preview v10 · niet live</div>
+<div class="noot">Motion-preview v11 · niet live</div>
 
 <script type="importmap">{ "imports": { "three": "../node_modules/three/build/three.module.js", "three/addons/": "../node_modules/three/examples/jsm/" } }</script>
+<script src="../docs/js/vivo.js" defer></script>
 <script type="module" src="../site/drie.js"></script>
 <script src="../node_modules/gsap/dist/gsap.min.js"></script>
 <script src="../node_modules/gsap/dist/ScrollTrigger.min.js"></script>
@@ -561,17 +573,28 @@ const html = `<!doctype html>
 
   if (!rustig) {
     // ── Hero ──
-    gsap.set('.mhero .draai', { rotateY: -28, rotateX: 14 });
-    gsap.to('.chev3d .zweef', { rotateY: 10, rotateX: -6, y: -8, duration: 4, ease: 'sine.inOut', yoyo: true, repeat: -1 });
+    // Chevron: bij laden recht en plat naar voren; pas bij scrollen draait hij in 3D (scroll-tween hieronder)
+    gsap.set('.mhero .draai', { rotateY: 0, rotateX: 0 });
+    gsap.to('.chev3d .zweef', { y: -8, duration: 4, ease: 'sine.inOut', yoyo: true, repeat: -1 });
     const hero = { trigger: '.mhero', start: 'top top', end: 'bottom top', scrub: 0.6 };
     gsap.to('.letters', { yPercent: -28, ease: 'none', scrollTrigger: hero });
     gsap.to('.ring', { scale: 1.25, rotate: 25, ease: 'none', scrollTrigger: hero });
     gsap.to('.mhero .draai', { rotateY: 160, rotateX: -18, scale: 1.15, ease: 'none', scrollTrigger: hero });
     gsap.to('.mhero .tekst', { y: -60, opacity: 0.2, ease: 'none', scrollTrigger: { ...hero, start: '20% top' } });
     gsap.to('.scrollcue', { opacity: 0, y: 20, ease: 'none', scrollTrigger: { trigger: '.mhero', start: 'top top', end: '15% top', scrub: true } });
-    gsap.from('.mhero .tekst > *', { y: 30, opacity: 0, duration: 1, stagger: 0.08, ease: 'power3.out' });
-    gsap.from('.chev3d', { opacity: 0, scale: 0.8, duration: 1.4, ease: 'power3.out', delay: 0.2 });
-    gsap.from('.scrollcue', { opacity: 0, y: -10, duration: 1, delay: 1.2, ease: 'power3.out' });
+    // ── Intro: wit → donker vlak schuift van links naar rechts → label letter voor letter → kop woord voor woord ──
+    const label = document.querySelector('.mhero .label'), kopH1 = document.querySelector('.mhero h1');
+    label.setAttribute('aria-label', label.textContent); kopH1.setAttribute('aria-label', kopH1.textContent);
+    label.innerHTML = '<span aria-hidden="true">' + [...label.textContent].map(c => '<span class="lt">' + (c === ' ' ? '&nbsp;' : c) + '</span>').join('') + '</span>'; // één binnenrij: het label is een flexbox met gap
+    kopH1.innerHTML = kopH1.textContent.split(' ').map(w => '<span class="w-r" aria-hidden="true"><span>' + w + '</span></span>').join(' ');
+    const intro = gsap.timeline({ defaults: { ease: 'power4.out' }, onComplete: () => document.documentElement.classList.remove('intro') });
+    intro.to('.intro-wit', { clipPath: 'inset(0 0 0 100%)', duration: 1.3, ease: 'expo.inOut', delay: 0.35 })
+      .from('.mhero .label .lt', { opacity: 0, duration: 0.5, stagger: 0.035, ease: 'none' }, '-=0.35')
+      .from('.mhero h1 .w-r > span', { yPercent: 110, duration: 1.1, stagger: 0.09 }, '<0.1')
+      .from('.mhero .tekst > p, .mhero .tekst > .cirkel', { y: 24, opacity: 0, duration: 1, stagger: 0.1 }, '<0.45')
+      .from('.chev3d', { opacity: 0, scale: 0.8, duration: 1.4 }, '<')
+      .from('.ring', { opacity: 0, duration: 1.6 }, '<')
+      .from('.scrollcue', { opacity: 0, y: -10, duration: 1 }, '<0.5');
 
     // ── Diensten: beelden bewegen organisch mee (eigen tempo), zachte vormen zweven en draaien op de achtergrond ──
     gsap.utils.toArray('.dienst').forEach((d, i) => {

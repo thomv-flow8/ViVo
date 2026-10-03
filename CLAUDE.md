@@ -88,9 +88,14 @@ Ook als `vivo-preview` in `.claude/launch.json`.
      de optie staat nog in `BEELD` in preview-motion.mjs. 3D-vormen blijven **wit** zoals bij Clay, op 42% (±148 px van het midden).
      Geen infade bij de dienstbeelden (wel bij projecten). Menu: **glijdende pil** bij hover (stijl Contact-knop).
      Flow8-projectkaart: modus **`scherm`** — scherm als zwevende kaart in de juiste verhouding, niets valt weg.
-   - **Preview online:** `npm run bouw` publiceert de motion-preview ook naar **`docs/preview/`** →
-     https://thomv-flow8.github.io/ViVo/preview/ (noindex; `site/publiceer-preview.mjs` zet paden om en kopieert beelden,
-     three.js ongebundeld, GSAP, drie.js). Importmap-adressen moeten met `./` beginnen. De homepage blijft de huidige site.
+   - **Homepage = de motion-site (akkoord Thomas 3 okt 2026):** `npm run bouw` = bouw.mjs → preview-motion.mjs →
+     `site/publiceer-preview.mjs`, die `docs-preview/motion.html` als **`docs/index.html`** publiceert (paden omgezet, titel/og/favicon,
+     zonder previewlabel; beelden, three.js ongebundeld, GSAP, drie.js mee; elke lokale verwijzing wordt gecontroleerd).
+     `docs/preview/` stuurt door naar de homepage. Case- en juridische pagina's (bouw.mjs) hebben hetzelfde menu:
+     Diensten · Techniek · Werkwijze · Projecten · Contact. Importmap-adressen moeten met `./` beginnen.
+     **Hero-intro (Baunfire):** wit + zwarte VIVO-letters → donker vlak schuift van links naar rechts → label per letter,
+     kop per woord. Vangnet: na 6 s verdwijnt het witte vlak ook zonder JS. Chevron bij laden plat, pas 3D bij scrollen.
+     Mobiel menu: menuknop + uitklapmenu (gedrag uit `docs/js/vivo.js`).
    - **Cookies / meten (keuze Thomas: analytics + marketing):** ID's in `SITE.meten` (`ga4`, `googleAds`, `metaPixel`).
      **Leeg = uit**: geen melding, geen scripts, privacytekst "geen cookies". Ingevuld → automatisch cookiemelding
      (`site/toestemming.js`: niets laden vóór toestemming, weigeren even makkelijk als accepteren, Consent Mode v2,

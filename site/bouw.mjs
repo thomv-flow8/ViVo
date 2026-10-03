@@ -49,7 +49,8 @@ function vlak(c, r, opties = {}) {
 }
 
 function kop(r, actief = '', donker = false) {
-  const nav = [['Werk', `${r}#werk`, 'werk'], ['Diensten', `${r}#diensten`], ['Werkwijze', `${r}#werkwijze`], ['Contact', `${r}#contact`]];
+  // Zelfde onderdelen als de homepage (docs/index.html = de motion-site, zie publiceer-preview.mjs)
+  const nav = [['Diensten', `${r}#diensten`], ['Techniek', `${r}#techniek`], ['Werkwijze', `${r}#werkwijze`], ['Projecten', `${r}#projecten`, 'projecten'], ['Contact', `${r}#contact`]];
   return `<a class="overslaan" href="#inhoud">Direct naar de inhoud</a>
 <header class="kop${donker ? ' op-donker' : ''}">
   <div class="w">
@@ -78,7 +79,7 @@ function slot(r) {
 <footer class="voet donker">
   <div class="w">
     <a class="logo" href="${r || './'}" aria-label="ViVo — naar de homepage">${logo('vivo-horizontaal')}</a>
-    <nav aria-label="Footer"><a href="${r}#werk">Werk</a><a href="${r}#diensten">Diensten</a><a href="${r}#werkwijze">Werkwijze</a><a href="${r}#contact">Contact</a></nav>
+    <nav aria-label="Footer"><a href="${r}#diensten">Diensten</a><a href="${r}#techniek">Techniek</a><a href="${r}#werkwijze">Werkwijze</a><a href="${r}#projecten">Projecten</a><a href="${r}#contact">Contact</a></nav>
     <address><span>${esc(SITE.adres)}</span><span>${esc(SITE.postcode)} ${esc(SITE.plaats)}</span><a href="tel:${SITE.telefoonLink}">${esc(SITE.telefoon)}</a><a href="mailto:${SITE.mail}">${SITE.mail}</a><span>KvK ${esc(SITE.kvk)}</span>${SITE.btw ? `<span>Btw ${esc(SITE.btw)}</span>` : ''}</address>
     <small>© ${SITE.jaar} ${esc(SITE.bedrijf)} · <a href="${r}privacy/">Privacy</a> · <a href="${r}voorwaarden/">Voorwaarden</a>${MEET.meten ? ` · <a href="${r}cookies/">Cookies</a> · <a href="#" data-cookie-instellingen>Cookie-instellingen</a>` : ''}</small>
   </div>
@@ -184,7 +185,7 @@ function casePagina(c, i) {
   const heeftPagina = existsSync(join(root, 'cases', c.slug, 'pagina.jpg'));
   const inhoud = `<section class="casekop" aria-labelledby="case-kop">
   <div class="w">
-    <a class="label" href="${r}#werk" style="text-decoration:none">Werk · ${c.jaar}</a>
+    <a class="label" href="${r}#projecten" style="text-decoration:none">Projecten · ${c.jaar}</a>
     <h1 id="case-kop">${esc(c.naam)}</h1>
     <p class="intro">${esc(c.intro)}</p>
     <dl class="feiten">
@@ -213,7 +214,7 @@ ${c.galerij ? `<section style="padding-bottom:var(--sectie)" aria-label="Scherme
 </section>
 
 ` : ''}<a class="volgende" href="${r}werk/${volgende.slug}/"><div class="w"><span class="label">Volgende case</span><h2>${esc(volgende.naam)} ${pijl}</h2></div></a>`;
-  return pagina({ titel: `${c.naam} — case | ${SITE.bedrijfKort}`, beschrijving: c.intro, r, pad: `/werk/${c.slug}/`, inhoud, actief: 'werk' });
+  return pagina({ titel: `${c.naam} — case | ${SITE.bedrijfKort}`, beschrijving: c.intro, r, pad: `/werk/${c.slug}/`, inhoud, actief: 'projecten' });
 }
 
 // ── Juridische pagina's (privacy, voorwaarden) ──
@@ -276,7 +277,7 @@ schrijf('css/vivo.css', `${fontFace}\n${lees('huisstijl/tokens.css')}\n${lees('s
 schrijf('js/vivo.js', lees('site/vivo.js'));
 schrijf('favicon.svg', lees('merk/favicon/favicon.svg'));
 schrijf('.nojekyll', '');
-schrijf('index.html', home());
+schrijf('index.html', home()); // oude homepage; wordt in npm run bouw overschreven door de motion-site (site/publiceer-preview.mjs)
 CASES.forEach((c, i) => schrijf(`werk/${c.slug}/index.html`, casePagina(c, i)));
 for (const doc of [PRIVACY, VOORWAARDEN, ...(MEET.meten ? [COOKIES] : [])]) schrijf(`${doc.slug}/index.html`, juridischePagina(doc));
 if (MEET.meten) schrijf('js/toestemming.js', lees('site/toestemming.js'));
