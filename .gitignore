@@ -13,3 +13,6 @@ cases/*/bron/
 
 # Lokale vergelijkingspagina's (niet publiceren)
 docs-preview/
+
+# Ongecomprimeerde bronbeelden (groot) — alleen de verkleinde JPG's gaan in git
+beelden/*/bron/

@@ -5,6 +5,7 @@ import { readFileSync, writeFileSync, mkdirSync, copyFileSync, existsSync, rmSyn
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { SITE, DIENSTEN, STAPPEN, CASES } from './inhoud.mjs';
+import { PRIVACY, VOORWAARDEN } from './juridisch.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const uit = join(root, 'docs');
@@ -27,6 +28,7 @@ const kruis = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M1
 const mockup = `<svg class="mockup" viewBox="0 0 320 210" aria-hidden="true"><rect x=".75" y=".75" width="318.5" height="208.5" rx="10" fill="#fff"/><rect x=".75" y=".75" width="318.5" height="22" rx="10" fill="#eceef1"/><circle cx="14" cy="12" r="3.5" fill="#c9ccd2"/><circle cx="26" cy="12" r="3.5" fill="#c9ccd2"/><circle cx="38" cy="12" r="3.5" fill="#c9ccd2"/><rect x="0" y="23" width="64" height="187" fill="#15171c"/><rect x="12" y="38" width="40" height="5" rx="2" fill="#4f6ef5"/><rect x="12" y="52" width="34" height="4" rx="2" fill="#9aa0ab"/><rect x="12" y="62" width="38" height="4" rx="2" fill="#9aa0ab"/><rect x="12" y="72" width="30" height="4" rx="2" fill="#9aa0ab"/>${[0, 1, 2, 3, 4].map(i => `<rect x="${76 + i * 47}" y="36" width="41" height="6" rx="2" fill="#646a76" opacity=".5"/>`).join('')}${[[78, 52, 70, '#4f6ef5'], [125, 66, 40, '#35c4e3'], [172, 52, 56, '#4f6ef5'], [219, 88, 44, '#f5a524'], [266, 58, 36, '#35c4e3'], [78, 128, 52, '#f5a524'], [172, 116, 40, '#4f6ef5'], [266, 104, 64, '#4f6ef5']].map(([x, y, h, c]) => `<rect x="${x}" y="${y}" width="39" height="${h}" rx="4" fill="${c}" opacity=".85"/>`).join('')}</svg>`;
 
 const relPad = diepte => '../'.repeat(diepte);
+const volledigAdres = () => `${SITE.adres}, ${SITE.postcode ? SITE.postcode + ' ' : ''}${SITE.plaats}`;
 
 function vlak(c, r, opties = {}) {
   const img = existsSync(join(root, 'cases', c.slug, 'desktop.jpg'));
@@ -70,8 +72,8 @@ function slot(r) {
   <div class="w">
     <a class="logo" href="${r || './'}" aria-label="ViVo — naar de homepage">${logo('vivo-horizontaal')}</a>
     <nav aria-label="Footer"><a href="${r}#werk">Werk</a><a href="${r}#diensten">Diensten</a><a href="${r}#werkwijze">Werkwijze</a><a href="${r}#contact">Contact</a></nav>
-    <address><a href="mailto:${SITE.mail}">${SITE.mail}</a><br>${esc(SITE.plaats)}</address>
-    <small>© ${SITE.jaar} ${esc(SITE.bedrijf)}</small>
+    <address><span>${esc(SITE.adres)}</span><span>${esc(SITE.postcode)} ${esc(SITE.plaats)}</span><a href="tel:${SITE.telefoonLink}">${esc(SITE.telefoon)}</a><a href="mailto:${SITE.mail}">${SITE.mail}</a><span>KvK ${esc(SITE.kvk)}</span>${SITE.btw ? `<span>Btw ${esc(SITE.btw)}</span>` : ''}</address>
+    <small>© ${SITE.jaar} ${esc(SITE.bedrijf)} · <a href="${r}privacy/">Privacy</a> · <a href="${r}voorwaarden/">Voorwaarden</a></small>
   </div>
 </footer>`;
 }
@@ -205,6 +207,34 @@ ${c.galerij ? `<section style="padding-bottom:var(--sectie)" aria-label="Scherme
   return pagina({ titel: `${c.naam} — case | ${SITE.bedrijfKort}`, beschrijving: c.intro, r, pad: `/werk/${c.slug}/`, inhoud, actief: 'werk' });
 }
 
+// ── Juridische pagina's (privacy, voorwaarden) ──
+// Tekst is platte tekst (veilig ge-escaped); daarna worden de vaste plaatshouders vervangen door links.
+function opmaak(t, r) {
+  return esc(t)
+    .replace(/\{mail\}/g, `<a href="mailto:${SITE.mail}">${SITE.mail}</a>`)
+    .replace(/\{tel\}/g, `<a href="tel:${SITE.telefoonLink}">${esc(SITE.telefoon)}</a>`)
+    .replace(/\{adres\}/g, esc(volledigAdres()))
+    .replace(/\{kvk\}/g, esc(SITE.kvk))
+    .replace(/\{privacy\}/g, `<a href="${r}privacy/">privacyverklaring</a>`)
+    .replace(/\{ap\}/g, '<a href="https://autoriteitpersoonsgegevens.nl" target="_blank" rel="noopener">Autoriteit Persoonsgegevens</a>');
+}
+function juridischePagina(doc) {
+  const r = relPad(1);
+  const inhoud = `<section class="casekop" aria-labelledby="jur-kop">
+  <div class="w">
+    <span class="label">Laatst bijgewerkt · ${esc(doc.bijgewerkt)}</span>
+    <h1 id="jur-kop">${esc(doc.titel)}</h1>
+    <p class="intro">${esc(doc.intro)}</p>
+  </div>
+</section>
+<section class="blok juridisch" style="padding-top:0">
+  <div class="w"><div class="jtekst">
+    ${doc.secties.map((s, i) => `<section aria-labelledby="j${i + 1}"><h2 id="j${i + 1}"><span>${String(i + 1).padStart(2, '0')}</span>${esc(s.titel)}</h2>${s.blokken.map(b => Array.isArray(b) ? `<ul>${b.map(li => `<li>${opmaak(li, r)}</li>`).join('')}</ul>` : `<p>${opmaak(b, r)}</p>`).join('')}</section>`).join('\n    ')}
+  </div></div>
+</section>`;
+  return pagina({ titel: `${doc.titel} | ${SITE.bedrijfKort}`, beschrijving: doc.intro, r, pad: `/${doc.slug}/`, inhoud });
+}
+
 // ── Schrijven ──
 rmSync(uit, { recursive: true, force: true });
 // Lettertypes: Geist uit het officiële npm-pakket (SIL OFL — licentie gaat mee)
@@ -221,8 +251,9 @@ schrijf('favicon.svg', lees('merk/favicon/favicon.svg'));
 schrijf('.nojekyll', '');
 schrijf('index.html', home());
 CASES.forEach((c, i) => schrijf(`werk/${c.slug}/index.html`, casePagina(c, i)));
+for (const doc of [PRIVACY, VOORWAARDEN]) schrijf(`${doc.slug}/index.html`, juridischePagina(doc));
 for (const c of CASES) for (const f of ['desktop.jpg', 'mobiel.jpg', 'pagina.jpg', ...(c.galerij || []).map(g => g.bestand)]) {
   const bron = join(root, 'cases', c.slug, f);
   if (existsSync(bron)) { mkdirSync(join(uit, 'img/cases', c.slug), { recursive: true }); copyFileSync(bron, join(uit, 'img/cases', c.slug, f)); }
 }
-console.log(`docs/ gebouwd: homepage + ${CASES.length} case-pagina's`);
+console.log(`docs/ gebouwd: homepage + ${CASES.length} case-pagina's + privacy + voorwaarden`);

@@ -59,6 +59,48 @@ Ook als `vivo-preview` in `.claude/launch.json`.
      `site/vivo.js` (mobiel menu), `site/bouw.mjs` (sjablonen). Preview: http://localhost:5178/docs/
    - Lettertypes: **zelf gehost** uit npm-pakket `geist` (bouw kopieert Geist 400/500/600 + Mono 500 + LICENSE
      naar docs/fonts) — geen externe verzoeken. `npm install` is nodig vóór `npm run bouw`.
+   - **Motion-preview v4 (nog niet live):** `node site/preview-motion.mjs` → `docs-preview/motion.html` (gitignored).
+     GSAP 3.15 + ScrollTrigger en Simple Icons (CC0) via npm; bij livegang zelf meeleveren, geen CDN.
+     Besluiten Thomas: hero donker + kleine scroll-aanwijzing. Diensten (model clay.global/services, zes stuks) met
+     **foto's** naast de tekst die organisch meebewegen, en **grote zachte 3D-vormen** (kubus, bol, kegel, schijven) op de
+     achtergrond. Tijdlijn **in kleur** (blauw #4f6ef5, paars #8b5cf6, oranje #ff7a45, groen #1fb874) — 'world class'.
+     Cases elk een eigen startbeeld: THNK schermvullend, DELPHI tablet + inzoomen, Mozi browservenster, Flow8 schermvullend.
+     Let op in CSS: geen %-padding in absolute elementen van een compositie (rekent met de vakbreedte).
+     Altijd: prefers-reduced-motion → geen animaties/pin, tijdlijn direct volledig.
+   - **v5 (feedback Thomas):** vaste kopbalk (mix-blend-mode: difference) waarin het logo bij scrollen krimpt tot het
+     beeldmerk in een cirkel (Baunfire); scroll-aanwijzing rechtsonder; zachte vormen = **Higgsfield-renders**
+     (`beelden/vormen/`, transparant, prompts in `beelden/vormen/PROMPTS.md`) die **constant langzaam** bewegen, niet door
+     scrollen; géén schijven met groene stip; lichte afsluiting **Laten we praten** met grote langzaam bewegende lus (Clay);
+     Mozi = tablet + telefoon (scrollen, geen zoom); Flow8 start met inloggen → rapportage → planning → route → kaart.
+   - **v9:** onderaan weer de **Higgsfield-render `lus-donker.png`** (zoals v6) in het donkere slotblok, langzaam bewegend
+     met GSAP — die oogde rijker dan de three.js-buis (keuze Thomas). De 3D-vormen bij de diensten blijven three.js.
+     3D-vormen bij de diensten staan **links en rechts van het midden** (afwisselend, tussen tekst en foto), niet in lijn met de foto's.
+     Overgang Werkwijze → Projecten compacter (Live → kop 306 → 132 px). Let op: `section.blok` uit vivo.css weegt
+     zwaarder dan een losse klasse — overschrijf padding met `section.<klasse>`.
+   - **v10:** 3D-vormen horizontaal **gecentreerd boven de foto** (calc op de kolommen 1fr/1.05fr + `--dgap`), op mobiel
+     tussen tekst en foto; draaien trager (0,2 rad/s). Beelden komen **eenmalig binnen bij het eerste scrollen** (Clay:
+     opacity + 32px omhoog + schaal .93→1, `cubic-bezier(.16,1,.3,1)`, pas na het laden van het beeld) via `.onthul` —
+     gebruik losse `translate`/`scale`, want GSAP zet `scale: none` inline op elementen die het transformeert (zet
+     `.onthul` dus op een eigen laag). **Projecten op lichtgrijs `--papier-2`** (Clay); DELPHI-vlak daar wit.
+   - **Juridisch:** `site/juridisch.mjs` → `docs/privacy/` en `docs/voorwaarden/` (CONCEPT, Thomas beoordeelt; voorwaarden
+     voor zakelijke klanten). Contactgegevens in `SITE` (adres, telefoon, KvK); **postcode en btw-nummer nog aanleveren**.
+   - **v8:** logo subtieler — bij scrollen faden de letters V-I-V-O **van rechts naar links** weg (O eerst), het beeldmerk
+     blijft staan; kopbalk over de volle breedte (logo helemaal links). **Projecten blijft wit** (keuze Thomas); de werkwijze
+     is wit met onderaan een **pastelgloed in de tijdlijnkleuren** die naadloos naar wit uitfadet (mask-image). De lijn begint
+     onder "Jouw idee" en eindigt boven "Live", zodat het bolletje het label niet meer kruist.
+   - **v7: echte 3D met three.js** (0.186, MIT; akkoord Thomas, zelf gehost via importmap): `site/drie.js` maakt per
+     `<div class="vorm-3d" data-vorm="...">` een canvas met een object dat **langzaam om zijn as draait** — kubussen,
+     schijven, zeshoekplaat, kegel, bollen, serverplaten (licht, mat wit + pastelzweem via grondlicht) en de **donkere lus**
+     met randlicht (blauw/paars/oranje). Rendert alleen in beeld; minder beweging → stilstaand beeld.
+     Onderaan nu **één donker blok** (vraag + contact + footer) met de 3D-lus; de lichte footer is vervallen.
+     De Higgsfield-vormrenders (`beelden/vormen/*.png`) worden niet meer gebruikt.
+     Vóór livegang: three.js **bundelen/tree-shaken** (pakket heeft geen minified build; ~2,1 MB los) — vraag akkoord voor de tool.
+   - **v6:** menu = Diensten · Techniek · Werkwijze · **Projecten** (was Werk). Werkwijze krijgt een **verloop van wit naar
+     donker**; Projecten staat daarna op donker. Volgorde onderaan: Projecten → **donkere afsluiter** (render `lus-donker.png`,
+     constant langzaam bewegend) → lichte **Laten we praten** als footer.
+   - **Dienstfoto's:** gemaakt met Higgsfield (GPT Image 2.5, high, 2k, 5:4 — 2,75 credits/stuk; akkoord Thomas).
+     Prompts + vaste beeldstijl in `beelden/diensten/PROMPTS.md`. Bron-PNG's in `beelden/*/bron/` (gitignored),
+     web-JPG's via `node tools/beelden-verkleinen.mjs`. Een beeldvak toont `beelden/diensten/<naam>.jpg` zodra die bestaat.
    - Nog te doen: beelden optimaliseren (webp),
      Flow8-opnames, privacy/colofon, CNAME + DNS bij Strato, GitHub Pages aanzetten op `docs/`.
 
