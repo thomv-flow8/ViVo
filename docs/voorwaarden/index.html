@@ -257,14 +257,31 @@ section.projecten { position: relative; background: var(--papier-2); padding-top
 .muiscirkel.zichtbaar { opacity: 1; }
 .muiscirkel.groot { width: 36px; height: 36px; margin: -18px 0 0 -18px; background-color: transparent; border-color: #fff; } 
 .muiscirkel.klik { scale: .7; }
-@media (hover: none), (pointer: coarse) { .muiscirkel { display: none; } }</style>
+@media (hover: none), (pointer: coarse) { .muiscirkel { display: none; } }
+.over-teaser { padding: var(--sectie) 0; }
+.over-teaser .w { display: grid; grid-template-columns: minmax(0, .7fr) minmax(0, 1.3fr); gap: clamp(32px, 6vw, 96px); align-items: center; }
+.over-teaser img { width: 100%; height: auto; display: block; border-radius: var(--r); }
+.over-teaser h2 { font-size: var(--h2); margin: 16px 0 20px; max-width: 16ch; }
+.over-teaser p { color: var(--grijs); font-size: clamp(18px, 1.5vw, 21px); max-width: 46ch; margin: 0 0 28px; }
+.ohero { padding: calc(var(--kop-hoogte) + clamp(40px, 6vw, 96px)) 0 clamp(64px, 8vw, 120px); }
+.ohero .w { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr); gap: clamp(32px, 6vw, 96px); align-items: end; }
+.ohero h1 { font-size: clamp(44px, 6vw, 96px); margin: 22px 0 24px; }
+.ohero .intro { font-size: clamp(20px, 1.9vw, 28px); line-height: 1.4; letter-spacing: -.012em; margin: 0; max-width: 30ch; }
+.ohero img { width: 100%; height: auto; display: block; border-radius: var(--r); }
+.overhaal { padding: 0 0 var(--sectie); }
+.overhaal .w { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr); gap: 24px clamp(32px, 6vw, 96px); border-top: 1px solid var(--lijn); padding-top: clamp(40px, 5vw, 72px); }
+.overhaal p { font-size: clamp(18px, 1.5vw, 21px); line-height: 1.6; margin: 0 0 20px; max-width: 58ch; } .overhaal p:last-child { margin-bottom: 0; }
+.owaarden { background: var(--nacht); color: var(--maan); padding: clamp(64px, 8vw, 112px) 0; }
+.owaarden .raster { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(28px, 4vw, 56px); margin-top: clamp(32px, 4vw, 48px); }
+.owaarden h3 { font-size: var(--h3); margin: 14px 0 12px; } .owaarden p { color: var(--grijs-n); margin: 0; font-size: 17px; line-height: 1.6; }
+@media (max-width: 860px) { .over-teaser .w, .ohero .w, .overhaal .w, .owaarden .raster { grid-template-columns: 1fr; } .over-teaser img, .ohero img { max-width: 420px; } }</style>
 </head>
 <body>
 <a class="overslaan" href="#inhoud">Direct naar de inhoud</a>
-<header class="kop"><div class="w"><a class="logo morf" href="../" aria-label="ViVo — naar boven"><span class="lm-merk"><svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="2.71 12.43 94.57 84.29" role="img" aria-label="ViVo"><g fill="none" stroke="currentColor" stroke-width="10" stroke-miterlimit="10"><polyline points="8,16 50,86 92,16"/><polyline points="29.6,16 50,50 70.4,16"/></g></svg></span><span class="lm-woord"><svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="1.5 15.4 181.1 47.91" role="img" aria-label="ViVo"><g fill="none" stroke="currentColor" stroke-width="3.2" stroke-miterlimit="10"><polyline points="4,18 20,58 36,18"/><line x1="62" y1="18" x2="62" y2="58"/><polyline points="88,18 104,58 120,18"/><circle cx="160" cy="38" r="20"/></g></svg></span></a><nav><span class="nav-pil" aria-hidden="true"></span><a href="../#diensten">Diensten</a><a href="../#techniek">Techniek</a><a href="../#werkwijze">Werkwijze</a><a href="../#projecten">Projecten</a></nav><a class="pil" href="../#contact">Contact</a><button class="menuknop" type="button" aria-label="Menu openen" aria-expanded="false" aria-controls="menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9h18M8 15h13" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></button></div></header>
+<header class="kop"><div class="w"><a class="logo morf" href="../" aria-label="ViVo — naar boven"><span class="lm-merk"><svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="2.71 12.43 94.57 84.29" role="img" aria-label="ViVo"><g fill="none" stroke="currentColor" stroke-width="10" stroke-miterlimit="10"><polyline points="8,16 50,86 92,16"/><polyline points="29.6,16 50,50 70.4,16"/></g></svg></span><span class="lm-woord"><svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="1.5 15.4 181.1 47.91" role="img" aria-label="ViVo"><g fill="none" stroke="currentColor" stroke-width="3.2" stroke-miterlimit="10"><polyline points="4,18 20,58 36,18"/><line x1="62" y1="18" x2="62" y2="58"/><polyline points="88,18 104,58 120,18"/><circle cx="160" cy="38" r="20"/></g></svg></span></a><nav><span class="nav-pil" aria-hidden="true"></span><a href="../#diensten">Diensten</a><a href="../#techniek">Techniek</a><a href="../#werkwijze">Werkwijze</a><a href="../#projecten">Projecten</a><a href="../over/">Over</a></nav><a class="pil" href="../#contact">Contact</a><button class="menuknop" type="button" aria-label="Menu openen" aria-expanded="false" aria-controls="menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9h18M8 15h13" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></button></div></header>
 <div class="menu" id="menu" role="dialog" aria-modal="true" aria-label="Menu">
   <div class="boven"><svg class="logo-svg" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 325.8 104" role="img" aria-label="ViVo"><g transform="translate(-4.51 -16.32) scale(1.2152)"><g fill="none" stroke="currentColor" stroke-width="10" stroke-miterlimit="10"><polyline points="8,16 50,86 92,16"/><polyline points="29.6,16 50,50 70.4,16"/></g></g><g transform="translate(140.2 12) scale(1)"><g fill="none" stroke="currentColor" stroke-width="3.2" stroke-miterlimit="10"><polyline points="4,18 20,58 36,18"/><line x1="62" y1="18" x2="62" y2="58"/><polyline points="88,18 104,58 120,18"/><circle cx="160" cy="38" r="20"/></g></g></svg><button class="menuknop" type="button" aria-label="Menu sluiten" data-sluit><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></button></div>
-  <ul><li><a href="../#diensten" data-sluit>Diensten</a></li><li><a href="../#techniek" data-sluit>Techniek</a></li><li><a href="../#werkwijze" data-sluit>Werkwijze</a></li><li><a href="../#projecten" data-sluit>Projecten</a></li><li><a href="../#contact" data-sluit>Contact</a></li></ul>
+  <ul><li><a href="../#diensten" data-sluit>Diensten</a></li><li><a href="../#techniek" data-sluit>Techniek</a></li><li><a href="../#werkwijze" data-sluit>Werkwijze</a></li><li><a href="../#projecten" data-sluit>Projecten</a></li><li><a href="../over/" data-sluit>Over ViVo</a></li><li><a href="../#contact" data-sluit>Contact</a></li></ul>
   <p class="onder">Een website laten maken?<br><a href="mailto:info@vivoproducts.nl">info@vivoproducts.nl</a> · <a href="tel:+31628702422">06-28702422</a></p>
 </div>
 
@@ -304,7 +321,7 @@ section.projecten { position: relative; background: var(--papier-2); padding-top
     <span class="label">Contact</span><h2 id="afsluiter-kop">Klaar voor een website die werkt?</h2>
     <div class="knoppen"><a class="pil" href="mailto:info@vivoproducts.nl?subject=Kennismaking%20ViVo">Plan een kennismaking</a><a class="cirkel" href="mailto:info@vivoproducts.nl"><span class="rond"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></span>info@vivoproducts.nl</a></div>
     <div class="afsl-raster">
-      <nav aria-label="Footer"><a href="../#diensten">Diensten</a><a href="../#techniek">Techniek</a><a href="../#werkwijze">Werkwijze</a><a href="../#projecten">Projecten</a></nav>
+      <nav aria-label="Footer"><a href="../#diensten">Diensten</a><a href="../#techniek">Techniek</a><a href="../#werkwijze">Werkwijze</a><a href="../#projecten">Projecten</a><a href="../over/">Over ViVo</a></nav>
       <div><span class="kopje">Bezoekadres</span><span>Einsteinstraat 3e<br>4207 HW Gorinchem</span><span class="kopje">Contact</span><a href="tel:+31628702422">06-28702422</a><a href="mailto:info@vivoproducts.nl">info@vivoproducts.nl</a><span class="kopje">KvK</span><span>80912532</span></div>
     </div>
     <div class="afsl-onder"><small>© 2026 ViVo Products</small><span><a href="../privacy/">Privacy</a><a href="../voorwaarden/">Voorwaarden</a></span></div>
@@ -330,7 +347,9 @@ const terug = () => plaatsPil(navActief, true);
 navLinks.forEach(a => { a.addEventListener('pointerenter', () => plaatsPil(a, false)); a.addEventListener('focus', () => plaatsPil(a, false)); a.addEventListener('blur', terug); });
 navEl.addEventListener('pointerleave', terug);
 const zetActief = a => { if (a === navActief) return; navLinks.forEach(l => l === a ? l.setAttribute('aria-current', 'true') : l.removeAttribute('aria-current')); navActief = a; if (!navEl.matches(':hover')) terug(); };
-if (document.querySelector('.chero')) zetActief(navLinks.find(a => a.hash === '#projecten')); // case-pagina's horen bij Projecten
+const eigen = navLinks.find(a => !a.hash && a.href.split('#')[0] === location.href.split('#')[0]);
+if (eigen) zetActief(eigen);
+else if (document.querySelector('.chero')) zetActief(navLinks.find(a => a.hash === '#projecten')); // case-pagina's horen bij Projecten
 else {
 const secties = navLinks.map(a => [a, document.getElementById(a.hash.slice(1))]).filter(([, s]) => s);
 const kijker = new IntersectionObserver(items => items.forEach(({ isIntersecting, target }) => {

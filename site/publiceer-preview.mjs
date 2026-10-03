@@ -19,6 +19,7 @@ const M = SITE.meten || {}, MEET = meetVlaggen(M);
 // ── Bestanden die de pagina's nodig hebben ──
 for (const f of readdirSync(join(root, 'beelden/diensten')).filter(f => /\.(jpg|webp)$/.test(f))) kopieer(`beelden/diensten/${f}`, `beelden/diensten/${f}`);
 kopieer('beelden/vormen/lus-donker.webp', 'beelden/vormen/lus-donker.webp');
+for (const f of readdirSync(join(root, 'beelden/over')).filter(f => /\.(jpg|webp)$/.test(f))) kopieer(`beelden/over/${f}`, `beelden/over/${f}`);
 kopieer('node_modules/gsap/dist/gsap.min.js', 'js/gsap.min.js');
 kopieer('node_modules/gsap/dist/ScrollTrigger.min.js', 'js/ScrollTrigger.min.js');
 kopieer('node_modules/three/LICENSE', 'js/three-LICENSE.txt');
@@ -40,6 +41,7 @@ function publiceer(bron, doel, r, { titel, beschrijving, pad, og }) {
     ['../beelden/', `${r}beelden/`],
     ['../docs/', r],
     ['motion.html', r || './'],
+    ['over.html', `${r}over/`],
     ...CASES.map(c => [`case-${c.slug}.html`, `${r}werk/${c.slug}/`]),
   ];
   for (const [van, naar] of PADEN) p = p.split(van).join(naar);
@@ -78,7 +80,7 @@ function publiceer(bron, doel, r, { titel, beschrijving, pad, og }) {
   for (const [, ref] of p.matchAll(/(?:src|href)="(?!https?:|#|mailto:|tel:|data:)([^"#?]*)/g)) {
     if (!ref) continue;
     const pad2 = join(map, ref.endsWith('/') ? ref + 'index.html' : ref);
-    if (!existsSync(pad2)) throw new Error(`${doel}: ontbreekt ${ref}`);
+    if (pad2 !== join(docs, doel) && !existsSync(pad2)) throw new Error(`${doel}: ontbreekt ${ref}`); // verwijzing naar zichzelf mag
   }
   mkdirSync(map, { recursive: true });
   writeFileSync(join(docs, doel), p);
@@ -91,7 +93,8 @@ const caseBeschrijving = c => {           // ±120–160 tekens: intro, zo nodig
   return c.intro.length < 120 && (c.intro + extra).length <= 160 ? c.intro + extra : c.intro;
 };
 
-// Volgorde: eerst de case- en juridische pagina's (de homepage verwijst ernaar), dan de homepage
+// Volgorde: eerst Over (daar verwijzen alle menu's naar), dan cases en juridisch, als laatste de homepage
+publiceer('over.html', 'over/index.html', '../', { titel: 'Over ViVo — Thomas, webdesign en websites uit Gorinchem', beschrijving: 'Achter ViVo staat Thomas: altijd al handig met computers en IT, nu bouwer van websites, webshops en webapps voor ondernemers. Eén vast aanspreekpunt.', pad: '/over/', og: 'over.jpg' });
 for (const c of CASES) publiceer(`case-${c.slug}.html`, `werk/${c.slug}/index.html`, '../../',
   { titel: `${kortNaam(c)} — case | ViVo webdesign Gorinchem`, beschrijving: caseBeschrijving(c), pad: `/werk/${c.slug}/`, og: `${c.slug}.jpg` });
 for (const doc of [PRIVACY, VOORWAARDEN, ...(MEET.meten ? [COOKIES] : [])]) publiceer(`${doc.slug}.html`, `${doc.slug}/index.html`, '../',

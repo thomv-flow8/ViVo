@@ -245,7 +245,7 @@ for (const c of CASES) for (const f of ['desktop.jpg', 'mobiel.jpg', 'pagina.jpg
 }
 // ── Vindbaarheid: robots.txt, sitemap.xml, llms.txt (adressen via SITE.basis) ──
 if (!TEST) {
-  const paden = ['/', ...CASES.map(c => `/werk/${c.slug}/`), '/privacy/', '/voorwaarden/', ...(MEET.meten ? ['/cookies/'] : [])];
+  const paden = ['/', '/over/', ...CASES.map(c => `/werk/${c.slug}/`), '/privacy/', '/voorwaarden/', ...(MEET.meten ? ['/cookies/'] : [])];
   const vandaag = new Date().toISOString().slice(0, 10);
   schrijf('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -275,6 +275,10 @@ ${SITE.bedrijfKort} (${SITE.bedrijf}) is een webdesignbureau uit ${SITE.plaats}.
 ## Projecten
 
 ${CASES.map(c => `- [${c.naam}](${SITE.basis}/werk/${c.slug}/): ${c.kort}`).join('\n')}
+
+## Over ViVo
+
+- [Over ViVo](${SITE.basis}/over/): het verhaal van Thomas, oprichter van ViVo
 
 ## Contact
 

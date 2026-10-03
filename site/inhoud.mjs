@@ -55,6 +55,13 @@ export const CASES = [
     opdracht: 'THNK maakt techno en progressive, met remixes van Greece 2000 en Zocalo en releases op Armada en Coldharbour. De site moest die sound vertalen naar beeld — en bookers in een paar seconden laten zien wie THNK is.',
     aanpak: 'Een sterk typografisch logo boven zwart-witte landschappen, met het groen van mos als enige kleur. Weinig woorden, grote beelden en een heldere route: luisteren, shows, over en boeken.',
     resultaat: 'Een snelle, Engelstalige site die op elk scherm overeind blijft — volledig door ViVo bedacht, ontworpen, geschreven, gebouwd en gehost.',
+    vertrekpunt: 'THNK had nog geen eigen website. We bouwden de site vanaf de grond op: een thuisbasis waar fans, promotors en labels in één oogopslag zien wie THNK is, wat hij uitbrengt en hoe je hem boekt.',
+    onderdelen: [
+      ['Beeld dat de muziek voelbaar maakt', 'Monumentale zwart-witfotografie van bergen, watervallen en ijsgrotten zet de toon: groots, donker en ruimtelijk — net als de muziek zelf.'],
+      ['Muziek direct te beluisteren', 'De nieuwste release staat bovenaan, met een ingebouwde Spotify-speler, een overzicht van recente releases en links naar Spotify, Apple Music, Beatport en SoundCloud.'],
+      ['Shows en het verhaal erachter', 'Een agenda voor komende en eerdere shows, zoals de Progressive Stage op A State of Trance 850, en een about-sectie met kerncijfers en de artiesten die zijn tracks draaiden.'],
+      ['Boeken zonder omwegen', 'Een duidelijke bookingsectie met een direct e-mailadres, zodat promotors en labels meteen contact opnemen. De site is Engelstalig, voor een internationaal publiek.'],
+    ],
   },
   {
     slug: 'delphi', naam: 'DELPHI Sleutelbeheersystemen', naamKop: 'DELPHI Sleutelbeheer\u00adsystemen', jaar: 2026, // naamKop: vast breekpunt (zacht afbreekstreepje) voor grote koppen
@@ -66,6 +73,13 @@ export const CASES = [
     opdracht: 'DELPHI levert elektronische sleutelkasten, lockers en sabotagevrije sleutelringen aan organisaties waar toegang niet ter discussie staat. Het aanbod is technisch en breed; de site moest dat overzichtelijk maken voor inkopers en beheerders.',
     aanpak: 'Een rustig, productgericht ontwerp met veel wit, duidelijke productlijnen en een keuzehulp die bezoekers naar het juiste systeem leidt. ViVo schreef de teksten, bouwde de site in het Nederlands en Engels en verzorgt de hosting.',
     resultaat: 'Een site die vertrouwen uitstraalt en bezoekers in een paar klikken van productkeuze naar offerteaanvraag brengt.',
+    vertrekpunt: 'DELPHI had een bestaande website die niet meer paste bij het brede, technische aanbod. Tijd voor een nieuwe site die rust brengt, vertrouwen uitstraalt en bezoekers sneller bij het juiste systeem brengt.',
+    onderdelen: [
+      ['Heldere productlijnen', 'Het aanbod is ingedeeld in drie lijnen: sleutelbeheer, opbergsystemen en sleutelringen. Elk systeem heeft een eigen vak met een korte omschrijving, een beeld en een directe offerteknop.'],
+      ['Keuzehulp in drie vragen', 'Wat wilt u beheren, hoeveel posities zijn nodig en wat moet er vastliggen? Na drie vragen weet de bezoeker welk systeem past en waar te beginnen.'],
+      ['Vertrouwen vanaf de eerste blik', 'Logo’s van organisaties die DELPHI gebruiken, vier niveaus van sleutelbeheer en een stappenplan van inventarisatie tot beheer maken de aanpak concreet.'],
+      ['Tweetalig en klaar voor aanvragen', 'De hele site is beschikbaar in het Nederlands en het Engels. Op elke pagina staat een duidelijke weg naar een demo of een offerteaanvraag.'],
+    ],
   },
   {
     slug: 'mozi', naam: 'Huidzorg Mozi', jaar: 2026, status: 'In ontwikkeling',
@@ -77,6 +91,13 @@ export const CASES = [
     opdracht: 'Huidzorg Mozi helpt jong en oud, van acne en rosacea tot pigment en huidverjonging. De praktijk wilde een site die net zo persoonlijk aanvoelt als de behandeling zelf — en waar je meteen een afspraak maakt.',
     aanpak: 'Een verfijnd ontwerp met een klassieke schreefletter, zachte crèmetinten en veel rust. Behandelingen, tarieven en resultaten zijn overzichtelijk ingedeeld, een gratis intake is overal binnen handbereik en de webshop biedt zorgvuldig gekozen thuisverzorging.',
     resultaat: 'De site is in ontwikkeling en gaat binnenkort live.',
+    vertrekpunt: 'Huidzorg Mozi had een bestaande website die niet meer liet zien wat de praktijk te bieden heeft. De nieuwe site moest warmte en vakmanschap uitstralen, en bezoekers zonder drempel naar een intakegesprek leiden.',
+    onderdelen: [
+      ['Behandelingen overzichtelijk', 'Alle behandelingen staan in een filterbaar overzicht met foto, korte uitleg en vanafprijs. Bezoekers kunnen ook starten vanuit hun klacht, zoals acne, rosacea of pigmentvlekken.'],
+      ['Laagdrempelig een intake plannen', 'Overal staat de knop voor een gratis intakegesprek van 30 minuten, dat bezoekers direct online plannen. Een stappenplan laat zien wat ze daarna kunnen verwachten.'],
+      ['Resultaat en vertrouwen', 'Een voor-en-nafoto met schuifregelaar, beoordelingen van cliënten, keurmerken en het persoonlijke verhaal van de eigenaar laten zien waarom je hier in goede handen bent.'],
+      ['Webshop voor thuisverzorging', 'In de webshop staan de producten die de praktijk zelf gebruikt en aanbeveelt — met prijzen, verzending of ophalen in de praktijk.'],
+    ],
   },
   {
     slug: 'flow8', naam: 'Flow8', jaar: 2026, status: 'Eigen product',
@@ -87,7 +108,14 @@ export const CASES = [
     intro: 'Een eigen platform van ViVo: planning, digitale werkbonnen en klantbeheer voor de installatie- en servicebranche.',
     opdracht: 'Installatie- en servicebedrijven plannen vaak nog met whiteboards, spreadsheets en papieren werkbonnen. Flow8 brengt planners op kantoor en monteurs in het veld samen in één omgeving.',
     aanpak: 'Een webapp die op de telefoon werkt als een app: planning met routeoptimalisatie, digitale werkbonnen, klantbeheer, rapportage en HR — met rechten per rol en geschikt voor meerdere bedrijven tegelijk.',
-    resultaat: 'Flow8 laat zien wat ViVo bouwt als een website niet genoeg is: maatwerksoftware die het dagelijkse werk eenvoudiger maakt.',
+    resultaat: 'Tijdwinst in planning en administratie, meer controle en grip op het werk, betrouwbare data voor rapportages en minder kosten — in een systeem dat prettig werkt, op kantoor én in het veld.',
+    vertrekpunt: 'Flow8 is ontstaan in de praktijk. Het bedrijf waar Thomas werkt liep vast op planning en workflow: veel handwerk, weinig overzicht. Daarom bouwde hij één platform waar planners op kantoor en monteurs in het veld met dezelfde, actuele informatie werken.',
+    onderdelen: [
+      ['Planning en routes', 'Opdrachten inplannen per monteur in een week- of dagoverzicht, met routeoptimalisatie op de kaart: in welke volgorde, met hoeveel reistijd en hoeveel kilometer.'],
+      ['Digitale werkbonnen', 'Monteurs zien hun werkbon zodra die is vrijgegeven en vullen hem in op telefoon of tablet. De werkbon wordt vastgelegd als pdf, zonder papierwerk achteraf.'],
+      ['Klanten en installaties', 'Een register van klanten en installaties met hun locatie op de kaart, zodat de geschiedenis van elk adres op één plek staat.'],
+      ['Team en rapportage', 'Verlof, overuren en onkosten dienen medewerkers zelf in; rapportages tonen opdrachten per monteur en per maand. Flow8 werkt in de browser én als app.'],
+    ],
     galerij: [
       { bestand: 'route.jpg', bijschrift: 'Route-optimalisatie: de dag van een monteur in één oogopslag' },
       { bestand: 'kaart.jpg', bijschrift: 'Kaartoverzicht met alle klantlocaties en hun status' },

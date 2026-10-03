@@ -119,6 +119,11 @@ Ook als `vivo-preview` in `.claude/launch.json`.
      Juridische pagina's nu ook in de nieuwe stijl (opmaak gedeeld via `site/juridisch-render.mjs`).
      Niet op te lossen op GitHub Pages: CSP/X-Frame-headers (later via Cloudflare), /ViVo/ in de URL (weg na eigen domein).
      Open (keuze Thomas): meer tekst per case (>300 woorden), een Over ViVo-pagina.
+   - **Over ViVo + meer case-tekst (3 okt 2026, CONCEPT — Thomas beoordeelt):** pagina `/over/` (preview-motion.mjs `OVER`/`overPagina`)
+     met portret `beelden/over/thomas.jpg` (+webp), verhaal in de ik-vorm, waarden; "Over" in menu, mobiel menu en footer; korte
+     kennismaking op de homepage vóór de afsluiter. Cases: `vertrekpunt` + vier `onderdelen` per case (inhoud.mjs) → sectie
+     "Wat we bouwden" (>300 woorden per case). Bron: wat Thomas vertelde (DELPHI/Mozi vervangen een verouderde site, THNK
+     helemaal nieuw, Flow8 vanuit zijn werk voor planning/workflow) + wat op de sites staat — geen verzonnen cijfers.
    - **Cookies / meten (keuze Thomas: analytics + marketing):** ID's in `SITE.meten` (`ga4`, `googleAds`, `metaPixel`).
      **Leeg = uit**: geen melding, geen scripts, privacytekst "geen cookies". Ingevuld → automatisch cookiemelding
      (`site/toestemming.js`: niets laden vóór toestemming, weigeren even makkelijk als accepteren, Consent Mode v2,

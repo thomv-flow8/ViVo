@@ -16,6 +16,7 @@ for (const slug of readdirSync(join(root, 'cases'))) {
 }
 for (const f of readdirSync(join(root, 'beelden/diensten'))) if (/\.jpe?g$/i.test(f)) bronnen.push(join(root, 'beelden/diensten', f));
 bronnen.push(join(root, 'beelden/vormen/lus-donker.png'));
+if (existsSync(join(root, 'beelden/over'))) for (const f of readdirSync(join(root, 'beelden/over'))) if (/\.jpe?g$/i.test(f)) bronnen.push(join(root, 'beelden/over', f));
 
 const browser = await chromium.launch();
 const page = await browser.newPage();

@@ -290,6 +290,11 @@ section.projecten { position: relative; background: var(--papier-2); padding-top
 .cverhaal { background: var(--nacht); color: var(--maan); padding: clamp(64px, 8vw, 112px) 0; }
 .cverhaal .w { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(28px, 4vw, 56px); }
 .cstap h2 { font-size: var(--h3); margin: 14px 0 12px; } .cstap p { color: var(--grijs-n); margin: 0; font-size: 17px; line-height: 1.6; }
+.conderdelen { padding: var(--sectie) 0; }
+.conderdelen .sectiekop p { max-width: 52ch; }
+.craster { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(16px, 2vw, 24px); margin-top: clamp(32px, 4vw, 56px); }
+.conderdeel { background: var(--papier-2); border-radius: var(--r); padding: clamp(24px, 3vw, 36px); }
+.conderdeel h3 { font-size: var(--h3); margin: 14px 0 10px; } .conderdeel p { color: var(--grijs); margin: 0; font-size: 17px; line-height: 1.6; max-width: 48ch; }
 .cgalerij { background: var(--papier-2); padding: var(--sectie) 0; }
 .cgalerij .sectiekop { margin-bottom: clamp(32px, 4vw, 56px); }
 .cgalerij .doorkijk { margin: 0; }
@@ -309,16 +314,16 @@ section.projecten { position: relative; background: var(--papier-2); padding-top
 .cvolgende:hover .cvenster { transform: translateY(5%); }
 .cvolgende .cvenster img { width: 100%; display: block; aspect-ratio: 16 / 10; object-fit: cover; object-position: top; }
 @media (max-width: 860px) {
-.chero > .w, .cverhaal .w, .cmobiel, .cvolgende .w, .cschermen { grid-template-columns: 1fr; } .cvolgende .ctekst { padding-bottom: 0; }
+.chero > .w, .cverhaal .w, .cmobiel, .cvolgende .w, .cschermen, .craster { grid-template-columns: 1fr; } .cvolgende .ctekst { padding-bottom: 0; }
 .chero .ctoestel { margin-top: 12px; }
 }</style>
 </head>
 <body>
 <a class="overslaan" href="#inhoud">Direct naar de inhoud</a>
-<header class="kop"><div class="w"><a class="logo morf" href="../../" aria-label="ViVo — naar boven"><span class="lm-merk"><svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="2.71 12.43 94.57 84.29" role="img" aria-label="ViVo"><g fill="none" stroke="currentColor" stroke-width="10" stroke-miterlimit="10"><polyline points="8,16 50,86 92,16"/><polyline points="29.6,16 50,50 70.4,16"/></g></svg></span><span class="lm-woord"><svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="1.5 15.4 181.1 47.91" role="img" aria-label="ViVo"><g fill="none" stroke="currentColor" stroke-width="3.2" stroke-miterlimit="10"><polyline points="4,18 20,58 36,18"/><line x1="62" y1="18" x2="62" y2="58"/><polyline points="88,18 104,58 120,18"/><circle cx="160" cy="38" r="20"/></g></svg></span></a><nav><span class="nav-pil" aria-hidden="true"></span><a href="../../#diensten">Diensten</a><a href="../../#techniek">Techniek</a><a href="../../#werkwijze">Werkwijze</a><a href="../../#projecten">Projecten</a></nav><a class="pil" href="../../#contact">Contact</a><button class="menuknop" type="button" aria-label="Menu openen" aria-expanded="false" aria-controls="menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9h18M8 15h13" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></button></div></header>
+<header class="kop"><div class="w"><a class="logo morf" href="../../" aria-label="ViVo — naar boven"><span class="lm-merk"><svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="2.71 12.43 94.57 84.29" role="img" aria-label="ViVo"><g fill="none" stroke="currentColor" stroke-width="10" stroke-miterlimit="10"><polyline points="8,16 50,86 92,16"/><polyline points="29.6,16 50,50 70.4,16"/></g></svg></span><span class="lm-woord"><svg aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="1.5 15.4 181.1 47.91" role="img" aria-label="ViVo"><g fill="none" stroke="currentColor" stroke-width="3.2" stroke-miterlimit="10"><polyline points="4,18 20,58 36,18"/><line x1="62" y1="18" x2="62" y2="58"/><polyline points="88,18 104,58 120,18"/><circle cx="160" cy="38" r="20"/></g></svg></span></a><nav><span class="nav-pil" aria-hidden="true"></span><a href="../../#diensten">Diensten</a><a href="../../#techniek">Techniek</a><a href="../../#werkwijze">Werkwijze</a><a href="../../#projecten">Projecten</a><a href="../../over/">Over</a></nav><a class="pil" href="../../#contact">Contact</a><button class="menuknop" type="button" aria-label="Menu openen" aria-expanded="false" aria-controls="menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9h18M8 15h13" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></button></div></header>
 <div class="menu" id="menu" role="dialog" aria-modal="true" aria-label="Menu">
   <div class="boven"><svg class="logo-svg" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 325.8 104" role="img" aria-label="ViVo"><g transform="translate(-4.51 -16.32) scale(1.2152)"><g fill="none" stroke="currentColor" stroke-width="10" stroke-miterlimit="10"><polyline points="8,16 50,86 92,16"/><polyline points="29.6,16 50,50 70.4,16"/></g></g><g transform="translate(140.2 12) scale(1)"><g fill="none" stroke="currentColor" stroke-width="3.2" stroke-miterlimit="10"><polyline points="4,18 20,58 36,18"/><line x1="62" y1="18" x2="62" y2="58"/><polyline points="88,18 104,58 120,18"/><circle cx="160" cy="38" r="20"/></g></g></svg><button class="menuknop" type="button" aria-label="Menu sluiten" data-sluit><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></button></div>
-  <ul><li><a href="../../#diensten" data-sluit>Diensten</a></li><li><a href="../../#techniek" data-sluit>Techniek</a></li><li><a href="../../#werkwijze" data-sluit>Werkwijze</a></li><li><a href="../../#projecten" data-sluit>Projecten</a></li><li><a href="../../#contact" data-sluit>Contact</a></li></ul>
+  <ul><li><a href="../../#diensten" data-sluit>Diensten</a></li><li><a href="../../#techniek" data-sluit>Techniek</a></li><li><a href="../../#werkwijze" data-sluit>Werkwijze</a></li><li><a href="../../#projecten" data-sluit>Projecten</a></li><li><a href="../../over/" data-sluit>Over ViVo</a></li><li><a href="../../#contact" data-sluit>Contact</a></li></ul>
   <p class="onder">Een website laten maken?<br><a href="mailto:info@vivoproducts.nl">info@vivoproducts.nl</a> · <a href="tel:+31628702422">06-28702422</a></p>
 </div>
 
@@ -351,6 +356,13 @@ section.projecten { position: relative; background: var(--papier-2); padding-top
   </div>
 </section>
 
+<section class="conderdelen" aria-labelledby="onderdelen-kop">
+  <div class="w">
+    <div class="sectiekop"><div><span class="label">Wat we bouwden</span><h2 id="onderdelen-kop">In het kort</h2></div><p>Huidzorg Mozi had een bestaande website die niet meer liet zien wat de praktijk te bieden heeft. De nieuwe site moest warmte en vakmanschap uitstralen, en bezoekers zonder drempel naar een intakegesprek leiden.</p></div>
+    <div class="craster"><div class="conderdeel onthul" style="--vertraging:0s"><span class="label">01</span><h3>Behandelingen overzichtelijk</h3><p>Alle behandelingen staan in een filterbaar overzicht met foto, korte uitleg en vanafprijs. Bezoekers kunnen ook starten vanuit hun klacht, zoals acne, rosacea of pigmentvlekken.</p></div><div class="conderdeel onthul" style="--vertraging:0.1s"><span class="label">02</span><h3>Laagdrempelig een intake plannen</h3><p>Overal staat de knop voor een gratis intakegesprek van 30 minuten, dat bezoekers direct online plannen. Een stappenplan laat zien wat ze daarna kunnen verwachten.</p></div><div class="conderdeel onthul" style="--vertraging:0s"><span class="label">03</span><h3>Resultaat en vertrouwen</h3><p>Een voor-en-nafoto met schuifregelaar, beoordelingen van cliënten, keurmerken en het persoonlijke verhaal van de eigenaar laten zien waarom je hier in goede handen bent.</p></div><div class="conderdeel onthul" style="--vertraging:0.1s"><span class="label">04</span><h3>Webshop voor thuisverzorging</h3><p>In de webshop staan de producten die de praktijk zelf gebruikt en aanbeveelt — met prijzen, verzending of ophalen in de praktijk.</p></div></div>
+  </div>
+</section>
+
 <section class="cgalerij" aria-label="Beelden van Huidzorg Mozi">
   <div class="w">
     <div class="sectiekop"><div><span class="label">De website</span><h2>Scroll door de site</h2></div></div>
@@ -375,7 +387,7 @@ section.projecten { position: relative; background: var(--papier-2); padding-top
     <span class="label">Contact</span><h2 id="afsluiter-kop">Klaar voor een website die werkt?</h2>
     <div class="knoppen"><a class="pil" href="mailto:info@vivoproducts.nl?subject=Kennismaking%20ViVo">Plan een kennismaking</a><a class="cirkel" href="mailto:info@vivoproducts.nl"><span class="rond"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></span>info@vivoproducts.nl</a></div>
     <div class="afsl-raster">
-      <nav aria-label="Footer"><a href="../../#diensten">Diensten</a><a href="../../#techniek">Techniek</a><a href="../../#werkwijze">Werkwijze</a><a href="../../#projecten">Projecten</a></nav>
+      <nav aria-label="Footer"><a href="../../#diensten">Diensten</a><a href="../../#techniek">Techniek</a><a href="../../#werkwijze">Werkwijze</a><a href="../../#projecten">Projecten</a><a href="../../over/">Over ViVo</a></nav>
       <div><span class="kopje">Bezoekadres</span><span>Einsteinstraat 3e<br>4207 HW Gorinchem</span><span class="kopje">Contact</span><a href="tel:+31628702422">06-28702422</a><a href="mailto:info@vivoproducts.nl">info@vivoproducts.nl</a><span class="kopje">KvK</span><span>80912532</span></div>
     </div>
     <div class="afsl-onder"><small>© 2026 ViVo Products</small><span><a href="../../privacy/">Privacy</a><a href="../../voorwaarden/">Voorwaarden</a></span></div>
@@ -408,7 +420,9 @@ const terug = () => plaatsPil(navActief, true);
 navLinks.forEach(a => { a.addEventListener('pointerenter', () => plaatsPil(a, false)); a.addEventListener('focus', () => plaatsPil(a, false)); a.addEventListener('blur', terug); });
 navEl.addEventListener('pointerleave', terug);
 const zetActief = a => { if (a === navActief) return; navLinks.forEach(l => l === a ? l.setAttribute('aria-current', 'true') : l.removeAttribute('aria-current')); navActief = a; if (!navEl.matches(':hover')) terug(); };
-if (document.querySelector('.chero')) zetActief(navLinks.find(a => a.hash === '#projecten')); // case-pagina's horen bij Projecten
+const eigen = navLinks.find(a => !a.hash && a.href.split('#')[0] === location.href.split('#')[0]);
+if (eigen) zetActief(eigen);
+else if (document.querySelector('.chero')) zetActief(navLinks.find(a => a.hash === '#projecten')); // case-pagina's horen bij Projecten
 else {
 const secties = navLinks.map(a => [a, document.getElementById(a.hash.slice(1))]).filter(([, s]) => s);
 const kijker = new IntersectionObserver(items => items.forEach(({ isIntersecting, target }) => {

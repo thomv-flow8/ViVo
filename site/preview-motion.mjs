@@ -457,10 +457,10 @@ const CSS = `
   .noot { position: fixed; left: 50%; bottom: 14px; transform: translateX(-50%); z-index: 60; font: 12px/1.4 system-ui, sans-serif; background: rgba(20,20,20,.88); color: #eee; padding: 8px 14px; border-radius: 100px; }
 `;
 const KOP = (thuis = '') => `<a class="overslaan" href="#inhoud">Direct naar de inhoud</a>
-<header class="kop"><div class="w"><a class="logo morf" href="${thuis || '#'}" aria-label="ViVo — naar boven"><span class="lm-merk">${logo('vivo-beeldmerk')}</span><span class="lm-woord">${logo('vivo-woordmerk')}</span></a><nav><span class="nav-pil" aria-hidden="true"></span><a href="${thuis}#diensten">Diensten</a><a href="${thuis}#techniek">Techniek</a><a href="${thuis}#werkwijze">Werkwijze</a><a href="${thuis}#projecten">Projecten</a></nav><a class="pil" href="${thuis}#contact">Contact</a><button class="menuknop" type="button" aria-label="Menu openen" aria-expanded="false" aria-controls="menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9h18M8 15h13" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></button></div></header>
+<header class="kop"><div class="w"><a class="logo morf" href="${thuis || '#'}" aria-label="ViVo — naar boven"><span class="lm-merk">${logo('vivo-beeldmerk')}</span><span class="lm-woord">${logo('vivo-woordmerk')}</span></a><nav><span class="nav-pil" aria-hidden="true"></span><a href="${thuis}#diensten">Diensten</a><a href="${thuis}#techniek">Techniek</a><a href="${thuis}#werkwijze">Werkwijze</a><a href="${thuis}#projecten">Projecten</a><a href="over.html">Over</a></nav><a class="pil" href="${thuis}#contact">Contact</a><button class="menuknop" type="button" aria-label="Menu openen" aria-expanded="false" aria-controls="menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9h18M8 15h13" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></button></div></header>
 <div class="menu" id="menu" role="dialog" aria-modal="true" aria-label="Menu">
   <div class="boven">${logo('vivo-horizontaal', 'logo-svg')}<button class="menuknop" type="button" aria-label="Menu sluiten" data-sluit><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></button></div>
-  <ul>${[['Diensten', thuis + '#diensten'], ['Techniek', thuis + '#techniek'], ['Werkwijze', thuis + '#werkwijze'], ['Projecten', thuis + '#projecten'], ['Contact', thuis + '#contact']].map(([t, h]) => `<li><a href="${h}" data-sluit>${t}</a></li>`).join('')}</ul>
+  <ul>${[['Diensten', thuis + '#diensten'], ['Techniek', thuis + '#techniek'], ['Werkwijze', thuis + '#werkwijze'], ['Projecten', thuis + '#projecten'], ['Over ViVo', 'over.html'], ['Contact', thuis + '#contact']].map(([t, h]) => `<li><a href="${h}" data-sluit>${t}</a></li>`).join('')}</ul>
   <p class="onder">Een website laten maken?<br><a href="mailto:info@vivoproducts.nl">info@vivoproducts.nl</a> · <a href="tel:+31628702422">06-28702422</a></p>
 </div>`;
 const AFSLUITER = (thuis = '') => `<footer class="afsluiter donker" id="contact" aria-labelledby="afsluiter-kop">
@@ -469,7 +469,7 @@ const AFSLUITER = (thuis = '') => `<footer class="afsluiter donker" id="contact"
     <span class="label">Contact</span><h2 id="afsluiter-kop">Klaar voor een website die werkt?</h2>
     <div class="knoppen"><a class="pil" href="mailto:info@vivoproducts.nl?subject=Kennismaking%20ViVo">Plan een kennismaking</a><a class="cirkel" href="mailto:info@vivoproducts.nl"><span class="rond">${pijl}</span>info@vivoproducts.nl</a></div>
     <div class="afsl-raster">
-      <nav aria-label="Footer"><a href="${thuis}#diensten">Diensten</a><a href="${thuis}#techniek">Techniek</a><a href="${thuis}#werkwijze">Werkwijze</a><a href="${thuis}#projecten">Projecten</a></nav>
+      <nav aria-label="Footer"><a href="${thuis}#diensten">Diensten</a><a href="${thuis}#techniek">Techniek</a><a href="${thuis}#werkwijze">Werkwijze</a><a href="${thuis}#projecten">Projecten</a><a href="over.html">Over ViVo</a></nav>
       <div><span class="kopje">Bezoekadres</span><span>Einsteinstraat 3e<br>4207 HW Gorinchem</span><span class="kopje">Contact</span><a href="tel:+31628702422">06-28702422</a><a href="mailto:info@vivoproducts.nl">info@vivoproducts.nl</a><span class="kopje">KvK</span><span>80912532</span></div>
     </div>
     <div class="afsl-onder"><small>© 2026 ViVo Products</small><span><a href="../docs/privacy/">Privacy</a><a href="../docs/voorwaarden/">Voorwaarden</a></span></div>
@@ -493,7 +493,9 @@ const NAV_JS = `
   navLinks.forEach(a => { a.addEventListener('pointerenter', () => plaatsPil(a, false)); a.addEventListener('focus', () => plaatsPil(a, false)); a.addEventListener('blur', terug); });
   navEl.addEventListener('pointerleave', terug);
   const zetActief = a => { if (a === navActief) return; navLinks.forEach(l => l === a ? l.setAttribute('aria-current', 'true') : l.removeAttribute('aria-current')); navActief = a; if (!navEl.matches(':hover')) terug(); };
-  if (document.querySelector('.chero')) zetActief(navLinks.find(a => a.hash === '#projecten')); // case-pagina's horen bij Projecten
+  const eigen = navLinks.find(a => !a.hash && a.href.split('#')[0] === location.href.split('#')[0]);
+  if (eigen) zetActief(eigen);
+  else if (document.querySelector('.chero')) zetActief(navLinks.find(a => a.hash === '#projecten')); // case-pagina's horen bij Projecten
   else {
     // Homepage: het onderdeel dat de middenlijn van het scherm raakt is actief; in de hero en bij Contact geen pil
     const secties = navLinks.map(a => [a, document.getElementById(a.hash.slice(1))]).filter(([, s]) => s);
@@ -504,6 +506,26 @@ const NAV_JS = `
     secties.forEach(([, s]) => kijker.observe(s));
   }
   addEventListener('resize', terug);`;
+
+// ── Over ViVo: kennismaking op de homepage + eigen pagina ──
+const OVER_CSS = `
+  .over-teaser { padding: var(--sectie) 0; }
+  .over-teaser .w { display: grid; grid-template-columns: minmax(0, .7fr) minmax(0, 1.3fr); gap: clamp(32px, 6vw, 96px); align-items: center; }
+  .over-teaser img { width: 100%; height: auto; display: block; border-radius: var(--r); }
+  .over-teaser h2 { font-size: var(--h2); margin: 16px 0 20px; max-width: 16ch; }
+  .over-teaser p { color: var(--grijs); font-size: clamp(18px, 1.5vw, 21px); max-width: 46ch; margin: 0 0 28px; }
+  .ohero { padding: calc(var(--kop-hoogte) + clamp(40px, 6vw, 96px)) 0 clamp(64px, 8vw, 120px); }
+  .ohero .w { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr); gap: clamp(32px, 6vw, 96px); align-items: end; }
+  .ohero h1 { font-size: clamp(44px, 6vw, 96px); margin: 22px 0 24px; }
+  .ohero .intro { font-size: clamp(20px, 1.9vw, 28px); line-height: 1.4; letter-spacing: -.012em; margin: 0; max-width: 30ch; }
+  .ohero img { width: 100%; height: auto; display: block; border-radius: var(--r); }
+  .overhaal { padding: 0 0 var(--sectie); }
+  .overhaal .w { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr); gap: 24px clamp(32px, 6vw, 96px); border-top: 1px solid var(--lijn); padding-top: clamp(40px, 5vw, 72px); }
+  .overhaal p { font-size: clamp(18px, 1.5vw, 21px); line-height: 1.6; margin: 0 0 20px; max-width: 58ch; } .overhaal p:last-child { margin-bottom: 0; }
+  .owaarden { background: var(--nacht); color: var(--maan); padding: clamp(64px, 8vw, 112px) 0; }
+  .owaarden .raster { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(28px, 4vw, 56px); margin-top: clamp(32px, 4vw, 48px); }
+  .owaarden h3 { font-size: var(--h3); margin: 14px 0 12px; } .owaarden p { color: var(--grijs-n); margin: 0; font-size: 17px; line-height: 1.6; }
+  @media (max-width: 860px) { .over-teaser .w, .ohero .w, .overhaal .w, .owaarden .raster { grid-template-columns: 1fr; } .over-teaser img, .ohero img { max-width: 420px; } }`;
 
 // ── Tweede cursor (Baunfire): cirkel die de muis volgt en groeit boven knoppen, links en beelden. Alleen met muis. ──
 const CURSOR_CSS = `
@@ -534,6 +556,7 @@ const html = `<!doctype html>
 <style>
 ${CSS}
 ${CURSOR_CSS}
+${OVER_CSS}
 </style>
 </head>
 <body>
@@ -587,6 +610,12 @@ ${KOP()}
   </div>
 </section>
 
+<section class="over-teaser" aria-labelledby="over-teaser-kop">
+  <div class="w">
+    <img src="../beelden/over/thomas.webp" alt="Thomas, oprichter van ViVo" width="896" height="1120" loading="lazy" decoding="async">
+    <div><span class="label">Achter ViVo</span><h2 id="over-teaser-kop">Eén vast aanspreekpunt, van idee tot live.</h2><p>Ik ben Thomas. Ik ontwerp en bouw je website zelf, denk mee over je merk en blijf daarna bereikbaar voor onderhoud en doorontwikkeling.</p><a class="link" href="over.html">Lees mijn verhaal ${pijl}</a></div>
+  </div>
+</section>
 </main>
 ${AFSLUITER()}
 <div class="noot">Motion-preview v11 · niet live</div>
@@ -799,6 +828,11 @@ const CASE_CSS = `
   .cverhaal { background: var(--nacht); color: var(--maan); padding: clamp(64px, 8vw, 112px) 0; }
   .cverhaal .w { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(28px, 4vw, 56px); }
   .cstap h2 { font-size: var(--h3); margin: 14px 0 12px; } .cstap p { color: var(--grijs-n); margin: 0; font-size: 17px; line-height: 1.6; }
+  .conderdelen { padding: var(--sectie) 0; }
+  .conderdelen .sectiekop p { max-width: 52ch; }
+  .craster { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(16px, 2vw, 24px); margin-top: clamp(32px, 4vw, 56px); }
+  .conderdeel { background: var(--papier-2); border-radius: var(--r); padding: clamp(24px, 3vw, 36px); }
+  .conderdeel h3 { font-size: var(--h3); margin: 14px 0 10px; } .conderdeel p { color: var(--grijs); margin: 0; font-size: 17px; line-height: 1.6; max-width: 48ch; }
   .cgalerij { background: var(--papier-2); padding: var(--sectie) 0; }
   .cgalerij .sectiekop { margin-bottom: clamp(32px, 4vw, 56px); }
   .cgalerij .doorkijk { margin: 0; }
@@ -818,7 +852,7 @@ const CASE_CSS = `
   .cvolgende:hover .cvenster { transform: translateY(5%); }
   .cvolgende .cvenster img { width: 100%; display: block; aspect-ratio: 16 / 10; object-fit: cover; object-position: top; }
   @media (max-width: 860px) {
-    .chero > .w, .cverhaal .w, .cmobiel, .cvolgende .w, .cschermen { grid-template-columns: 1fr; } .cvolgende .ctekst { padding-bottom: 0; }
+    .chero > .w, .cverhaal .w, .cmobiel, .cvolgende .w, .cschermen, .craster { grid-template-columns: 1fr; } .cvolgende .ctekst { padding-bottom: 0; }
     .chero .ctoestel { margin-top: 12px; }
   }`;
 
@@ -887,7 +921,14 @@ ${KOP(thuis)}
   </div>
 </section>
 
-<section class="cgalerij" aria-label="Beelden van ${c.naam}">
+${c.onderdelen ? `<section class="conderdelen" aria-labelledby="onderdelen-kop">
+  <div class="w">
+    <div class="sectiekop"><div><span class="label">Wat we bouwden</span><h2 id="onderdelen-kop">In het kort</h2></div><p>${c.vertrekpunt}</p></div>
+    <div class="craster">${c.onderdelen.map(([t, p], n) => `<div class="conderdeel onthul" style="--vertraging:${(n % 2) * 0.1}s"><span class="label">0${n + 1}</span><h3>${t}</h3><p>${p}</p></div>`).join('')}</div>
+  </div>
+</section>
+
+` : ''}<section class="cgalerij" aria-label="Beelden van ${c.naam}">
   <div class="w">
     ${heeft(c.slug, 'pagina.jpg') ? `<div class="sectiekop"><div><span class="label">De website</span><h2>Scroll door de site</h2></div></div>
     <div class="doorkijk onthul" style="--case:${c.kleur};--case-tekst:${c.kleurTekst}"><div class="venster"><div class="balk"><i></i><i></i><i></i></div><div class="rol" tabindex="0" aria-label="Volledige pagina van ${c.naam}, scrollbaar"><img src="${img(c.slug, 'pagina.jpg')}" alt="De volledige homepage van ${c.naam}"${afm(c.slug, 'pagina.jpg')} loading="lazy" decoding="async"></div></div><p>Scroll door de site</p></div>` : ''}
@@ -973,6 +1014,7 @@ function juridischPagina(doc) {
 <style>
 ${CSS}
 ${CURSOR_CSS}
+${OVER_CSS}
 </style>
 </head>
 <body>
@@ -1002,3 +1044,81 @@ ${CURSOR_JS}
 }
 for (const doc of [PRIVACY, VOORWAARDEN, ...(MEET.meten ? [COOKIES] : [])]) writeFileSync(join(root, 'docs-preview', `${doc.slug}.html`), juridischPagina(doc));
 console.log('Geschreven: docs-preview/privacy.html, voorwaarden.html' + (MEET.meten ? ', cookies.html' : ''));
+
+// ════ Over ViVo (eigen pagina) — verhaal van Thomas; CONCEPT, Thomas beoordeelt ════
+const OVER = {
+  intro: 'Altijd al handig met computers, software en IT. Nu bouw ik websites, webshops en webapps voor ondernemers — persoonlijk en met oog voor detail.',
+  verhaal: [
+    'Ik ben Thomas, de oprichter van ViVo. Computers, software en IT hebben me altijd getrokken: uitzoeken hoe iets werkt, en hoe het slimmer kan.',
+    'Naast mijn werk ben ik me steeds verder gaan verdiepen in webdesign, het bouwen van websites en de mogelijkheden van AI. Vanuit mijn werk ontwikkelde ik Flow8, een platform voor planning, werkbonnen en administratie — omdat het bedrijf vastliep op planning en workflow. Zo zag ik van dichtbij wat goede software oplevert: tijdwinst, overzicht en grip.',
+    'Met ViVo bied ik dat nu aan als dienst, voor ondernemers die een website, webshop of webapp willen die echt werkt. Je hebt één vast aanspreekpunt: mij. Ik denk mee over je merk en je doelen, ontwerp en bouw de site, en blijf daarna bereikbaar voor onderhoud en doorontwikkeling.',
+    'AI gebruik ik om sneller te werken en meer te laten zien: meerdere ontwerprichtingen, beelden en teksten. De keuzes en het vakwerk blijven mensenwerk.',
+  ],
+  waarden: [
+    ['Persoonlijk', 'Eén aanspreekpunt van eerste schets tot livegang. Korte lijnen en snel antwoord.'],
+    ['Snel en degelijk', 'Moderne techniek: snelle sites die op elk scherm werken en goed vindbaar zijn.'],
+    ['Helder', 'Duidelijke afspraken vooraf, geen verrassingen achteraf. Na betaling ben jij eigenaar van je ontwerp.'],
+  ],
+};
+function overPagina() {
+  const thuis = 'motion.html';
+  return `<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Over ViVo (preview)</title>
+<script>document.documentElement.classList.add('js')</script>
+<link rel="stylesheet" href="../docs/css/vivo.css">
+<style>
+${CSS}
+${CURSOR_CSS}
+${OVER_CSS}
+</style>
+</head>
+<body>
+${KOP(thuis)}
+
+<main id="inhoud">
+<section class="ohero" aria-labelledby="over-kop">
+  <div class="w">
+    <div><span class="label">Over ViVo</span><h1 id="over-kop">Achter ViVo staat Thomas.</h1><p class="intro">${OVER.intro}</p></div>
+    <img src="../beelden/over/thomas.webp" alt="Portret van Thomas, oprichter van ViVo" width="896" height="1120" fetchpriority="high">
+  </div>
+</section>
+<section class="overhaal" aria-label="Het verhaal">
+  <div class="w"><div><span class="label">Het verhaal</span></div><div class="onthul">${OVER.verhaal.map(p => `<p>${p}</p>`).join('')}</div></div>
+</section>
+<section class="owaarden donker" aria-labelledby="waarden-kop">
+  <div class="w"><span class="label">Waar ViVo voor staat</span><h2 id="waarden-kop" style="font-size:var(--h2);margin:16px 0 0">Zo werk ik</h2>
+    <div class="raster">${OVER.waarden.map(([t, p], n) => `<div class="onthul" style="--vertraging:${n * 0.1}s"><span class="label">0${n + 1}</span><h3>${t}</h3><p>${p}</p></div>`).join('')}</div>
+  </div>
+</section>
+</main>
+
+${AFSLUITER(thuis)}
+
+<script src="../docs/js/vivo.js" defer></script>
+<script src="../node_modules/gsap/dist/gsap.min.js"></script>
+<script src="../node_modules/gsap/dist/ScrollTrigger.min.js"></script>
+<script>
+  const rustig = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  gsap.registerPlugin(ScrollTrigger);
+  const onthulKijker = new IntersectionObserver(items => items.forEach(({ isIntersecting, target }) => { if (isIntersecting) { onthulKijker.unobserve(target); target.classList.add('in'); } }), { rootMargin: '0px 0px -12% 0px' });
+  document.querySelectorAll('.onthul').forEach(el => rustig ? el.classList.add('in') : onthulKijker.observe(el));
+${NAV_JS}
+  const kopEl = document.querySelector('.kop'), compact = () => kopEl.classList.toggle('compact', scrollY > 80);
+  addEventListener('scroll', compact, { passive: true }); compact();
+${CURSOR_JS}
+  if (!rustig) {
+    gsap.to('.lus-donker', { rotate: -10, x: -60, y: 30, scale: 1.08, duration: 18, ease: 'sine.inOut', yoyo: true, repeat: -1 });
+    gsap.from('.ohero .w > div > *', { y: 30, opacity: 0, duration: 1, stagger: 0.08, ease: 'power3.out' });
+    gsap.from('.ohero img', { y: 40, opacity: 0, duration: 1.2, ease: 'power3.out', delay: 0.2 });
+  }
+</script>
+</body>
+</html>
+`;
+}
+writeFileSync(join(root, 'docs-preview', 'over.html'), overPagina());
+console.log('Geschreven: docs-preview/over.html');

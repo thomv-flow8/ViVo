@@ -12,7 +12,7 @@ const BASIS = 'http://localhost:5178/docs/';
 const browser = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'] });
 // reducedMotion: geen intro-animatie, de hero staat direct in zijn eindstand
 const ctx = await browser.newContext({ viewport: { width: 1200, height: 630 }, deviceScaleFactor: 1, reducedMotion: 'reduce' });
-for (const [naam, pad] of [['home', ''], ...CASES.map(c => [c.slug, `werk/${c.slug}/`])]) {
+for (const [naam, pad] of [['home', ''], ['over', 'over/'], ...CASES.map(c => [c.slug, `werk/${c.slug}/`])]) {
   const p = await ctx.newPage();
   await p.goto(BASIS + pad, { waitUntil: 'networkidle' });
   await p.waitForTimeout(800);
