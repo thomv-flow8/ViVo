@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
 const r = n => Math.round(n * 100) / 100;
-const KLEUR = { zwart: '#0b0b0b', wit: '#f2f1ec' }; // voorlopig; definitieve huisstijl volgt in fase 3
+const KLEUR = { zwart: '#0a0b0d', wit: '#f5f6f8' }; // = --inkt en --maan uit huisstijl/tokens.css (koele neutrale basis)
 
 // Chevron met top-y, punt-y, helling 0.6 (dx per dy) — gelijk aan concept 02
 const chev = (top, apex) => { const w = (apex - top) * 0.6; return `${r(50 - w)},${top} 50,${apex} ${r(50 + w)},${top}`; };
@@ -41,7 +41,7 @@ const WOORD = {
 function plaats(o, X, Y, h, kleur) {
   const [kx, ky, , kh] = o.kader, s = h / kh, tx = X - kx * s, ty = Y - ky * s;
   const [a, b, c, d] = o.rand;
-  return { svg: `<g transform="translate(${r(tx)} ${r(ty)}) scale(${r(s * 10000) / 10000})">${o.tekening(kleur)}</g>`,
+  return { svg: `<g transform="translate(${r(tx)} ${r(ty)}) scale(${Math.round(s * 10000) / 10000})">${o.tekening(kleur)}</g>`,
     rand: [a * s + tx, b * s + ty, c * s + tx, d * s + ty], breed: (o.kader[2] / kh) * h };
 }
 const unie = rs => [Math.min(...rs.map(x => x[0])), Math.min(...rs.map(x => x[1])), Math.max(...rs.map(x => x[2])), Math.max(...rs.map(x => x[3]))];
@@ -188,7 +188,7 @@ ${onderdeel('Woordmerk', 'vivo-woordmerk', 'VIVO los, als tekstelement op de sit
 </div></div>
 
 <h2>Kleuren</h2>
-<p class="intro">Het logo is altijd eenkleurig. Dit zijn de voorlopige waarden; de definitieve kleuren volgen met de huisstijl (fase 3).</p>
+<p class="intro">Het logo is altijd eenkleurig, in de inkt- of maankleur van de huisstijl. ViVo heeft bewust geen eigen accentkleur: de kleur komt uit het werk.</p>
 <div class="kleuren">
   <div class="staal"><div style="background:${KLEUR.zwart}"></div><p>Zwart ${KLEUR.zwart}</p></div>
   <div class="staal"><div style="background:${KLEUR.wit}"></div><p>Wit ${KLEUR.wit}</p></div>

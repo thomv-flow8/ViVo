@@ -10,12 +10,32 @@ diensten aan als websitebouwer. Eigenaar en ontwikkelaar: Thomas.
 Volg de skill `projectontwikkeling-werkwijze`: Analyse → Gevolgen → Oplossing → Uitvoering.
 Preview vóór visuele wijzigingen, akkoord van Thomas vóór grote stappen, commit en push.
 
+## Preview
+
+`node tools/serve.mjs` → http://localhost:5178/ (hele project, juiste MIME-types voor SVG/fonts).
+Ook als `vivo-preview` in `.claude/launch.json`.
+
 ## Fasering
 
 1. Projectbasis (map, git, skill `svg-logo-designer` in `.claude/skills/`) — klaar
-2. Logo: concepten → keuze → verfijning (lockups, licht/donker, favicon) — klaar, wacht op akkoord Thomas
-3. Huisstijl-tokens afgeleid van het logo — volgende stap
-4. Siteconcept (secties) → preview → bouw
+2. Logo: concepten → keuze → verfijning (lockups, licht/donker, favicon) — klaar, akkoord Thomas 3 okt 2026
+3. Huisstijl — **klaar (3 okt 2026)**. Canoniek: **`huisstijl/tokens.css`** — gebruik die tokens, geen losse waarden.
+   Besluiten: neutraal en **koel**, **geen accentkleur** (kleur komt uit de cases), **hero licht**,
+   **Geist** (+ Geist Mono voor labels). Opbouw: mix Baunfire + Clay zoals `huisstijl/ronde3.html`.
+   - Voorbeeld van Thomas: **baunfire.com** (warm antraciet, één fel accent, grote vette koppen, kleine
+     ruim gespatieerde labels, lichte tekst, spookletters, rond menuknopje). Sfeer: premium & rustig +
+     toegankelijk & warm + uitgesproken.
+   - `huisstijl/genereer-huisstijl.mjs` → `huisstijl/ronde1.html`: mini-homepage met 3 richtingen
+     (A Rustig/Manrope, B Baunfire/Montserrat+Barlow, C Gedurfd/Archivo breed) × 4 accenten.
+   - Thomas wil geen 1-op-1-kopie van Baunfire → mix met **clay.global** (licht, één vette krappe letter,
+     pilknop, projectvlakken in projectkleur, diensten als uitklaplijst, tags + "Bekijk case →").
+     `huisstijl/genereer-ronde2.mjs` → `huisstijl/ronde2.html`: de mix + ViVo-eigen details (labels in
+     monospace, chevron uit het logo als uitklappijl). Schakelaars: hero licht/donker × Geist/Inter Tight/Manrope × accent.
+   - **Besluit Thomas (3 okt 2026): kleuraanpak van Clay** — géén eigen accentkleur; de site is neutraal,
+     de kleur komt uit de cases (projectvlakken in projectkleur). **Lettertype: Geist** (labels Geist Mono).
+     `huisstijl/genereer-ronde3.mjs` → `huisstijl/ronde3.html` (schakelaars hero licht/donker, basis warm/koel).
+   - Live site: lettertypes **zelf hosten** (geen Google Fonts-CDN, AVG). Neue Plak (Baunfire) is betaald.
+4. Siteconcept (secties, teksten, cases) → preview → bouw — **volgende stap**
 
 ## Logo
 
@@ -35,7 +55,8 @@ Preview vóór visuele wijzigingen, akkoord van Thomas vóór grote stappen, com
   elk zwart + wit), `favicon/` (favicon.svg past zich aan licht/donker aan, app-icoon.svg) en
   `merk/gebruiksgids.html`. **Pas het logo aan in de generator, nooit in de losse bestanden.**
 - Onder 33 px altijd de kleine variant van het beeldmerk (lijn 13 i.p.v. 10, meer lucht).
-- Kleuren zwart `#0b0b0b` / wit `#f2f1ec` zijn voorlopig — definitief in fase 3 (huisstijl).
+- Logokleuren = huisstijl: zwart `#0a0b0d` (--inkt) / wit `#f5f6f8` (--maan). Wijzig je de tokens, pas dan ook
+  `KLEUR` in `logo/genereer-merk.mjs` aan en genereer opnieuw.
 - PNG-versies (180/192/512) nog niet gemaakt: er staat geen SVG→PNG-tool op deze Mac. Volgt in de bouwfase.
 - Logo's zijn **geometrische SVG-paden, geen lettertypes**, kleur via `currentColor`.
 - Stijl: monochroom, geometrisch, strak (inspiratie: Drumcode, Octan, monogrammen).

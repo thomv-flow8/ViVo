@@ -1,0 +1,68 @@
+/* ─────────────────────────────────────────────────────────────────────────────
+   ViVo — huisstijl-tokens (canoniek). Vastgesteld door Thomas op 3 okt 2026.
+   Basis: mix van baunfire.com (opbouw, details) en clay.global (licht, kleuraanpak).
+
+   Principes
+   - Neutraal en koel. ViVo heeft GEEN eigen accentkleur: de kleur komt uit het werk
+     (elk project krijgt een groot vlak in zijn eigen kleur, zie .case-vlak).
+   - Hero en hoofdvlak licht; donkere secties (--nacht) als contrast: diensten, afsluiting, footer.
+   - Eén letterfamilie: Geist (koppen vet en krap, gewone hoofdletters) + Geist Mono voor labels.
+   - Logo altijd eenkleurig: --inkt op licht, --maan op donker (zie merk/ en logo/genereer-merk.mjs).
+
+   Lettertypes: op de live site ZELF HOSTEN (woff2 in /fonts), geen Google Fonts-CDN (AVG).
+   Benodigd: Geist 400, 500, 600 · Geist Mono 500. Licentie: SIL Open Font License.
+   ───────────────────────────────────────────────────────────────────────────── */
+
+:root {
+  /* Kleur — lichte vlakken */
+  --papier:   #ffffff;              /* hoofdachtergrond */
+  --papier-2: #f3f4f6;              /* subtiel vlak, invoervelden */
+  --inkt:     #0a0b0d;              /* tekst, logo op licht, primaire knop */
+  --grijs:    #646a76;              /* secundaire tekst (5,4:1 op wit, 4,9:1 op papier-2 — AA) */
+  --lijn:     rgba(10, 11, 13, .12);
+
+  /* Kleur — donkere vlakken */
+  --nacht:    #15171c;              /* donkere secties */
+  --nacht-2:  #1e2027;              /* vlak op donker */
+  --maan:     #f5f6f8;              /* tekst en logo op donker */
+  --grijs-n:  #9aa0ab;              /* secundaire tekst op donker (6,8:1 — AA) */
+  --lijn-n:   rgba(245, 246, 248, .13);
+
+  /* Typografie */
+  --f:      'Geist', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --mono:   'Geist Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  --w-kop:  600;
+  --w-tekst: 400;
+  --w-nadruk: 500;
+  --ls-kop: -.035em;                /* koppen krap gespatieerd */
+  --lh-kop: 1.02;
+
+  --h1: clamp(44px, 7.4vw, 112px);  /* hero, afsluiting */
+  --h2: clamp(32px, 4.6vw, 64px);   /* sectiekoppen */
+  --h3: clamp(22px, 2.4vw, 32px);   /* dienst, case */
+  --statement: clamp(26px, 3.2vw, 44px); /* groot intro-statement */
+  --tekst: 18px;                    /* lopende tekst, line-height 1.55 */
+  --tekst-klein: 15px;              /* tags, footer */
+  --label: 12px;                    /* mono, KAPITALEN, letter-spacing .16em */
+  --ls-label: .16em;
+
+  /* Vorm */
+  --r:      18px;                   /* projectvlakken, kaarten, media */
+  --r-pil:  999px;                  /* knoppen ("Contact", "Plan een kennismaking") */
+  --r-rond: 50%;                    /* menuknop, pijl-in-cirkel */
+  --lijndikte: 1.5px;               /* randen, labelstreepje, onderstreping */
+
+  /* Ruimte en raster */
+  --breedte:  1320px;
+  --goot:     clamp(16px, 4vw, 56px);
+  --sectie:   clamp(72px, 9vw, 128px);  /* verticale ruimte per sectie */
+  --kop-hoogte: 84px;
+
+  /* Beweging */
+  --ease: cubic-bezier(.2, .7, .2, 1);
+  --duur: .35s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --duur: 0s; }
+}
