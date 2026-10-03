@@ -16,6 +16,7 @@
 <script>document.documentElement.classList.add('js'); if (!matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('intro')</script>
 <link rel="stylesheet" href="css/vivo.css">
 <style>
+
   /* ── Hero (donker) ── */
   .mhero { position: relative; min-height: 100svh; overflow: hidden; display: flex; align-items: center; padding: 140px 0 110px; background: var(--nacht); color: var(--maan); }
   .mhero .inhoud { position: relative; z-index: 3; width: 100%; }
@@ -275,6 +276,13 @@
   .praat-onder { position: relative; display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; margin-top: clamp(80px, 10vw, 140px); color: var(--grijs); font-size: 14px; } .praat-onder span { display: flex; gap: 20px; } .praat-onder a { color: inherit; }
   @media (max-width: 860px) { .praat-raster { grid-template-columns: 1fr; } .lus { width: 180vw; left: -60%; top: 10%; } }
   .noot { position: fixed; left: 50%; bottom: 14px; transform: translateX(-50%); z-index: 60; font: 12px/1.4 system-ui, sans-serif; background: rgba(20,20,20,.88); color: #eee; padding: 8px 14px; border-radius: 100px; }
+
+
+  .muiscirkel { position: fixed; left: 0; top: 0; z-index: 200; width: 8px; height: 8px; margin: -4px 0 0 -4px; border-radius: 50%; border: 1.5px solid transparent; background-color: #fff; mix-blend-mode: difference; pointer-events: none; opacity: 0; transition: opacity .3s, width .4s cubic-bezier(.16, 1, .3, 1), height .4s cubic-bezier(.16, 1, .3, 1), margin .4s cubic-bezier(.16, 1, .3, 1), background-color .3s, border-color .3s, scale .2s; }
+  .muiscirkel.zichtbaar { opacity: 1; }
+  .muiscirkel.groot { width: 36px; height: 36px; margin: -18px 0 0 -18px; background-color: transparent; border-color: #fff; } /* variant A (keuze Thomas): stip → dunne ring */
+  .muiscirkel.klik { scale: .7; }
+  @media (hover: none), (pointer: coarse) { .muiscirkel { display: none; } }
 </style>
 </head>
 <body>
@@ -550,6 +558,16 @@
   navEl.addEventListener('pointerleave', () => { navPil.style.opacity = '0'; });
   const kopEl = document.querySelector('.kop'), compact = () => kopEl.classList.toggle('compact', scrollY > 80);
   addEventListener('scroll', compact, { passive: true }); compact();
+
+  if (matchMedia('(hover: hover) and (pointer: fine)').matches && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const cur = document.createElement('div'); cur.className = 'muiscirkel'; cur.setAttribute('aria-hidden', 'true'); document.body.appendChild(cur);
+    const naarX = gsap.quickTo(cur, 'x', { duration: 0.3, ease: 'power3' }), naarY = gsap.quickTo(cur, 'y', { duration: 0.3, ease: 'power3' });
+    addEventListener('pointermove', e => { naarX(e.clientX); naarY(e.clientY); cur.classList.add('zichtbaar'); }, { passive: true });
+    document.documentElement.addEventListener('mouseleave', () => cur.classList.remove('zichtbaar'));
+    const GROOT = 'a, button, label, .case, .comp, .ctoestel, .doorkijk, .cvenster, .tech';
+    document.addEventListener('pointerover', e => cur.classList.toggle('groot', !!e.target.closest(GROOT)));
+    addEventListener('pointerdown', () => cur.classList.add('klik')); addEventListener('pointerup', () => cur.classList.remove('klik'));
+  }
 </script>
 </body>
 </html>

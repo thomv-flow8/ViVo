@@ -281,7 +281,7 @@ schrijf('index.html', home()); // oude homepage; wordt in npm run bouw overschre
 CASES.forEach((c, i) => schrijf(`werk/${c.slug}/index.html`, casePagina(c, i)));
 for (const doc of [PRIVACY, VOORWAARDEN, ...(MEET.meten ? [COOKIES] : [])]) schrijf(`${doc.slug}/index.html`, juridischePagina(doc));
 if (MEET.meten) schrijf('js/toestemming.js', lees('site/toestemming.js'));
-for (const c of CASES) for (const f of ['desktop.jpg', 'mobiel.jpg', 'pagina.jpg', ...(c.galerij || []).map(g => g.bestand)]) {
+for (const c of CASES) for (const f of ['desktop.jpg', 'mobiel.jpg', 'pagina.jpg', 'logo.png', ...(c.galerij || []).map(g => g.bestand)]) {
   const bron = join(root, 'cases', c.slug, f);
   if (existsSync(bron)) { mkdirSync(join(uit, 'img/cases', c.slug), { recursive: true }); copyFileSync(bron, join(uit, 'img/cases', c.slug, f)); }
 }

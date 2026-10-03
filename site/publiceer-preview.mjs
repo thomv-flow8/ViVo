@@ -5,7 +5,7 @@
 import { readFileSync, writeFileSync, mkdirSync, copyFileSync, existsSync, readdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { SITE } from './inhoud.mjs';
+import { SITE, CASES } from './inhoud.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const docs = join(root, 'docs');
@@ -23,6 +23,7 @@ const PADEN = [
   ['../site/drie.js', 'js/drie.js'],
   ['../beelden/', 'beelden/'],
   ['../docs/', ''],
+  ...CASES.map(c => [`case-${c.slug}.html`, `werk/${c.slug}/`]), // projectkaarten → nieuwe case-pagina's
 ];
 for (const [van, naar] of PADEN) {
   if (!html.includes(van)) throw new Error(`Pad niet gevonden in de preview: ${van}`);
@@ -72,7 +73,35 @@ for (const [, pad] of html.matchAll(/(?:src|href)="(?!https?:|#|mailto:|tel:|dat
 }
 
 writeFileSync(join(docs, 'index.html'), html);
+// ── Case-pagina's: docs-preview/case-<slug>.html → docs/werk/<slug>/index.html ──
+for (const c of CASES) {
+  let p = readFileSync(join(root, 'docs-preview', `case-${c.slug}.html`), 'utf8');
+  const CPADEN = [['../node_modules/gsap/dist/', '../../js/'], ['../beelden/', '../../beelden/'], ['../docs/', '../../'], ['motion.html', '../../'], ...CASES.map(x => [`case-${x.slug}.html`, `../${x.slug}/`])];
+  for (const [van, naar] of CPADEN) p = p.split(van).join(naar);
+  if (/\.\.\/(node_modules|site|docs)\//.test(p)) throw new Error(`Lokaal pad over in case ${c.slug}`);
+  const ctitel = `${c.naam} — case | ${SITE.bedrijfKort}`, url = `${SITE.url}/werk/${c.slug}/`;
+  p = p.replace(/<title>[^<]*<\/title>/, `<title>${esc(ctitel)}</title>
+<meta name="description" content="${esc(c.intro)}">
+<link rel="canonical" href="${url}">
+<meta property="og:type" content="website">
+<meta property="og:title" content="${esc(ctitel)}">
+<meta property="og:description" content="${esc(c.intro)}">
+<meta property="og:url" content="${url}">
+<meta property="og:locale" content="nl_NL">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">`);
+  if (M.ga4 || M.googleAds || M.metaPixel) {
+    p = vervang(p, '<a href="../../privacy/">Privacy</a><a href="../../voorwaarden/">Voorwaarden</a>', '<a href="../../privacy/">Privacy</a><a href="../../voorwaarden/">Voorwaarden</a><a href="../../cookies/">Cookies</a><a href="#" data-cookie-instellingen>Cookie-instellingen</a>');
+    p = vervang(p, '</body>', `<script>window.VIVO_METEN = ${JSON.stringify({ ...M, pad: '../../' })};</script>\n<script src="../../js/toestemming.js" defer></script>\n</body>`);
+  }
+  const map = join(docs, 'werk', c.slug);
+  for (const [, pad] of p.matchAll(/(?:src|href)="(?!https?:|#|mailto:|tel:|data:)([^"#?]+)/g)) {
+    const doel = join(map, pad.endsWith('/') ? pad + 'index.html' : pad);
+    if (!existsSync(doel)) throw new Error(`Case ${c.slug}: ontbreekt ${pad}`);
+  }
+  writeFileSync(join(map, 'index.html'), p);
+}
+
 // Oud previewadres → homepage
 mkdirSync(join(docs, 'preview'), { recursive: true });
 writeFileSync(join(docs, 'preview', 'index.html'), `<!doctype html><html lang="nl"><head><meta charset="utf-8"><meta name="robots" content="noindex"><link rel="canonical" href="${SITE.url}/"><meta http-equiv="refresh" content="0; url=../"><title>${esc(titel)}</title></head><body><p><a href="../">Naar de homepage van ${esc(SITE.bedrijfKort)}</a></p></body></html>\n`);
-console.log('docs/index.html = motion-site (homepage); docs/preview/ stuurt door');
+console.log(`docs/index.html = motion-site (homepage) + ${CASES.length} case-pagina's in de nieuwe stijl; docs/preview/ stuurt door`);

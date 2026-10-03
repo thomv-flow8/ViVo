@@ -96,6 +96,19 @@ Ook als `vivo-preview` in `.claude/launch.json`.
      **Hero-intro (Baunfire):** wit + zwarte VIVO-letters → donker vlak schuift van links naar rechts → label per letter,
      kop per woord. Vangnet: na 6 s verdwijnt het witte vlak ook zonder JS. Chevron bij laden plat, pas 3D bij scrollen.
      Mobiel menu: menuknop + uitklapmenu (gedrag uit `docs/js/vivo.js`).
+   - **Case-pagina's, aanpak B — live voor alle vier (akkoord Thomas 3 okt 2026):** gegenereerd in `site/preview-motion.mjs`
+     (`casePagina`) → `docs-preview/case-<slug>.html` → door `publiceer-preview.mjs` naar `docs/werk/<slug>/` (paden, titel/og,
+     elke verwijzing gecontroleerd). Status (Mozi, Flow8) als label in de hero; Flow8 zonder telefoon/volledige pagina krijgt
+     een galerij met de (vervaagde) schermen + noot; `HERO_BEELD`/`HERO_KLEUR` voor uitzonderingen (DELPHI-hero wit).
+     Logo's van Thomas: `cases/delphi/logo.png`, `cases/mozi/logo.png` (THNK/Flow8: naam als tekst). Oude case-sjabloon in
+     bouw.mjs wordt overschreven; privacy/voorwaarden/cookies gebruiken nog het oude sjabloon (kopbalk zonder cursor/pil).
+     Gedeeld: met gedeelde `CSS`, `KOP(thuis)`, `AFSLUITER(thuis)`, `CURSOR_CSS/JS`. Hero in projectkleur
+     met tablet + telefoon die **schuin blijven**; verhaal compact op zwart (3 kolommen); scrollvenster zoals vroeger (zelf
+     scrollen, `.doorkijk`); telefoon iPhone Plus-formaat; compacte "volgende case". Klantlogo: `cases/<slug>/logo.png`
+     (DELPHI uitgesneden uit de eigen opname). `naamKop` = naam met vast afbreekpunt (\u00ad) voor grote koppen.
+     Infades via `.onthul` (IntersectionObserver) — níet via ScrollTrigger-start, die mist bij lazy beelden.
+   - **Tweede cursor (Baunfire):** `.muiscirkel` volgt de muis, groeit boven links/knoppen/beelden; alleen met muis, niet
+     bij minder beweging. Let op: `.cursor` is al in gebruik (muispijl in een werkwijze-illustratie).
    - **Cookies / meten (keuze Thomas: analytics + marketing):** ID's in `SITE.meten` (`ga4`, `googleAds`, `metaPixel`).
      **Leeg = uit**: geen melding, geen scripts, privacytekst "geen cookies". Ingevuld → automatisch cookiemelding
      (`site/toestemming.js`: niets laden vóór toestemming, weigeren even makkelijk als accepteren, Consent Mode v2,

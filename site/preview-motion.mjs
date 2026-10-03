@@ -182,20 +182,14 @@ const kaart = (c) => {
     : modus === 'browser' ? `<div class="browser"><div class="balk"><i></i><i></i><i></i></div><div class="glas">${scherm}</div></div>`
     : `<div class="tablet"><div class="glas">${scherm}</div></div>`; // tablet en tablet-scroll
   const hint = modus === 'tablet' ? 'Hover · inzoomen' : vol ? 'Hover · door de site' : 'Hover · schermen';
-  return `<a class="case speel" data-modus="${modus}" href="../docs/werk/${c.slug}/"><div class="onthul"><div class="vlak modus-${modus}" style="--case:${OP_GRIJS[c.slug] || c.kleur}">${c.status ? `<span class="status">${c.status}</span>` : ''}
+  return `<a class="case speel" data-modus="${modus}" href="case-${c.slug}.html"><div class="onthul"><div class="vlak modus-${modus}" style="--case:${OP_GRIJS[c.slug] || c.kleur}">${c.status ? `<span class="status">${c.status}</span>` : ''}
     ${toestel}${tel}<span class="hint">${hint}</span></div></div>
     <h3>${c.naam}</h3><p>${c.kort}</p><div class="tags">${c.rol.map(t => `<span>${t}</span>`).join('')}</div><span class="link">Bekijk case ${pijl}</span></a>`;
 };
 
-const html = `<!doctype html>
-<html lang="nl">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ViVo — motion-preview v11</title>
-<script>document.documentElement.classList.add('js'); if (!matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('intro')</script>
-<link rel="stylesheet" href="../docs/css/vivo.css">
-<style>
+// ── Gedeeld door homepage en case-pagina's: stijl, kopbalk + menu, afsluiter ──
+// thuis = pad naar de homepage ('' op de homepage zelf, zodat ankers op dezelfde pagina blijven)
+const CSS = `
   /* ── Hero (donker) ── */
   .mhero { position: relative; min-height: 100svh; overflow: hidden; display: flex; align-items: center; padding: 140px 0 110px; background: var(--nacht); color: var(--maan); }
   .mhero .inhoud { position: relative; z-index: 3; width: 100%; }
@@ -455,15 +449,60 @@ const html = `<!doctype html>
   .praat-onder { position: relative; display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; margin-top: clamp(80px, 10vw, 140px); color: var(--grijs); font-size: 14px; } .praat-onder span { display: flex; gap: 20px; } .praat-onder a { color: inherit; }
   @media (max-width: 860px) { .praat-raster { grid-template-columns: 1fr; } .lus { width: 180vw; left: -60%; top: 10%; } }
   .noot { position: fixed; left: 50%; bottom: 14px; transform: translateX(-50%); z-index: 60; font: 12px/1.4 system-ui, sans-serif; background: rgba(20,20,20,.88); color: #eee; padding: 8px 14px; border-radius: 100px; }
+`;
+const KOP = (thuis = '') => `<header class="kop"><div class="w"><a class="logo morf" href="${thuis || '#'}" aria-label="ViVo — naar boven"><span class="lm-merk">${logo('vivo-beeldmerk')}</span><span class="lm-woord">${logo('vivo-woordmerk')}</span></a><nav><span class="nav-pil" aria-hidden="true"></span><a href="${thuis}#diensten">Diensten</a><a href="${thuis}#techniek">Techniek</a><a href="${thuis}#werkwijze">Werkwijze</a><a href="${thuis}#projecten">Projecten</a></nav><a class="pil" href="${thuis}#contact">Contact</a><button class="menuknop" type="button" aria-label="Menu openen" aria-expanded="false" aria-controls="menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9h18M8 15h13" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></button></div></header>
+<div class="menu" id="menu" role="dialog" aria-modal="true" aria-label="Menu">
+  <div class="boven">${logo('vivo-horizontaal', 'logo-svg')}<button class="menuknop" type="button" aria-label="Menu sluiten" data-sluit><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></button></div>
+  <ul>${[['Diensten', thuis + '#diensten'], ['Techniek', thuis + '#techniek'], ['Werkwijze', thuis + '#werkwijze'], ['Projecten', thuis + '#projecten'], ['Contact', thuis + '#contact']].map(([t, h]) => `<li><a href="${h}" data-sluit>${t}</a></li>`).join('')}</ul>
+  <p class="onder">Een website laten maken?<br><a href="mailto:info@vivoproducts.nl">info@vivoproducts.nl</a> · <a href="tel:+31628702422">06-28702422</a></p>
+</div>`;
+const AFSLUITER = (thuis = '') => `<footer class="afsluiter donker" id="contact" aria-labelledby="afsluiter-kop">
+  <img class="lus-donker" src="../beelden/vormen/lus-donker.png" alt="" aria-hidden="true"> <!-- terug naar de render van v6 (keuze Thomas) -->
+  <div class="w">
+    <span class="label">Contact</span><h2 id="afsluiter-kop">Klaar voor een website die werkt?</h2>
+    <div class="knoppen"><a class="pil" href="mailto:info@vivoproducts.nl?subject=Kennismaking%20ViVo">Plan een kennismaking</a><a class="cirkel" href="mailto:info@vivoproducts.nl"><span class="rond">${pijl}</span>info@vivoproducts.nl</a></div>
+    <div class="afsl-raster">
+      <nav aria-label="Footer"><a href="${thuis}#diensten">Diensten</a><a href="${thuis}#techniek">Techniek</a><a href="${thuis}#werkwijze">Werkwijze</a><a href="${thuis}#projecten">Projecten</a></nav>
+      <div><span class="kopje">Bezoekadres</span><span>Einsteinstraat 3e<br>4207 HW Gorinchem</span><span class="kopje">Contact</span><a href="tel:+31628702422">06-28702422</a><a href="mailto:info@vivoproducts.nl">info@vivoproducts.nl</a><span class="kopje">KvK</span><span>80912532</span></div>
+    </div>
+    <div class="afsl-onder"><small>© 2026 ViVo Products</small><span><a href="../docs/privacy/">Privacy</a><a href="../docs/voorwaarden/">Voorwaarden</a></span></div>
+  </div>
+</footer>`;
+
+
+// ── Tweede cursor (Baunfire): cirkel die de muis volgt en groeit boven knoppen, links en beelden. Alleen met muis. ──
+const CURSOR_CSS = `
+  .muiscirkel { position: fixed; left: 0; top: 0; z-index: 200; width: 8px; height: 8px; margin: -4px 0 0 -4px; border-radius: 50%; border: 1.5px solid transparent; background-color: #fff; mix-blend-mode: difference; pointer-events: none; opacity: 0; transition: opacity .3s, width .4s cubic-bezier(.16, 1, .3, 1), height .4s cubic-bezier(.16, 1, .3, 1), margin .4s cubic-bezier(.16, 1, .3, 1), background-color .3s, border-color .3s, scale .2s; }
+  .muiscirkel.zichtbaar { opacity: 1; }
+  .muiscirkel.groot { width: 36px; height: 36px; margin: -18px 0 0 -18px; background-color: transparent; border-color: #fff; } /* variant A (keuze Thomas): stip → dunne ring */
+  .muiscirkel.klik { scale: .7; }
+  @media (hover: none), (pointer: coarse) { .muiscirkel { display: none; } }`;
+const CURSOR_JS = `
+  if (matchMedia('(hover: hover) and (pointer: fine)').matches && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const cur = document.createElement('div'); cur.className = 'muiscirkel'; cur.setAttribute('aria-hidden', 'true'); document.body.appendChild(cur);
+    const naarX = gsap.quickTo(cur, 'x', { duration: 0.3, ease: 'power3' }), naarY = gsap.quickTo(cur, 'y', { duration: 0.3, ease: 'power3' });
+    addEventListener('pointermove', e => { naarX(e.clientX); naarY(e.clientY); cur.classList.add('zichtbaar'); }, { passive: true });
+    document.documentElement.addEventListener('mouseleave', () => cur.classList.remove('zichtbaar'));
+    const GROOT = 'a, button, label, .case, .comp, .ctoestel, .doorkijk, .cvenster, .tech';
+    document.addEventListener('pointerover', e => cur.classList.toggle('groot', !!e.target.closest(GROOT)));
+    addEventListener('pointerdown', () => cur.classList.add('klik')); addEventListener('pointerup', () => cur.classList.remove('klik'));
+  }`;
+
+const html = `<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ViVo — motion-preview v11</title>
+<script>document.documentElement.classList.add('js'); if (!matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('intro')</script>
+<link rel="stylesheet" href="../docs/css/vivo.css">
+<style>
+${CSS}
+${CURSOR_CSS}
 </style>
 </head>
 <body>
-<header class="kop"><div class="w"><a class="logo morf" href="#" aria-label="ViVo — naar boven"><span class="lm-merk">${logo('vivo-beeldmerk')}</span><span class="lm-woord">${logo('vivo-woordmerk')}</span></a><nav><span class="nav-pil" aria-hidden="true"></span><a href="#diensten">Diensten</a><a href="#techniek">Techniek</a><a href="#werkwijze">Werkwijze</a><a href="#projecten">Projecten</a></nav><a class="pil" href="#contact">Contact</a><button class="menuknop" type="button" aria-label="Menu openen" aria-expanded="false" aria-controls="menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9h18M8 15h13" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></button></div></header>
-<div class="menu" id="menu" role="dialog" aria-modal="true" aria-label="Menu">
-  <div class="boven">${logo('vivo-horizontaal', 'logo-svg')}<button class="menuknop" type="button" aria-label="Menu sluiten" data-sluit><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></button></div>
-  <ul>${[['Diensten', '#diensten'], ['Techniek', '#techniek'], ['Werkwijze', '#werkwijze'], ['Projecten', '#projecten'], ['Contact', '#contact']].map(([t, h]) => `<li><a href="${h}" data-sluit>${t}</a></li>`).join('')}</ul>
-  <p class="onder">Een website laten maken?<br><a href="mailto:info@vivoproducts.nl">info@vivoproducts.nl</a> · <a href="tel:+31628702422">06-28702422</a></p>
-</div>
+${KOP()}
 
 <section class="mhero" aria-labelledby="hero-kop">
   <div class="podium" aria-hidden="true"><div class="ring"></div><div class="letters">${logo('vivo-woordmerk')}</div></div>
@@ -512,18 +551,7 @@ const html = `<!doctype html>
   </div>
 </section>
 
-<footer class="afsluiter donker" id="contact" aria-labelledby="afsluiter-kop">
-  <img class="lus-donker" src="../beelden/vormen/lus-donker.png" alt="" aria-hidden="true"> <!-- terug naar de render van v6 (keuze Thomas) -->
-  <div class="w">
-    <span class="label">Contact</span><h2 id="afsluiter-kop">Klaar voor een website die werkt?</h2>
-    <div class="knoppen"><a class="pil" href="mailto:info@vivoproducts.nl?subject=Kennismaking%20ViVo">Plan een kennismaking</a><a class="cirkel" href="mailto:info@vivoproducts.nl"><span class="rond">${pijl}</span>info@vivoproducts.nl</a></div>
-    <div class="afsl-raster">
-      <nav aria-label="Footer"><a href="#diensten">Diensten</a><a href="#techniek">Techniek</a><a href="#werkwijze">Werkwijze</a><a href="#projecten">Projecten</a></nav>
-      <div><span class="kopje">Bezoekadres</span><span>Einsteinstraat 3e<br>4207 HW Gorinchem</span><span class="kopje">Contact</span><a href="tel:+31628702422">06-28702422</a><a href="mailto:info@vivoproducts.nl">info@vivoproducts.nl</a><span class="kopje">KvK</span><span>80912532</span></div>
-    </div>
-    <div class="afsl-onder"><small>© 2026 ViVo Products</small><span><a href="../docs/privacy/">Privacy</a><a href="../docs/voorwaarden/">Voorwaarden</a></span></div>
-  </div>
-</footer>
+${AFSLUITER()}
 <div class="noot">Motion-preview v11 · niet live</div>
 
 <script type="importmap">{ "imports": { "three": "../node_modules/three/build/three.module.js", "three/addons/": "../node_modules/three/examples/jsm/" } }</script>
@@ -693,6 +721,7 @@ const html = `<!doctype html>
   navEl.addEventListener('pointerleave', () => { navPil.style.opacity = '0'; });
   const kopEl = document.querySelector('.kop'), compact = () => kopEl.classList.toggle('compact', scrollY > 80);
   addEventListener('scroll', compact, { passive: true }); compact();
+${CURSOR_JS}
 </script>
 </body>
 </html>
@@ -701,3 +730,192 @@ const html = `<!doctype html>
 mkdirSync(join(root, 'docs-preview'), { recursive: true });
 writeFileSync(join(root, 'docs-preview', 'motion.html'), html);
 console.log('Geschreven: docs-preview/motion.html');
+
+// ════ Case-pagina (preview, aanpak B): zelfde stijl/kopbalk/afsluiter als de homepage + eigen opbouw ════
+// Hero in projectkleur met tablet + telefoon · verhaal groot en leesbaar · galerij (scroll door de site + mobiel)
+// · groot "volgende case"-vlak. Eerst alleen DELPHI (akkoord Thomas), daarna doortrekken naar alle cases.
+const DONKER = new Set(['thnk', 'flow8']);
+const HERO_KLEUR = { delphi: '#ffffff' };
+const HERO_BEELD = { flow8: 'rapportage.jpg' }; // Flow8: rapportage oogt het sterkst (en heeft geen telefoonbeeld) // DELPHI-hero wit, net als hun eigen site (keuze Thomas)
+const CASE_CSS = `
+  /* ── Case-pagina ── */
+  .chero { position: relative; overflow: hidden; background: var(--case); color: var(--inkt); padding: calc(var(--kop-hoogte) + clamp(40px, 6vw, 96px)) 0 clamp(64px, 8vw, 120px); }
+  .chero.donker { color: var(--maan); } .chero.donker .label { color: var(--grijs-n); } .chero.donker .label::before { background: var(--maan); }
+  .chero > .w { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: clamp(32px, 5vw, 80px); align-items: center; }
+  .chero .label { text-decoration: none; }
+  .chero h1 { font-size: clamp(40px, 5.2vw, 84px); margin: 22px 0 22px; hyphens: manual; -webkit-hyphens: manual; overflow-wrap: break-word; } /* lange namen alleen afbreken op het vaste breekpunt uit naamKop */
+  .chero h1 .w-r { max-width: 100%; }
+  .chero .intro { font-size: clamp(19px, 1.6vw, 23px); line-height: 1.45; letter-spacing: -.01em; color: var(--case-tekst); max-width: 34ch; margin: 0; }
+  .cfeiten { display: grid; grid-template-columns: 1fr 1fr; gap: 22px 32px; margin: 40px 0 0; padding-top: 28px; border-top: 1px solid var(--lijn); }
+  .chero.donker .cfeiten { border-color: var(--lijn-n); }
+  .cfeiten dt { font: 500 var(--label)/1 var(--mono); letter-spacing: var(--ls-label); text-transform: uppercase; color: var(--case-tekst); margin-bottom: 9px; }
+  .cfeiten dd { margin: 0; font-weight: 500; overflow-wrap: anywhere; }
+  .cfeiten .clogo img { display: block; width: auto; height: auto; max-width: 120px; max-height: 60px; mix-blend-mode: multiply; } /* witte logo-achtergrond valt weg */
+  .cstatus { display: inline-block; vertical-align: middle; margin-left: 14px; padding: 7px 12px; border-radius: var(--r-pil); font: 500 var(--label)/1 var(--mono); letter-spacing: var(--ls-label); text-transform: uppercase; background: rgba(10, 11, 13, .07); }
+  .chero.donker .cstatus { background: rgba(255, 255, 255, .1); }
+  .ctoestel.zonder-tel .ctablet { inset: 8% 1% 10% 1%; }
+  .cschermen { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(20px, 3vw, 40px); }
+  .cschermen figure { margin: 0; } .cschermen img { width: 100%; display: block; aspect-ratio: 1972 / 1150; object-fit: cover; object-position: top; }
+  .cschermen figcaption { margin-top: 12px; color: var(--grijs); font-size: 15px; } .cnoot { margin: 28px 0 0; color: var(--grijs); font-size: 14px; } /* lichte achtergrond van de uitsnede valt weg */ .cfeiten a { color: inherit; text-underline-offset: 4px; }
+  .ctoestel { position: relative; aspect-ratio: 4 / 3; perspective: 1400px; }
+  .ctablet { transform: perspective(1400px) rotateY(-14deg) rotateX(8deg) rotateZ(2deg); position: absolute; inset: 3% 9% 7% 0; border-radius: clamp(16px, 2.2vw, 30px); background: #0f1115; padding: 2.2%; box-shadow: 0 60px 100px -40px rgba(20, 30, 60, .45); will-change: transform; }
+  .ctablet .glas, .ctel .glas { width: 100%; height: 100%; overflow: hidden; background: #fff; border-radius: clamp(9px, 1.3vw, 18px); }
+  .ctablet img, .ctel img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
+  .chero .ctel { transform: perspective(1400px) rotateY(-10deg) rotateX(6deg) rotateZ(4deg); }
+  .ctel { position: absolute; right: 0; bottom: 0; width: 25%; aspect-ratio: 390 / 844; border-radius: clamp(16px, 2.2vw, 30px); background: #0f1115; padding: 1.4%; box-shadow: 0 40px 70px -24px rgba(20, 30, 60, .5); will-change: transform; }
+  .ctel .glas { border-radius: clamp(12px, 1.8vw, 24px); }
+  .cverhaal { background: var(--nacht); color: var(--maan); padding: clamp(64px, 8vw, 112px) 0; }
+  .cverhaal .w { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(28px, 4vw, 56px); }
+  .cstap h2 { font-size: var(--h3); margin: 14px 0 12px; } .cstap p { color: var(--grijs-n); margin: 0; font-size: 17px; line-height: 1.6; }
+  .cgalerij { background: var(--papier-2); padding: var(--sectie) 0; }
+  .cgalerij .sectiekop { margin-bottom: clamp(32px, 4vw, 56px); }
+  .cgalerij .doorkijk { margin: 0; }
+  .cvenster { border-radius: var(--r); overflow: hidden; background: #fff; box-shadow: 0 50px 90px -40px rgba(10, 11, 13, .3); }
+  .cvenster .balk { height: 38px; display: flex; gap: 7px; align-items: center; padding: 0 16px; background: #eceef1; }
+  .cvenster .balk i { width: 11px; height: 11px; border-radius: 50%; background: #c9ccd2; }
+  .cmobiel { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: clamp(32px, 6vw, 96px); align-items: center; margin-top: var(--sectie); }
+  .cmobiel .ctel { position: relative; width: min(100%, 420px); aspect-ratio: 430 / 932; margin: 0 auto; right: auto; bottom: auto; padding: 11px; } /* iPhone Plus: breder */
+  .cmobiel h2 { font-size: var(--h2); margin: 16px 0 20px; } .cmobiel p { color: var(--grijs); font-size: clamp(18px, 1.5vw, 21px); max-width: 40ch; margin: 0 0 32px; }
+  .cvolgende { display: block; position: relative; overflow: hidden; background: var(--case); color: var(--inkt); text-decoration: none; padding: clamp(48px, 6vw, 88px) 0 0; }
+  .cvolgende .w { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px clamp(32px, 5vw, 80px); align-items: end; }
+  .cvolgende .ctekst { padding-bottom: clamp(48px, 6vw, 88px); }
+  .cvolgende.donker { color: var(--maan); }
+  .cvolgende h2 { font-size: clamp(34px, 4.6vw, 68px); margin: 16px 0 0; display: flex; align-items: center; gap: .25em; }
+  .cvolgende h2 svg { width: .55em; height: .55em; transition: transform .5s var(--ease); } .cvolgende:hover h2 svg { transform: translateX(.2em); }
+  .cvolgende .cvenster { transform: translateY(16%); transition: transform .9s cubic-bezier(.16, 1, .3, 1); }
+  .cvolgende:hover .cvenster { transform: translateY(5%); }
+  .cvolgende .cvenster img { width: 100%; display: block; aspect-ratio: 16 / 10; object-fit: cover; object-position: top; }
+  @media (max-width: 860px) {
+    .chero > .w, .cverhaal .w, .cmobiel, .cvolgende .w, .cschermen { grid-template-columns: 1fr; } .cvolgende .ctekst { padding-bottom: 0; }
+    .chero .ctoestel { margin-top: 12px; }
+  }`;
+
+function casePagina(c) {
+  const i = CASES.indexOf(c), volgende = CASES[(i + 1) % CASES.length];
+  const donker = DONKER.has(c.slug) ? ' donker' : '';
+  const kort = u => u.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '');
+  const thuis = 'motion.html'; // preview; publiceer-preview.mjs zet dit om naar '../../'
+  const maat = f => { const b = readFileSync(join(root, 'docs/img/cases', c.slug, f)); return [b.readUInt32BE(16), b.readUInt32BE(20)]; }; // PNG-breedte/hoogte
+  const logo = heeft(c.slug, 'logo.png') ? maat('logo.png') : null;
+  const heroBeeld = HERO_BEELD[c.slug] || 'desktop.jpg', tel = heeft(c.slug, 'mobiel.jpg');
+  return `<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${c.naam} — case | ViVo (preview)</title>
+<script>document.documentElement.classList.add('js')</script>
+<link rel="stylesheet" href="../docs/css/vivo.css">
+<style>
+${CSS}
+${CURSOR_CSS}
+${CASE_CSS}
+</style>
+</head>
+<body>
+${KOP(thuis)}
+
+<section class="chero${donker}" style="--case:${HERO_KLEUR[c.slug] || c.kleur};--case-tekst:${c.kleurTekst}" aria-labelledby="case-kop">
+  <div class="w">
+    <div class="ctekst">
+      <a class="label" href="${thuis}#projecten">Projecten · ${c.jaar}</a>${c.status ? `<span class="cstatus">${c.status}</span>` : ''}
+      <h1 id="case-kop">${c.naamKop || c.naam}</h1>
+      <p class="intro">${c.intro}</p>
+      <dl class="cfeiten">
+        <div><dt>Klant</dt><dd${logo ? ` class="clogo"><img src="${img(c.slug, 'logo.png')}" alt="${c.klant}" width="${logo[0]}" height="${logo[1]}">` : '>' + c.klant}</dd></div>
+        <div><dt>Sector</dt><dd>${c.sector}</dd></div>
+        <div><dt>Wat ViVo deed</dt><dd>${c.rol.join(', ')}</dd></div>
+        <div><dt>${c.live ? 'Website' : 'Status'}</dt><dd>${c.live ? `<a href="${c.live}" target="_blank" rel="noopener">${kort(c.live)} ↗</a>` : (c.status || '')}</dd></div>
+      </dl>
+    </div>
+    <div class="ctoestel${tel ? '' : ' zonder-tel'}" aria-hidden="true">
+      <div class="ctablet"><div class="glas"><img src="${img(c.slug, heroBeeld)}" alt=""></div></div>
+      ${tel ? `<div class="ctel"><div class="glas"><img src="${img(c.slug, 'mobiel.jpg')}" alt=""></div></div>` : ''}
+    </div>
+  </div>
+</section>
+
+<section class="cverhaal donker" aria-label="Het verhaal">
+  <div class="w">
+    ${[['De opdracht', c.opdracht], ['De aanpak', c.aanpak], ['Het resultaat', c.resultaat]].map(([t, p], n) => `<div class="cstap onthul" style="--vertraging:${n * 0.1}s"><span class="label">0${n + 1}</span><h2>${t}</h2><p>${p}</p></div>`).join('\n    ')}
+  </div>
+</section>
+
+<section class="cgalerij" aria-label="Beelden van ${c.naam}">
+  <div class="w">
+    ${heeft(c.slug, 'pagina.jpg') ? `<div class="sectiekop"><div><span class="label">De website</span><h2>Scroll door de site</h2></div></div>
+    <div class="doorkijk onthul" style="--case:${c.kleur};--case-tekst:${c.kleurTekst}"><div class="venster"><div class="balk"><i></i><i></i><i></i></div><div class="rol" tabindex="0" aria-label="Volledige pagina van ${c.naam}, scrollbaar"><img src="${img(c.slug, 'pagina.jpg')}" alt="De volledige homepage van ${c.naam}" loading="lazy" width="1440"></div></div><p>Scroll door de site</p></div>` : ''}
+    ${heeft(c.slug, 'mobiel.jpg') ? `<div class="cmobiel">
+      <div class="ctel onthul"><div class="glas"><img src="${img(c.slug, 'mobiel.jpg')}" alt="${c.naam} op mobiel" loading="lazy"></div></div>
+      <div class="onthul"><span class="label">Mobiel</span><h2>Net zo sterk op de telefoon</h2><p>Elke pagina is ontworpen en getest op telefoon, tablet en desktop — zodat bezoekers overal snel vinden wat ze zoeken.</p>${c.live ? `<a class="pil" href="${c.live}" target="_blank" rel="noopener">Bekijk de live site ↗</a>` : ''}</div>
+    </div>` : ''}
+    ${c.galerij ? `<div class="sectiekop"><div><span class="label">Het product</span><h2>Een kijkje in ${c.naam}</h2></div></div>
+    <div class="cschermen">${c.galerij.map((g, n) => `<figure class="onthul" style="--vertraging:${(n % 2) * 0.1}s"><div class="cvenster"><div class="balk"><i></i><i></i><i></i></div><img src="${img(c.slug, g.bestand)}" alt="${g.bijschrift}" loading="lazy"></div><figcaption>${g.bijschrift}</figcaption></figure>`).join('')}</div>${c.galerijNoot ? `<p class="cnoot">${c.galerijNoot}</p>` : ''}` : ''}
+  </div>
+</section>
+
+<a class="cvolgende${DONKER.has(volgende.slug) ? ' donker' : ''}" href="case-${volgende.slug}.html" style="--case:${volgende.kleur}">
+  <div class="w"><div class="ctekst onthul"><span class="label">Volgende case</span><h2>${volgende.naam} ${pijl}</h2></div>
+  <div class="cvenster"><div class="balk"><i></i><i></i><i></i></div><img src="${img(volgende.slug, 'desktop.jpg')}" alt="" loading="lazy"></div></div>
+</a>
+
+${AFSLUITER(thuis)}
+
+<script src="../docs/js/vivo.js" defer></script>
+<script src="../node_modules/gsap/dist/gsap.min.js"></script>
+<script src="../node_modules/gsap/dist/ScrollTrigger.min.js"></script>
+<script>
+  const rustig = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  gsap.registerPlugin(ScrollTrigger);
+  // ── Gedeeld met de homepage: infade, menu-pil, krimpende kopbalk, bewegende lus ──
+  const onthulKijker = new IntersectionObserver(items => items.forEach(({ isIntersecting, target }) => {
+    if (!isIntersecting) return;
+    onthulKijker.unobserve(target);
+    const img = target.querySelector('img');
+    Promise.resolve(img && !img.complete ? img.decode().catch(() => {}) : null).then(() => target.classList.add('in'));
+  }), { rootMargin: '0px 0px -12% 0px' });
+  document.querySelectorAll('.onthul').forEach(el => rustig ? el.classList.add('in') : onthulKijker.observe(el));
+  const navEl = document.querySelector('.kop nav'), navPil = navEl.querySelector('.nav-pil');
+  navEl.querySelectorAll('a').forEach(a => {
+    const zet = () => {
+      const verborgen = navPil.style.opacity !== '1';
+      if (verborgen) navPil.classList.add('direct');
+      navPil.style.width = a.offsetWidth + 'px'; navPil.style.transform = 'translateX(' + a.offsetLeft + 'px)'; navPil.style.opacity = '1';
+      if (verborgen) { navPil.offsetWidth; navPil.classList.remove('direct'); }
+    };
+    a.addEventListener('pointerenter', zet); a.addEventListener('focus', zet);
+    a.addEventListener('blur', () => { navPil.style.opacity = '0'; });
+  });
+  navEl.addEventListener('pointerleave', () => { navPil.style.opacity = '0'; });
+  const kopEl = document.querySelector('.kop'), compact = () => kopEl.classList.toggle('compact', scrollY > 80);
+  addEventListener('scroll', compact, { passive: true }); compact();
+${CURSOR_JS}
+
+  if (!rustig) {
+    gsap.to('.lus-donker', { rotate: -10, x: -60, y: 30, scale: 1.08, duration: 18, ease: 'sine.inOut', yoyo: true, repeat: -1 });
+    gsap.from('.afsluiter .w > :not(.afsl-onder)', { y: 30, opacity: 0, duration: 0.9, stagger: 0.08, ease: 'power3.out', scrollTrigger: { trigger: '.afsluiter', start: 'top 75%' } });
+    // ── Hero: kop woord voor woord, tekst en feiten omhoog; tablet en telefoon blijven schuin staan ──
+    gsap.set('.ctablet', { transformPerspective: 1400, rotateY: -14, rotateX: 8, rotateZ: 2 });
+    gsap.set('.chero .ctel', { transformPerspective: 1400, rotateY: -10, rotateX: 6, rotateZ: 4 });
+    const h1 = document.querySelector('.chero h1');
+    h1.setAttribute('aria-label', h1.textContent);
+    h1.innerHTML = h1.textContent.split(' ').map(w => '<span class="w-r" aria-hidden="true"><span>' + w + '</span></span>').join(' ');
+    gsap.timeline({ defaults: { ease: 'power4.out' } })
+      .from('.chero .label', { opacity: 0, duration: 0.6 }, 0.1)
+      .from('.chero h1 .w-r > span', { yPercent: 110, duration: 1.1, stagger: 0.08 }, 0.15)
+      .from('.chero .intro, .cfeiten > div', { y: 24, opacity: 0, duration: 1, stagger: 0.07 }, 0.45)
+      .from('.ctoestel', { y: 80, opacity: 0, duration: 1.4 }, 0.2)
+      .from('.ctablet', { rotateY: -32, rotateX: 18, rotateZ: 4, duration: 1.8 }, 0.2)      // kantelt naar zijn schuine eindstand
+      .from('.chero .ctel', { yPercent: 25, opacity: 0, rotateZ: 10, duration: 1.6 }, 0.45);  // yPercent: botst niet met de scroll-y
+    gsap.to('.chero .ctel', { y: -50, ease: 'none', scrollTrigger: { trigger: '.chero', start: 'top top', end: 'bottom top', scrub: 0.6 } });
+    gsap.to('.ctablet', { y: 30, ease: 'none', scrollTrigger: { trigger: '.chero', start: 'top top', end: 'bottom top', scrub: 0.6 } });
+    // Verhaal, mobiel en volgende case komen binnen via .onthul (IntersectionObserver): betrouwbaar, ook met lazy beelden
+    addEventListener('load', () => ScrollTrigger.refresh());
+  }
+</script>
+</body>
+</html>
+`;
+}
+for (const c of CASES) writeFileSync(join(root, 'docs-preview', `case-${c.slug}.html`), casePagina(c));
+console.log(`Geschreven: docs-preview/case-{${CASES.map(c => c.slug).join(',')}}.html`);

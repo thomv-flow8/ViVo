@@ -53,7 +53,7 @@ export const CASES = [
     resultaat: 'Een snelle, Engelstalige site die op elk scherm overeind blijft — volledig door ViVo bedacht, ontworpen, geschreven, gebouwd en gehost.',
   },
   {
-    slug: 'delphi', naam: 'DELPHI Sleutelbeheersystemen', jaar: 2026,
+    slug: 'delphi', naam: 'DELPHI Sleutelbeheersystemen', naamKop: 'DELPHI Sleutelbeheer\u00adsystemen', jaar: 2026, // naamKop: vast breekpunt (zacht afbreekstreepje) voor grote koppen
     klant: 'DELPHI', sector: 'Beveiliging', soort: 'Tweetalige productsite',
     rol: ['Ontwerp', 'Bouw', 'Teksten', 'Hosting'],
     live: 'https://www.sleutelbeheersystemen.nl/', kleur: '#f1f5fb', kleurTekst: '#5b6472', // witter, koel (keuze Thomas: B)
