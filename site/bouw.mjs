@@ -1,0 +1,220 @@
+// Bouwt de ViVo-website in docs/ (de map die GitHub Pages straks publiceert).
+// Bron: site/inhoud.mjs (teksten, cases), site/vivo.css (stijl), huisstijl/tokens.css (tokens), merk/ (logo),
+//       cases/<slug>/ (schermafbeeldingen).  Draaien: npm run bouw
+import { readFileSync, writeFileSync, mkdirSync, copyFileSync, existsSync, rmSync } from 'node:fs';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { SITE, DIENSTEN, STAPPEN, CASES } from './inhoud.mjs';
+
+const root = join(dirname(fileURLToPath(import.meta.url)), '..');
+const uit = join(root, 'docs');
+const lees = p => readFileSync(join(root, p), 'utf8');
+const schrijf = (p, s) => { mkdirSync(dirname(join(uit, p)), { recursive: true }); writeFileSync(join(uit, p), s); };
+const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+// Logo inline, meekleurend met het vlak (currentColor)
+const logo = (naam, cls = '') => lees(`merk/svg/${naam}-wit.svg`).trim()
+  .replace(/(stroke|fill)="#[0-9a-fA-F]{3,8}"/g, '$1="currentColor"')
+  .replace(/^<svg /, `<svg ${cls ? `class="${cls}" ` : ''}aria-hidden="true" focusable="false" `)
+  .replace(/ width="[^"]+" height="[^"]+"/, '')
+  .replace(/<title>[^<]*<\/title>/, '');
+
+const pijl = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>`;
+const chevron = `<svg viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="10"><polyline points="8,16 50,86 92,16"/><polyline points="29.6,16 50,50 70.4,16"/></g></svg>`;
+const hamburger = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9h18M8 15h13" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>`;
+const kruis = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>`;
+// Mockup voor cases zonder schermafbeelding (Flow8, tot Thomas eigen opnames aanlevert)
+const mockup = `<svg class="mockup" viewBox="0 0 320 210" aria-hidden="true"><rect x=".75" y=".75" width="318.5" height="208.5" rx="10" fill="#fff"/><rect x=".75" y=".75" width="318.5" height="22" rx="10" fill="#eceef1"/><circle cx="14" cy="12" r="3.5" fill="#c9ccd2"/><circle cx="26" cy="12" r="3.5" fill="#c9ccd2"/><circle cx="38" cy="12" r="3.5" fill="#c9ccd2"/><rect x="0" y="23" width="64" height="187" fill="#15171c"/><rect x="12" y="38" width="40" height="5" rx="2" fill="#4f6ef5"/><rect x="12" y="52" width="34" height="4" rx="2" fill="#9aa0ab"/><rect x="12" y="62" width="38" height="4" rx="2" fill="#9aa0ab"/><rect x="12" y="72" width="30" height="4" rx="2" fill="#9aa0ab"/>${[0, 1, 2, 3, 4].map(i => `<rect x="${76 + i * 47}" y="36" width="41" height="6" rx="2" fill="#646a76" opacity=".5"/>`).join('')}${[[78, 52, 70, '#4f6ef5'], [125, 66, 40, '#35c4e3'], [172, 52, 56, '#4f6ef5'], [219, 88, 44, '#f5a524'], [266, 58, 36, '#35c4e3'], [78, 128, 52, '#f5a524'], [172, 116, 40, '#4f6ef5'], [266, 104, 64, '#4f6ef5']].map(([x, y, h, c]) => `<rect x="${x}" y="${y}" width="39" height="${h}" rx="4" fill="${c}" opacity=".85"/>`).join('')}</svg>`;
+
+const relPad = diepte => '../'.repeat(diepte);
+
+function vlak(c, r, opties = {}) {
+  const img = existsSync(join(root, 'cases', c.slug, 'desktop.jpg'));
+  const scherm = img
+    ? `<div class="scherm"><div class="balk"><i></i><i></i><i></i></div><img src="${r}img/cases/${c.slug}/desktop.jpg" alt="${esc(`Website van ${c.naam} op desktop`)}" loading="${opties.eager ? 'eager' : 'lazy'}" width="1440" height="900"></div>`
+    : mockup;
+  const tel = img && existsSync(join(root, 'cases', c.slug, 'mobiel.jpg'))
+    ? `<div class="tel"><img src="${r}img/cases/${c.slug}/mobiel.jpg" alt="${esc(`${c.naam} op mobiel`)}" loading="lazy" width="390" height="844"></div>` : '';
+  const status = c.status ? `<span class="status">${esc(c.status)}</span>` : '';
+  return `<div class="vlak" style="--case:${c.kleur}">${status}${scherm}${tel}</div>`;
+}
+
+function kop(r, actief = '', donker = false) {
+  const nav = [['Werk', `${r}#werk`, 'werk'], ['Diensten', `${r}#diensten`], ['Werkwijze', `${r}#werkwijze`], ['Contact', `${r}#contact`]];
+  return `<a class="overslaan" href="#inhoud">Direct naar de inhoud</a>
+<header class="kop${donker ? ' op-donker' : ''}">
+  <div class="w">
+    <a class="logo" href="${r || './'}" aria-label="ViVo — naar de homepage">${logo('vivo-horizontaal')}</a>
+    <nav aria-label="Hoofdmenu">${nav.map(([t, h, k]) => `<a href="${h}"${k && k === actief ? ' aria-current="page"' : ''}>${t}</a>`).join('')}</nav>
+    <a class="pil" href="mailto:${SITE.mail}">Contact</a>
+    <button class="menuknop" type="button" aria-label="Menu openen" aria-expanded="false" aria-controls="menu">${hamburger}</button>
+  </div>
+</header>
+<div class="menu" id="menu" role="dialog" aria-modal="true" aria-label="Menu">
+  <div class="boven">${logo('vivo-horizontaal', 'logo-svg')}<button class="menuknop" type="button" aria-label="Menu sluiten" data-sluit>${kruis}</button></div>
+  <ul>${nav.map(([t, h]) => `<li><a href="${h}" data-sluit>${t}</a></li>`).join('')}</ul>
+  <p class="onder">Een website laten maken?<br><a href="mailto:${SITE.mail}">${SITE.mail}</a></p>
+</div>`;
+}
+
+function slot(r) {
+  return `<section class="blok donker slot" id="contact" aria-labelledby="contact-kop">
+  ${logo('vivo-beeldmerk', 'spookmerk')}
+  <div class="w">
+    <span class="label">Contact</span>
+    <h2 id="contact-kop">Klaar voor een website die werkt?</h2>
+    <div class="knoppen"><a class="pil" href="mailto:${SITE.mail}?subject=Kennismaking%20ViVo">Plan een kennismaking</a><a class="cirkel" href="mailto:${SITE.mail}"><span class="rond">${pijl}</span>${SITE.mail}</a></div>
+  </div>
+</section>
+<footer class="voet donker">
+  <div class="w">
+    <a class="logo" href="${r || './'}" aria-label="ViVo — naar de homepage">${logo('vivo-horizontaal')}</a>
+    <nav aria-label="Footer"><a href="${r}#werk">Werk</a><a href="${r}#diensten">Diensten</a><a href="${r}#werkwijze">Werkwijze</a><a href="${r}#contact">Contact</a></nav>
+    <address><a href="mailto:${SITE.mail}">${SITE.mail}</a><br>${esc(SITE.plaats)}</address>
+    <small>© ${SITE.jaar} ${esc(SITE.bedrijf)}</small>
+  </div>
+</footer>`;
+}
+
+function pagina({ titel, beschrijving, r, pad, inhoud, actief, donkereKop }) {
+  const url = `${SITE.url}${pad}`;
+  return `<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${esc(titel)}</title>
+<meta name="description" content="${esc(beschrijving)}">
+<link rel="canonical" href="${url}">
+<meta property="og:type" content="website">
+<meta property="og:title" content="${esc(titel)}">
+<meta property="og:description" content="${esc(beschrijving)}">
+<meta property="og:url" content="${url}">
+<meta property="og:locale" content="nl_NL">
+<meta name="theme-color" content="#ffffff">
+<link rel="icon" href="${r}favicon.svg" type="image/svg+xml">
+<!-- PREVIEW: lettertypes via Google Fonts. Vóór livegang zelf hosten (AVG) — zie huisstijl/tokens.css -->
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="${r}css/vivo.css">
+</head>
+<body>
+${kop(r, actief, donkereKop)}
+<main id="inhoud">
+${inhoud}
+</main>
+${slot(r)}
+<script src="${r}js/vivo.js" defer></script>
+</body>
+</html>
+`;
+}
+
+// ── Homepage ──
+function home() {
+  const r = '';
+  const show = CASES.find(c => c.uitgelicht) || CASES[0];
+  const inhoud = `<section class="hero" aria-labelledby="hero-kop">
+  ${logo('vivo-woordmerk', 'spook')}
+  <div class="w inhoud">
+    <span class="label">ViVo · webdesign &amp; development</span>
+    <h1 id="hero-kop">Websites die werken.</h1>
+    <div class="onder">
+      <p>${SITE.intro}</p>
+      <a class="cirkel" href="#werk"><span class="rond">${pijl}</span>Bekijk ons werk</a>
+    </div>
+  </div>
+</section>
+
+<section class="show" aria-label="Uitgelicht project">
+  <div class="w">
+    <a href="werk/${show.slug}/" style="text-decoration:none;display:block">${vlak(show, r, { eager: true })}</a>
+    <div class="bijschrift"><span>Uitgelicht · ${esc(show.naam)}</span><span>${esc(show.soort)}</span></div>
+  </div>
+</section>
+
+<section class="statement" aria-label="Over ViVo">
+  <div class="w"><p>Eén aanspreekpunt, van eerste schets tot livegang. <span class="grijs">Persoonlijk, snel en zonder vakjargon — met een site die blijft werken.</span></p></div>
+</section>
+
+<section class="blok donker" id="diensten" aria-labelledby="diensten-kop">
+  <div class="w">
+    <div class="sectiekop"><div><span class="label">Wat we doen</span><h2 id="diensten-kop">Waar ViVo goed in is</h2></div><p>Klik een dienst open voor meer uitleg.</p></div>
+    <div class="lijst">
+      ${DIENSTEN.map((d, i) => `<details${i === 0 ? ' open' : ''}><summary><span class="nr">0${i + 1}</span><h3>${esc(d.titel)}</h3><span class="chev">${chevron}</span></summary><div class="uitleg"><span></span><div><p>${esc(d.tekst)}</p><div class="tags">${d.tags.map(t => `<span>${esc(t)}</span>`).join('')}</div></div></div></details>`).join('\n      ')}
+    </div>
+  </div>
+</section>
+
+<section class="blok" id="werk" aria-labelledby="werk-kop">
+  <div class="w">
+    <div class="sectiekop"><div><span class="label">Uitgelicht werk</span><h2 id="werk-kop">Recente projecten</h2></div><p>Elk project krijgt zijn eigen kleur — net als de merken waarvoor ViVo bouwt.</p></div>
+    <div class="werk">
+      ${CASES.map(c => `<a class="case" href="werk/${c.slug}/">${vlak(c, r)}<h3>${esc(c.naam)}</h3><p>${esc(c.kort)}</p><div class="tags">${c.rol.map(t => `<span>${esc(t)}</span>`).join('')}</div><span class="link">Bekijk case ${pijl}</span></a>`).join('\n      ')}
+    </div>
+  </div>
+</section>
+
+<section class="blok" id="werkwijze" style="padding-top:0" aria-labelledby="werkwijze-kop">
+  <div class="w">
+    <div class="sectiekop"><div><span class="label">Werkwijze</span><h2 id="werkwijze-kop">Zo werken we samen</h2></div></div>
+    <div class="stappen">
+      ${STAPPEN.map((s, i) => `<div class="stap"><span class="nr">0${i + 1}</span><h3>${esc(s.titel)}</h3><p>${esc(s.tekst)}</p></div>`).join('\n      ')}
+    </div>
+  </div>
+</section>`;
+  return pagina({ titel: `${SITE.bedrijfKort} — Websites die werken`, beschrijving: SITE.beschrijving, r, pad: '/', inhoud });
+}
+
+// ── Case-pagina ──
+function casePagina(c, i) {
+  const r = relPad(2);
+  const volgende = CASES[(i + 1) % CASES.length];
+  const heeftPagina = existsSync(join(root, 'cases', c.slug, 'pagina.jpg'));
+  const inhoud = `<section class="casekop" aria-labelledby="case-kop">
+  <div class="w">
+    <a class="label" href="${r}#werk" style="text-decoration:none">Werk · ${c.jaar}</a>
+    <h1 id="case-kop">${esc(c.naam)}</h1>
+    <p class="intro">${esc(c.intro)}</p>
+    <dl class="feiten">
+      <div><dt>Klant</dt><dd>${esc(c.klant)}</dd></div>
+      <div><dt>Sector</dt><dd>${esc(c.sector)}</dd></div>
+      <div><dt>Wat ViVo deed</dt><dd>${esc(c.rol.join(', '))}</dd></div>
+      <div><dt>${c.live ? 'Website' : 'Status'}</dt><dd>${c.live ? `<a class="link" href="${c.live}" target="_blank" rel="noopener">${esc(c.live.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, ''))} ${pijl}</a>` : esc(c.status || '')}</dd></div>
+    </dl>
+  </div>
+</section>
+
+<section class="casebeeld" aria-label="Beeld van het project"><div class="w">${vlak(c, r, { eager: true })}</div></section>
+
+<section class="blok" aria-label="Het verhaal">
+  <div class="w verhaal">
+    ${[['De opdracht', c.opdracht], ['De aanpak', c.aanpak], ['Het resultaat', c.resultaat]].map(([t, p], n) => `<div><span class="label">0${n + 1}</span><h2>${t}</h2><p>${esc(p)}</p></div>`).join('\n    ')}
+  </div>
+</section>
+
+${heeftPagina ? `<section style="padding-bottom:var(--sectie)" aria-label="Scroll door de website">
+  <div class="w"><div class="doorkijk" style="--case:${c.kleur};--case-tekst:${c.kleurTekst}"><div class="venster"><div class="balk"><i></i><i></i><i></i></div><div class="rol" tabindex="0" aria-label="Volledige pagina van ${esc(c.naam)}, scrollbaar"><img src="${r}img/cases/${c.slug}/pagina.jpg" alt="${esc(`De volledige homepage van ${c.naam}`)}" loading="lazy" width="1440"></div></div><p>Scroll door de site</p></div></div>
+</section>` : ''}
+
+${c.galerij ? `<section style="padding-bottom:var(--sectie)" aria-label="Schermen van ${esc(c.naam)}">
+  <div class="w"><div class="doorkijk" style="--case:${c.kleur};--case-tekst:${c.kleurTekst}"><div class="galerij">${c.galerij.map(g => `<figure><div class="venster"><div class="balk"><i></i><i></i><i></i></div><img src="${r}img/cases/${c.slug}/${g.bestand}" alt="${esc(g.bijschrift)}" loading="lazy" width="1972" height="1150"></div><figcaption>${esc(g.bijschrift)}</figcaption></figure>`).join('')}</div>${c.galerijNoot ? `<p>${esc(c.galerijNoot)}</p>` : ''}</div></div>
+</section>
+
+` : ''}<a class="volgende" href="${r}werk/${volgende.slug}/"><div class="w"><span class="label">Volgende case</span><h2>${esc(volgende.naam)} ${pijl}</h2></div></a>`;
+  return pagina({ titel: `${c.naam} — case | ${SITE.bedrijfKort}`, beschrijving: c.intro, r, pad: `/werk/${c.slug}/`, inhoud, actief: 'werk' });
+}
+
+// ── Schrijven ──
+rmSync(uit, { recursive: true, force: true });
+schrijf('css/vivo.css', `${lees('huisstijl/tokens.css')}\n${lees('site/vivo.css')}`);
+schrijf('js/vivo.js', lees('site/vivo.js'));
+schrijf('favicon.svg', lees('merk/favicon/favicon.svg'));
+schrijf('.nojekyll', '');
+schrijf('index.html', home());
+CASES.forEach((c, i) => schrijf(`werk/${c.slug}/index.html`, casePagina(c, i)));
+for (const c of CASES) for (const f of ['desktop.jpg', 'mobiel.jpg', 'pagina.jpg', ...(c.galerij || []).map(g => g.bestand)]) {
+  const bron = join(root, 'cases', c.slug, f);
+  if (existsSync(bron)) { mkdirSync(join(uit, 'img/cases', c.slug), { recursive: true }); copyFileSync(bron, join(uit, 'img/cases', c.slug, f)); }
+}
+console.log(`docs/ gebouwd: homepage + ${CASES.length} case-pagina's`);

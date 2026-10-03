@@ -1,0 +1,15 @@
+{
+  "name": "vivo",
+  "private": true,
+  "type": "module",
+  "description": "Website van ViVo Products — ontwerp- en buildscripts",
+  "scripts": {
+    "preview": "node tools/serve.mjs",
+    "logo": "node logo/genereer-merk.mjs",
+    "screenshots": "node tools/screenshots.mjs",
+    "bouw": "node site/bouw.mjs"
+  },
+  "devDependencies": {
+    "playwright": "^1.63.0"
+  }
+}

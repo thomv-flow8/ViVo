@@ -4,3 +4,12 @@
 # Externe skills (code van derden) — opnieuw te installeren via skills-lock.json
 .claude/skills/
 .agents/
+
+# Node
+node_modules/
+
+# Ruwe aangeleverde opnames (kunnen persoonsgegevens bevatten) — nooit committen
+cases/*/bron/
+
+# Lokale vergelijkingspagina's (niet publiceren)
+docs-preview/

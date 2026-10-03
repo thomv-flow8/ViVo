@@ -35,7 +35,29 @@ Ook als `vivo-preview` in `.claude/launch.json`.
      de kleur komt uit de cases (projectvlakken in projectkleur). **Lettertype: Geist** (labels Geist Mono).
      `huisstijl/genereer-ronde3.mjs` → `huisstijl/ronde3.html` (schakelaars hero licht/donker, basis warm/koel).
    - Live site: lettertypes **zelf hosten** (geen Google Fonts-CDN, AVG). Neue Plak (Baunfire) is betaald.
-4. Siteconcept (secties, teksten, cases) → preview → bouw — **volgende stap**
+4. Siteconcept → preview → bouw — **bezig**
+   - Domein **vivoproducts.nl** (DNS bij Strato; mail info@ loopt via Strato — MX-records nooit aanraken).
+     Contact op de site: **info@vivoproducts.nl**. Hosting: GitHub Pages vanuit map `docs/` (alleen de site
+     wordt gepubliceerd, niet de logo-/huisstijlrondes).
+   - Opzet (akkoord Thomas): homepage (hero, showcase, statement, diensten, werk, werkwijze, contact)
+     **én** meteen case-pagina's. 'Bekijk case' → eigen case-pagina, met link naar de live site.
+   - Cases: **Flow8** (eigen product, blauw #4f6ef5), **THNK** thnkmusic.com (zwart, Archivo),
+     **DELPHI** sleutelbeheersystemen.nl (licht + blauw #0071e3, Inter), **Huidzorg Mozi**
+     thomv-flow8.github.io/Mozi (crème #f5ebdf, Cormorant + Jost) — label **'In ontwikkeling'**.
+     Klanten (DELPHI, Mozi) om toestemming vragen vóór publicatie; Mozi toont een foto van de eigenaar.
+   - Schermafbeeldingen: `npm run screenshots` (Playwright) → `cases/<slug>/` desktop.jpg, mobiel.jpg,
+     pagina.jpg. Cookiemeldingen/review-balken worden alleen in de opname verborgen, nooit aangeklikt.
+     pagina.jpg = scherm-voor-scherm gestikt met reducedMotion (Chrome's fullPage liet scroll-animaties
+     en grafische lagen buiten beeld leeg) — controleer na elke nieuwe opname of niets leeg is.
+     Flow8 zit achter een login: Thomas levert de opnames aan (Safari, 2000×1293).
+   - **Privacy (AVG): Flow8-opnames bevatten ECHTE klantgegevens.** Ruwe opnames staan in
+     `cases/*/bron/` (gitignored, nooit committen). `node tools/flow8-beelden.mjs` snijdt de Safari-balk weg en
+     vervaagt namen, adressen en monteurs → `cases/flow8/*.jpg`. **Controleer elk nieuw beeld visueel vóór gebruik.**
+   - **Site bouwen: `npm run bouw`** → `docs/` (nooit met de hand in docs/ werken). Bron: `site/inhoud.mjs`
+     (alle teksten en cases — CONCEPT, Thomas beoordeelt), `site/vivo.css` (alleen tokens gebruiken),
+     `site/vivo.js` (mobiel menu), `site/bouw.mjs` (sjablonen). Preview: http://localhost:5178/docs/
+   - Vóór livegang: Geist zelf hosten (nu nog Google Fonts in de preview), beelden optimaliseren (webp),
+     Flow8-opnames, privacy/colofon, CNAME + DNS bij Strato, GitHub Pages aanzetten op `docs/`.
 
 ## Logo
 
