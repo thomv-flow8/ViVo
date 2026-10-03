@@ -37,8 +37,9 @@ Ook als `vivo-preview` in `.claude/launch.json`.
    - Live site: lettertypes **zelf hosten** (geen Google Fonts-CDN, AVG). Neue Plak (Baunfire) is betaald.
 4. Siteconcept → preview → bouw — **bezig**
    - Domein **vivoproducts.nl** (DNS bij Strato; mail info@ loopt via Strato — MX-records nooit aanraken).
-     Contact op de site: **info@vivoproducts.nl**. Hosting: GitHub Pages vanuit map `docs/` (alleen de site
-     wordt gepubliceerd, niet de logo-/huisstijlrondes).
+     Contact op de site: **info@vivoproducts.nl**. Hosting: **GitHub Pages, main → /docs** (staat aan sinds 3 okt 2026):
+     https://thomv-flow8.github.io/ViVo/ — alleen de site wordt gepubliceerd, niet de logo-/huisstijlrondes.
+     **Elke push naar main = live.**
    - Opzet (akkoord Thomas): homepage (hero, showcase, statement, diensten, werk, werkwijze, contact)
      **én** meteen case-pagina's. 'Bekijk case' → eigen case-pagina, met link naar de live site.
    - Cases: **Flow8** (eigen product, blauw #4f6ef5), **THNK** thnkmusic.com (zwart, Archivo),
@@ -56,7 +57,9 @@ Ook als `vivo-preview` in `.claude/launch.json`.
    - **Site bouwen: `npm run bouw`** → `docs/` (nooit met de hand in docs/ werken). Bron: `site/inhoud.mjs`
      (alle teksten en cases — CONCEPT, Thomas beoordeelt), `site/vivo.css` (alleen tokens gebruiken),
      `site/vivo.js` (mobiel menu), `site/bouw.mjs` (sjablonen). Preview: http://localhost:5178/docs/
-   - Vóór livegang: Geist zelf hosten (nu nog Google Fonts in de preview), beelden optimaliseren (webp),
+   - Lettertypes: **zelf gehost** uit npm-pakket `geist` (bouw kopieert Geist 400/500/600 + Mono 500 + LICENSE
+     naar docs/fonts) — geen externe verzoeken. `npm install` is nodig vóór `npm run bouw`.
+   - Nog te doen: beelden optimaliseren (webp),
      Flow8-opnames, privacy/colofon, CNAME + DNS bij Strato, GitHub Pages aanzetten op `docs/`.
 
 ## Logo

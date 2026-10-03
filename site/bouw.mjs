@@ -93,9 +93,9 @@ function pagina({ titel, beschrijving, r, pad, inhoud, actief, donkereKop }) {
 <meta property="og:locale" content="nl_NL">
 <meta name="theme-color" content="#ffffff">
 <link rel="icon" href="${r}favicon.svg" type="image/svg+xml">
-<!-- PREVIEW: lettertypes via Google Fonts. Vóór livegang zelf hosten (AVG) — zie huisstijl/tokens.css -->
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@500&display=swap" rel="stylesheet">
+<!-- Lettertypes zelf gehost (AVG: geen verzoeken naar Google) -->
+<link rel="preload" href="${r}fonts/Geist-Regular.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="${r}fonts/Geist-SemiBold.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="${r}css/vivo.css">
 </head>
 <body>
@@ -207,7 +207,15 @@ ${c.galerij ? `<section style="padding-bottom:var(--sectie)" aria-label="Scherme
 
 // ── Schrijven ──
 rmSync(uit, { recursive: true, force: true });
-schrijf('css/vivo.css', `${lees('huisstijl/tokens.css')}\n${lees('site/vivo.css')}`);
+// Lettertypes: Geist uit het officiële npm-pakket (SIL OFL — licentie gaat mee)
+const LETTERS = [['geist-sans/Geist-Regular.woff2', 'Geist', 400], ['geist-sans/Geist-Medium.woff2', 'Geist', 500], ['geist-sans/Geist-SemiBold.woff2', 'Geist', 600], ['geist-mono/GeistMono-Medium.woff2', 'Geist Mono', 500]];
+const fontBron = join(root, 'node_modules/geist/dist/fonts');
+if (!existsSync(fontBron)) throw new Error('Geist ontbreekt — draai eerst: npm install');
+mkdirSync(join(uit, 'fonts'), { recursive: true });
+for (const [p] of LETTERS) copyFileSync(join(fontBron, p), join(uit, 'fonts', p.split('/')[1]));
+copyFileSync(join(root, 'node_modules/geist/LICENSE.txt'), join(uit, 'fonts', 'LICENSE.txt'));
+const fontFace = LETTERS.map(([p, fam, w]) => `@font-face { font-family: '${fam}'; src: url('../fonts/${p.split('/')[1]}') format('woff2'); font-weight: ${w}; font-style: normal; font-display: swap; }`).join('\n');
+schrijf('css/vivo.css', `${fontFace}\n${lees('huisstijl/tokens.css')}\n${lees('site/vivo.css')}`);
 schrijf('js/vivo.js', lees('site/vivo.js'));
 schrijf('favicon.svg', lees('merk/favicon/favicon.svg'));
 schrijf('.nojekyll', '');

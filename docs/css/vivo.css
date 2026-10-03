@@ -1,3 +1,7 @@
+@font-face { font-family: 'Geist'; src: url('../fonts/Geist-Regular.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Geist'; src: url('../fonts/Geist-Medium.woff2') format('woff2'); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Geist'; src: url('../fonts/Geist-SemiBold.woff2') format('woff2'); font-weight: 600; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Geist Mono'; src: url('../fonts/GeistMono-Medium.woff2') format('woff2'); font-weight: 500; font-style: normal; font-display: swap; }
 /* ─────────────────────────────────────────────────────────────────────────────
    ViVo — huisstijl-tokens (canoniek). Vastgesteld door Thomas op 3 okt 2026.
    Basis: mix van baunfire.com (opbouw, details) en clay.global (licht, kleuraanpak).

@@ -10,6 +10,7 @@
     "bouw": "node site/bouw.mjs"
   },
   "devDependencies": {
+    "geist": "^1.7.2",
     "playwright": "^1.63.0"
   }
 }
