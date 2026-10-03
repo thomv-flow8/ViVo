@@ -2,7 +2,9 @@
 // CONCEPT — Thomas beoordeelt; geen juridisch advies. Laat de voorwaarden bij voorkeur nalezen door een jurist
 // of vergelijk met de modelvoorwaarden van een brancheorganisatie.
 // Opmaak: een string is een alinea, een array is een opsomming. In de tekst worden vervangen:
-// {mail} {tel} {adres} {kvk} {privacy} {ap} — zie bouw.mjs (opmaak()).
+// {mail} {tel} {adres} {kvk} {privacy} {ap} {cookies} {instellingen} — zie bouw.mjs (opmaak()).
+// Voorwaardelijk: een sectie of blok als object { als: '<voorwaarde>', ... } verschijnt alleen als die geldt.
+// Voorwaarden (uit SITE.meten): meten, geenMeten, ga4, googleAds, metaPixel, google, marketing.
 
 const BIJGEWERKT = '3 oktober 2026';
 
@@ -16,7 +18,21 @@ export const PRIVACY = {
       'ViVo is de handelsnaam van ViVo Products, gevestigd aan {adres} en ingeschreven bij de Kamer van Koophandel onder nummer {kvk}. ViVo is verantwoordelijk voor de verwerking van persoonsgegevens zoals beschreven in deze verklaring.',
       'Vragen over privacy? Mail naar {mail} of bel {tel}.',
     ] },
-    { titel: 'Als je deze website bezoekt', blokken: [
+    { titel: 'Als je deze website bezoekt', als: 'meten', blokken: [
+      'Lettertypes, scripts en beelden staan op onze eigen server. Statistiek- en marketingcookies plaatsen we alleen als je daar in de cookiemelding toestemming voor geeft. Zonder toestemming laden we niets van Google of Meta. Hoe dat werkt, lees je hieronder bij Cookies en in de {cookies}.',
+      'De website wordt gehost via GitHub Pages (GitHub Inc.). Zoals elke webserver ontvangt GitHub bij een bezoek technische gegevens, waaronder je IP-adres. GitHub legt die vast voor de beveiliging van de dienst. Wij hebben geen toegang tot die gegevens en gebruiken ze niet.',
+      'Op de case-pagina’s staan links naar websites van klanten. Die hebben een eigen privacybeleid.',
+    ] },
+    { titel: 'Cookies', als: 'meten', blokken: [
+      'We gebruiken de volgende soorten cookies en vergelijkbare technieken:',
+      [
+        'Noodzakelijk: we onthouden je cookiekeuze 12 maanden in je browser. Hiervoor is geen toestemming nodig.',
+        { als: 'ga4', tekst: 'Statistiek, alleen met toestemming: Google Analytics laat ons zien hoe bezoekers de site gebruiken, bijvoorbeeld welke pagina’s worden bekeken en hoe bezoekers binnenkomen. Google Analytics slaat geen volledige IP-adressen op. We bewaren deze gegevens maximaal 14 maanden en gebruiken ze alleen om de site te verbeteren.' },
+        { als: 'marketing', tekst: 'Marketing, alleen met toestemming: we meten of onze advertenties werken en kunnen advertenties tonen aan mensen die de site eerder bezochten. Daarvoor gebruiken we {marketingdiensten}. Deze partijen kunnen de gegevens ook voor eigen doeleinden gebruiken; daarvoor zijn zij zelf verantwoordelijk, volgens hun eigen privacybeleid.' },
+      ],
+      'Grondslag: jouw toestemming. Je kunt die altijd wijzigen of intrekken via {instellingen} onderaan elke pagina. Een overzicht van alle cookies, met bewaartermijnen, staat in de {cookies}.',
+    ] },
+    { titel: 'Als je deze website bezoekt', als: 'geenMeten', blokken: [
       'Deze website plaatst geen cookies en gebruikt geen statistieken-, advertentie- of trackingdiensten. Lettertypes, scripts en beelden staan op onze eigen server; je browser maakt dus geen verbinding met bijvoorbeeld Google.',
       'De website wordt gehost via GitHub Pages (GitHub Inc.). Zoals elke webserver ontvangt GitHub bij een bezoek technische gegevens, waaronder je IP-adres. GitHub legt die vast voor de beveiliging van de dienst. Wij hebben geen toegang tot die gegevens en gebruiken ze niet. Meer hierover lees je in de privacyverklaring van GitHub.',
       'Op de case-pagina’s staan links naar websites van klanten. Die hebben een eigen privacybeleid.',
@@ -31,11 +47,12 @@ export const PRIVACY = {
       'Bouwen of beheren we voor jou een website of app waarin persoonsgegevens van jouw klanten of medewerkers staan, dan ben jij daarvoor verantwoordelijk en verwerken wij die gegevens alleen in jouw opdracht. Daarvoor sluiten we een verwerkersovereenkomst.',
     ] },
     { titel: 'Hoe lang we gegevens bewaren', blokken: [
-      ['Contactberichten die niet tot een opdracht leiden: maximaal 12 maanden na het laatste contact.', 'Klant- en projectgegevens: zolang we samenwerken, en daarna zo lang als nodig voor nazorg of garantie.', 'Facturen en administratie: 7 jaar, zoals de fiscale bewaarplicht voorschrijft.'],
+      ['Contactberichten die niet tot een opdracht leiden: maximaal 12 maanden na het laatste contact.', { als: 'meten', tekst: 'Cookies: zie de bewaartermijnen in de {cookies}. Statistiekgegevens in Google Analytics: maximaal 14 maanden.' }, 'Klant- en projectgegevens: zolang we samenwerken, en daarna zo lang als nodig voor nazorg of garantie.', 'Facturen en administratie: 7 jaar, zoals de fiscale bewaarplicht voorschrijft.'],
     ] },
     { titel: 'Met wie we gegevens delen', blokken: [
       'We verkopen geen gegevens en delen ze niet voor marketing. We schakelen alleen dienstverleners in die we nodig hebben om ons werk te doen, zoals onze e-mailprovider (Strato, Duitsland), onze hostingpartij (GitHub) en onze boekhouding. Zij mogen de gegevens alleen voor ons gebruiken. Daarnaast verstrekken we gegevens als de wet ons daartoe verplicht.',
-      'Gaan gegevens buiten de Europese Economische Ruimte, zoals bij GitHub in de Verenigde Staten, dan gebeurt dat alleen met de waarborgen die de AVG voorschrijft, zoals het EU-VS Data Privacy Framework of standaardcontractbepalingen.',
+      { als: 'meten', blok: 'Geef je toestemming voor statistiek- of marketingcookies, dan ontvangen ook {meetpartijen} gegevens over je bezoek, zoals je IP-adres, apparaat- en browsergegevens en de bekeken pagina’s.' },
+      'Gaan gegevens buiten de Europese Economische Ruimte, zoals bij {vsPartijen} in de Verenigde Staten, dan gebeurt dat alleen met de waarborgen die de AVG voorschrijft, zoals het EU-VS Data Privacy Framework of standaardcontractbepalingen.',
     ] },
     { titel: 'Beveiliging', blokken: [
       'De website werkt alleen via een beveiligde verbinding (https). Accounts die we voor ons werk gebruiken zijn beveiligd met sterke wachtwoorden en, waar mogelijk, tweestapsverificatie. Toegang tot klantgegevens is beperkt tot wat nodig is voor de opdracht.',
@@ -119,6 +136,40 @@ export const VOORWAARDEN = {
     { titel: 'Toepasselijk recht en geschillen', blokken: [
       'Op deze voorwaarden en alle opdrachten is Nederlands recht van toepassing. Bij een meningsverschil gaan we eerst samen in gesprek. Komen we er niet uit, dan is de bevoegde rechter in het arrondissement waar ViVo is gevestigd bevoegd.',
       'ViVo mag deze voorwaarden wijzigen. Voor lopende opdrachten gelden de voorwaarden die van toepassing waren toen de opdracht werd gegeven.',
+    ] },
+  ],
+};
+
+// Cookieverklaring — wordt alleen gebouwd als er gemeten wordt (SITE.meten). Tabelrijen: [cookie, doel, bewaartermijn, van].
+export const COOKIES = {
+  slug: 'cookies',
+  titel: 'Cookieverklaring',
+  intro: 'Welke cookies deze website gebruikt, waarvoor en hoe lang. Statistiek- en marketingcookies plaatsen we alleen met jouw toestemming.',
+  bijgewerkt: BIJGEWERKT,
+  secties: [
+    { titel: 'Wat zijn cookies', blokken: [
+      'Cookies zijn kleine bestanden die een website in je browser opslaat. Vergelijkbare technieken, zoals opslag in je browser of een pixel, behandelen we op dezelfde manier. In deze verklaring noemen we ze allemaal cookies.',
+    ] },
+    { titel: 'Noodzakelijk', blokken: [
+      'Deze zijn nodig om de site te laten werken zoals je verwacht. Hiervoor vragen we geen toestemming.',
+      { tabel: [['vivo-toestemming', 'Onthoudt je cookiekeuze (opslag in je browser)', '12 maanden', 'ViVo']] },
+    ] },
+    { titel: 'Statistiek', als: 'ga4', blokken: [
+      'Alleen met jouw toestemming. Met Google Analytics zien we hoe bezoekers de site gebruiken, zodat we die kunnen verbeteren. Google Analytics slaat geen volledige IP-adressen op en we delen deze gegevens niet met Google voor andere doeleinden.',
+      { tabel: [['_ga', 'Onderscheidt bezoekers', '2 jaar', 'Google'], ['_ga_…', 'Bewaart de status van je bezoek', '2 jaar', 'Google']] },
+    ] },
+    { titel: 'Marketing', als: 'marketing', blokken: [
+      'Alleen met jouw toestemming. Hiermee meten we of onze advertenties werken en kunnen we advertenties tonen aan mensen die de site eerder bezochten. De aanbieders kunnen deze gegevens ook voor eigen doeleinden gebruiken, volgens hun eigen privacybeleid.',
+      { tabel: [
+        { als: 'googleAds', rij: ['_gcl_au', 'Meet of een advertentie tot een bezoek of aanvraag leidt', '3 maanden', 'Google'] },
+        { als: 'metaPixel', rij: ['_fbp', 'Herkent je browser voor het meten en tonen van advertenties', '3 maanden', 'Meta'] },
+        { als: 'metaPixel', rij: ['_fbc', 'Onthoudt via welke advertentie je binnenkwam', '3 maanden', 'Meta'] },
+      ] },
+      { als: 'metaPixel', blok: 'Ben je ingelogd bij Facebook of Instagram, dan kan Meta daarnaast eigen cookies op zijn eigen domein gebruiken.' },
+    ] },
+    { titel: 'Je keuze wijzigen', blokken: [
+      'Je kunt je toestemming altijd wijzigen of intrekken via {instellingen}, ook onderaan elke pagina. Trek je toestemming in, dan verwijderen we de cookies van Google en Meta van dit domein. Je kunt cookies ook zelf verwijderen via de instellingen van je browser.',
+      'Meer over hoe we met persoonsgegevens omgaan, lees je in de {privacy}.',
     ] },
   ],
 };

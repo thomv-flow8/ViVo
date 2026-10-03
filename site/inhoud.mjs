@@ -14,6 +14,13 @@ export const SITE = {
   telefoonLink: '+31628702422',
   kvk: '80912532',
   jaar: 2026,
+  // Meten (statistiek + marketing). Leeg = uit: geen cookiemelding, geen scripts, privacytekst 'geen cookies'.
+  // Vul een ID in en de cookiemelding, cookieparagraaf en /cookies/ worden automatisch actief.
+  meten: {
+    ga4: '',          // Google Analytics 4, bv. 'G-XXXXXXXXXX'   → categorie statistiek
+    googleAds: '',    // Google Ads, bv. 'AW-XXXXXXXXXX'          → categorie marketing
+    metaPixel: '',    // Meta-pixel, bv. '1234567890123456'       → categorie marketing
+  },
   intro: 'ViVo ontwerpt en bouwt snelle, heldere websites, webshops en webapps voor ondernemers die gevonden willen worden — en klanten willen overtuigen.',
   beschrijving: 'ViVo ontwerpt en bouwt snelle, heldere websites, webshops en webapps. Persoonlijk, van eerste schets tot livegang.',
 };

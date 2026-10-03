@@ -1,5 +1,5 @@
 // Verkleint bronbeelden (Higgsfield-PNG's) tot web-formaat. Gebruikt Playwright als beeldbewerker.
-//  - beelden/diensten/bron/*  → beelden/diensten/<naam>.jpg   (1600×1280, 5:4, JPG)
+//  - beelden/diensten/bron/*  → beelden/diensten/<naam>.jpg   (1200×1600, staand 3:4, JPG)
 //  - beelden/vormen/bron/*    → beelden/vormen/<naam>.png     (max 1000 px, transparant PNG)
 // Draaien: node tools/beelden-verkleinen.mjs
 import { chromium } from 'playwright';
@@ -9,7 +9,7 @@ import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('../beelden/', import.meta.url));
 const SETS = [
-  { map: 'diensten', breed: 1600, hoog: 1280, type: 'jpeg', ext: '.jpg' },
+  { map: 'diensten', breed: 1200, hoog: 1600, type: 'jpeg', ext: '.jpg' },
   { map: 'vormen', max: 1000, type: 'png', ext: '.png' },
 ];
 const browser = await chromium.launch();

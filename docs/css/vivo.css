@@ -259,3 +259,26 @@ section.blok { padding: var(--sectie) 0; }
 .jtekst ul { margin: 0 0 14px; padding-left: 20px; } .jtekst li { margin-bottom: 6px; }
 .jtekst a { color: var(--inkt); text-underline-offset: 3px; }
 .voet small a { color: inherit; }
+.jtabel { overflow-x: auto; margin: 4px 0 14px; }
+.jtabel table { width: 100%; border-collapse: collapse; font-size: var(--tekst-klein); }
+.jtabel th, .jtabel td { text-align: left; padding: 10px 14px 10px 0; border-bottom: 1px solid var(--lijn); vertical-align: top; color: var(--grijs); }
+.jtabel th { font-family: var(--mono); font-weight: 500; font-size: var(--label); letter-spacing: var(--ls-label); text-transform: uppercase; }
+.jtabel code { font-family: var(--mono); font-size: 13px; color: var(--inkt); white-space: nowrap; }
+
+/* Cookiemelding (alleen actief als er gemeten wordt — zie site/toestemming.js) */
+.toestemming { position: fixed; z-index: 100; left: var(--goot); bottom: var(--goot); width: min(440px, calc(100vw - 2 * var(--goot))); max-height: calc(100vh - 2 * var(--goot)); overflow-y: auto; background: var(--nacht); color: var(--maan); border-radius: var(--r); padding: 24px; box-shadow: 0 30px 70px -20px rgba(10, 11, 13, .45); font-size: var(--tekst-klein); line-height: 1.55; }
+.toestemming[hidden], .toestemming [hidden] { display: none !important; } /* display-regels hieronder mogen hidden niet overrulen */
+.toestemming h2 { font-size: 20px; margin: 0 0 8px; letter-spacing: -.01em; }
+.toestemming p { margin: 0 0 16px; color: var(--grijs-n); }
+.toestemming a { color: var(--maan); text-underline-offset: 3px; }
+.tm-keuze { display: grid; gap: 10px; margin: 0 0 18px; }
+.tm-cat { display: flex; gap: 12px; align-items: flex-start; padding: 12px 14px; border: 1px solid var(--lijn-n); border-radius: 12px; cursor: pointer; }
+.tm-cat input { margin: 3px 0 0; width: 18px; height: 18px; accent-color: var(--maan); flex: none; }
+.tm-cat span { color: var(--grijs-n); } .tm-cat b { display: block; color: var(--maan); font-weight: 600; }
+.tm-knoppen { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.toestemming .pil { background: var(--maan); color: var(--nacht); border: 0; cursor: pointer; font: inherit; font-weight: 600; }
+.toestemming .pil.tm-tweede { background: transparent; color: var(--maan); box-shadow: inset 0 0 0 1.5px var(--maan); }
+.tm-link { background: none; border: 0; color: var(--grijs-n); font: inherit; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; padding: 8px 4px; }
+.tm-link:hover { color: var(--maan); }
+.toestemming button:focus-visible { outline: 2px solid var(--maan); outline-offset: 3px; }
+@media (max-width: 520px) { .tm-knoppen .pil { flex: 1 1 100%; justify-content: center; } }

@@ -82,6 +82,18 @@ Ook als `vivo-preview` in `.claude/launch.json`.
      opacity + 32px omhoog + schaal .93→1, `cubic-bezier(.16,1,.3,1)`, pas na het laden van het beeld) via `.onthul` —
      gebruik losse `translate`/`scale`, want GSAP zet `scale: none` inline op elementen die het transformeert (zet
      `.onthul` dus op een eigen laag). **Projecten op lichtgrijs `--papier-2`** (Clay); DELPHI-vlak daar wit.
+   - **v11 (Clay-diensten):** dienstbeelden **staand 3:4, scherpe hoeken**, aan de buitenrand van de kolom (max 500 px);
+     mobiel 4:5. **Eén doorlopende renderreeks v4** (staand gerenderd, zelfde compositie/camera/licht, één kleur per dienst —
+     vaste prompt in `beelden/diensten/PROMPTS.md`). Gemengde beeldsoorten (Flow8-schermen, foto) gaven te weinig balans;
+     de optie staat nog in `BEELD` in preview-motion.mjs. 3D-vormen blijven **wit** zoals bij Clay, op 42% (±148 px van het midden).
+     Geen infade bij de dienstbeelden (wel bij projecten). Menu: **glijdende pil** bij hover (stijl Contact-knop).
+     Flow8-projectkaart: modus **`scherm`** — scherm als zwevende kaart in de juiste verhouding, niets valt weg.
+   - **Cookies / meten (keuze Thomas: analytics + marketing):** ID's in `SITE.meten` (`ga4`, `googleAds`, `metaPixel`).
+     **Leeg = uit**: geen melding, geen scripts, privacytekst "geen cookies". Ingevuld → automatisch cookiemelding
+     (`site/toestemming.js`: niets laden vóór toestemming, weigeren even makkelijk als accepteren, Consent Mode v2,
+     keuze 12 mnd in localStorage, intrekken ruimt cookies op + herlaadt), cookieparagrafen in de privacyverklaring
+     (`als:`-voorwaarden in `site/juridisch.mjs`), `/cookies/` met tabel en footerlinks "Cookies · Cookie-instellingen".
+     Testen: `METEN_TEST=1 npm run bouw` → `docs-preview/meten-test/` (test-ID's, géén echte scripts).
    - **Juridisch:** `site/juridisch.mjs` → `docs/privacy/` en `docs/voorwaarden/` (CONCEPT, Thomas beoordeelt; voorwaarden
      voor zakelijke klanten). Contactgegevens in `SITE` (adres, telefoon, KvK); **postcode en btw-nummer nog aanleveren**.
    - **v8:** logo subtieler — bij scrollen faden de letters V-I-V-O **van rechts naar links** weg (O eerst), het beeldmerk

@@ -5,10 +5,17 @@ import { readFileSync, writeFileSync, mkdirSync, copyFileSync, existsSync, rmSyn
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { SITE, DIENSTEN, STAPPEN, CASES } from './inhoud.mjs';
-import { PRIVACY, VOORWAARDEN } from './juridisch.mjs';
+import { PRIVACY, VOORWAARDEN, COOKIES } from './juridisch.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const uit = join(root, 'docs');
+// METEN_TEST=1 npm run bouw → bouwt met test-ID's naar docs-preview/meten-test/ (cookiemelding zichtbaar, géén echte scripts)
+const TEST = process.env.METEN_TEST === '1';
+const uit = join(root, TEST ? 'docs-preview/meten-test' : 'docs');
+const METEN = TEST ? { ga4: 'G-TEST', googleAds: 'AW-TEST', metaPixel: 'TEST', test: true } : SITE.meten;
+const MEET = { ga4: !!METEN.ga4, googleAds: !!METEN.googleAds, metaPixel: !!METEN.metaPixel };
+MEET.google = MEET.ga4 || MEET.googleAds; MEET.marketing = MEET.googleAds || MEET.metaPixel; MEET.meten = MEET.ga4 || MEET.marketing; MEET.geenMeten = !MEET.meten;
+const geldt = als => !als || !!MEET[als];
+const opsomming = l => l.length > 1 ? l.slice(0, -1).join(', ') + ' en ' + l.at(-1) : (l[0] || '');
 const lees = p => readFileSync(join(root, p), 'utf8');
 const schrijf = (p, s) => { mkdirSync(dirname(join(uit, p)), { recursive: true }); writeFileSync(join(uit, p), s); };
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -73,7 +80,7 @@ function slot(r) {
     <a class="logo" href="${r || './'}" aria-label="ViVo — naar de homepage">${logo('vivo-horizontaal')}</a>
     <nav aria-label="Footer"><a href="${r}#werk">Werk</a><a href="${r}#diensten">Diensten</a><a href="${r}#werkwijze">Werkwijze</a><a href="${r}#contact">Contact</a></nav>
     <address><span>${esc(SITE.adres)}</span><span>${esc(SITE.postcode)} ${esc(SITE.plaats)}</span><a href="tel:${SITE.telefoonLink}">${esc(SITE.telefoon)}</a><a href="mailto:${SITE.mail}">${SITE.mail}</a><span>KvK ${esc(SITE.kvk)}</span>${SITE.btw ? `<span>Btw ${esc(SITE.btw)}</span>` : ''}</address>
-    <small>© ${SITE.jaar} ${esc(SITE.bedrijf)} · <a href="${r}privacy/">Privacy</a> · <a href="${r}voorwaarden/">Voorwaarden</a></small>
+    <small>© ${SITE.jaar} ${esc(SITE.bedrijf)} · <a href="${r}privacy/">Privacy</a> · <a href="${r}voorwaarden/">Voorwaarden</a>${MEET.meten ? ` · <a href="${r}cookies/">Cookies</a> · <a href="#" data-cookie-instellingen>Cookie-instellingen</a>` : ''}</small>
   </div>
 </footer>`;
 }
@@ -106,7 +113,9 @@ ${kop(r, actief, donkereKop)}
 ${inhoud}
 </main>
 ${slot(r)}
-<script src="${r}js/vivo.js" defer></script>
+<script src="${r}js/vivo.js" defer></script>${MEET.meten ? `
+<script>window.VIVO_METEN = ${JSON.stringify({ ...METEN, pad: r })};</script>
+<script src="${r}js/toestemming.js" defer></script>` : ''}
 </body>
 </html>
 `;
@@ -216,7 +225,25 @@ function opmaak(t, r) {
     .replace(/\{adres\}/g, esc(volledigAdres()))
     .replace(/\{kvk\}/g, esc(SITE.kvk))
     .replace(/\{privacy\}/g, `<a href="${r}privacy/">privacyverklaring</a>`)
+    .replace(/\{cookies\}/g, `<a href="${r}cookies/">cookieverklaring</a>`)
+    .replace(/\{instellingen\}/g, '<a href="#" data-cookie-instellingen>Cookie-instellingen</a>')
+    .replace(/\{marketingdiensten\}/g, opsomming([MEET.metaPixel && 'de Meta-pixel', MEET.googleAds && 'Google Ads'].filter(Boolean)))
+    .replace(/\{meetpartijen\}/g, opsomming([MEET.google && 'Google (Google Ireland Ltd.)', MEET.metaPixel && 'Meta (Meta Platforms Ireland Ltd.)'].filter(Boolean)))
+    .replace(/\{vsPartijen\}/g, opsomming(['GitHub', MEET.google && 'Google', MEET.metaPixel && 'Meta'].filter(Boolean)).replace(/ en ([^,]+)$/, ' of $1'))
     .replace(/\{ap\}/g, '<a href="https://autoriteitpersoonsgegevens.nl" target="_blank" rel="noopener">Autoriteit Persoonsgegevens</a>');
+}
+// Blok: string = alinea, array = opsomming, { tabel } = cookietabel, { als, blok|tekst } = alleen als de voorwaarde geldt
+function blok(b, r) {
+  if (b && !Array.isArray(b) && typeof b === 'object') {
+    if (!geldt(b.als)) return '';
+    if (b.tabel) {
+      const rijen = b.tabel.map(x => Array.isArray(x) ? x : geldt(x.als) ? x.rij : null).filter(Boolean);
+      return `<div class="jtabel"><table><thead><tr><th>Cookie</th><th>Doel</th><th>Bewaartermijn</th><th>Van</th></tr></thead><tbody>${rijen.map(rij => `<tr>${rij.map((c, i) => i ? `<td>${esc(c)}</td>` : `<td><code>${esc(c)}</code></td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+    }
+    return blok(b.blok ?? b.tekst, r);
+  }
+  if (Array.isArray(b)) { const items = b.filter(li => typeof li === 'string' || geldt(li.als)).map(li => typeof li === 'string' ? li : li.tekst); return `<ul>${items.map(li => `<li>${opmaak(li, r)}</li>`).join('')}</ul>`; }
+  return `<p>${opmaak(b, r)}</p>`;
 }
 function juridischePagina(doc) {
   const r = relPad(1);
@@ -229,7 +256,7 @@ function juridischePagina(doc) {
 </section>
 <section class="blok juridisch" style="padding-top:0">
   <div class="w"><div class="jtekst">
-    ${doc.secties.map((s, i) => `<section aria-labelledby="j${i + 1}"><h2 id="j${i + 1}"><span>${String(i + 1).padStart(2, '0')}</span>${esc(s.titel)}</h2>${s.blokken.map(b => Array.isArray(b) ? `<ul>${b.map(li => `<li>${opmaak(li, r)}</li>`).join('')}</ul>` : `<p>${opmaak(b, r)}</p>`).join('')}</section>`).join('\n    ')}
+    ${doc.secties.filter(s => geldt(s.als)).map((s, i) => `<section aria-labelledby="j${i + 1}"><h2 id="j${i + 1}"><span>${String(i + 1).padStart(2, '0')}</span>${esc(s.titel)}</h2>${s.blokken.map(b => blok(b, r)).join('')}</section>`).join('\n    ')}
   </div></div>
 </section>`;
   return pagina({ titel: `${doc.titel} | ${SITE.bedrijfKort}`, beschrijving: doc.intro, r, pad: `/${doc.slug}/`, inhoud });
@@ -251,9 +278,10 @@ schrijf('favicon.svg', lees('merk/favicon/favicon.svg'));
 schrijf('.nojekyll', '');
 schrijf('index.html', home());
 CASES.forEach((c, i) => schrijf(`werk/${c.slug}/index.html`, casePagina(c, i)));
-for (const doc of [PRIVACY, VOORWAARDEN]) schrijf(`${doc.slug}/index.html`, juridischePagina(doc));
+for (const doc of [PRIVACY, VOORWAARDEN, ...(MEET.meten ? [COOKIES] : [])]) schrijf(`${doc.slug}/index.html`, juridischePagina(doc));
+if (MEET.meten) schrijf('js/toestemming.js', lees('site/toestemming.js'));
 for (const c of CASES) for (const f of ['desktop.jpg', 'mobiel.jpg', 'pagina.jpg', ...(c.galerij || []).map(g => g.bestand)]) {
   const bron = join(root, 'cases', c.slug, f);
   if (existsSync(bron)) { mkdirSync(join(uit, 'img/cases', c.slug), { recursive: true }); copyFileSync(bron, join(uit, 'img/cases', c.slug, f)); }
 }
-console.log(`docs/ gebouwd: homepage + ${CASES.length} case-pagina's + privacy + voorwaarden`);
+console.log(`${TEST ? 'docs-preview/meten-test/ (TEST-ID\'s)' : 'docs/'} gebouwd: homepage + ${CASES.length} case-pagina's + privacy + voorwaarden${MEET.meten ? ' + cookies (meten aan)' : ' (meten uit)'}`);

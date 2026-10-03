@@ -96,9 +96,13 @@ const DIENSTEN = [
     lijst: ['Hosting & domein', 'Updates & back-ups', 'Statistieken', 'Snelheid & veiligheid', 'Support'], comp: 'hosting' },
 ];
 // Beeldvak: foto uit beelden/diensten/<comp>.jpg als die bestaat (Higgsfield), anders de compositie
+// Afwisseling in beeldsoort (Clay): een echt project op een kleurvlak, een foto, en verder renders
+const BEELD_VERSIE = 4; // ophogen bij nieuwe beelden met dezelfde naam (anders toont de browser de oude uit de cache)
+const BEELD = {}; // bv. { ui: 'werk' } (Flow8-schermen op kleurvlak) of { web: 'foto-websites.jpg' }; nu één doorlopende renderreeks
 const media = (d) => {
-  const f = `beelden/diensten/${d.comp}.jpg`;
-  return existsSync(join(root, f)) ? `<div class="comp foto"><img src="../${f}" alt=""></div>` : COMPOSITIES[d.comp];
+  if (BEELD[d.comp] === 'werk') return `<div class="comp foto werkvlak"><div class="wk wk1"><img src="${img('flow8', 'rapportage.jpg')}" alt=""></div><div class="wk wk2"><img src="${img('flow8', 'desktop.jpg')}" alt=""></div></div>`;
+  const f = `beelden/diensten/${BEELD[d.comp] || d.comp + '.jpg'}`;
+  return existsSync(join(root, f)) ? `<div class="comp foto"><img src="../${f}?v=${BEELD_VERSIE}" alt=""></div>` : COMPOSITIES[d.comp];
 };
 const dienst = (d, i) => `<article class="dienst${i % 2 ? ' om' : ''}"><div class="vorm-3d" data-vorm="${VORMEN[i]}" aria-hidden="true"><canvas></canvas></div><div class="dtekst"><span class="label">0${i + 1}</span><h3>${d.titel}</h3><p>${d.tekst}</p><ul>${d.lijst.map(l => `<li>${l}</li>`).join('')}</ul></div><div class="dmedia">${media(d)}</div></article>`;
 
@@ -161,7 +165,7 @@ const ILLU = [
 // ── Cases: elk een eigen startbeeld ──
 const img = (slug, f) => `../docs/img/cases/${slug}/${f}`;
 const heeft = (slug, f) => existsSync(join(root, 'docs/img/cases', slug, f));
-const MODUS = { thnk: 'vol', delphi: 'tablet', mozi: 'tablet-scroll', flow8: 'vol' };
+const MODUS = { thnk: 'vol', delphi: 'tablet', mozi: 'tablet-scroll', flow8: 'scherm' };
 const VOLGORDE = { flow8: ['login.jpg', 'rapportage.jpg', 'desktop.jpg', 'route.jpg', 'kaart.jpg'] };
 // Op de lichtgrijze projectsectie valt het bijna-witte DELPHI-vlak weg → daar wit
 const OP_GRIJS = { delphi: '#ffffff' };
@@ -174,6 +178,7 @@ const kaart = (c) => {
   const modus = MODUS[c.slug] || 'tablet';
   const tel = modus.startsWith('tablet') && heeft(c.slug, 'mobiel.jpg') ? `<div class="tel"><img src="${img(c.slug, 'mobiel.jpg')}" alt=""></div>` : '';
   const toestel = modus === 'vol' ? `<div class="glas vol">${scherm}</div>`
+    : modus === 'scherm' ? `<div class="scherm-kaart"><div class="glas">${scherm}</div></div>` // app-schermen als zwevende kaart (Clay, Digital Products)
     : modus === 'browser' ? `<div class="browser"><div class="balk"><i></i><i></i><i></i></div><div class="glas">${scherm}</div></div>`
     : `<div class="tablet"><div class="glas">${scherm}</div></div>`; // tablet en tablet-scroll
   const hint = modus === 'tablet' ? 'Hover · inzoomen' : vol ? 'Hover · door de site' : 'Hover · schermen';
@@ -214,6 +219,12 @@ const html = `<!doctype html>
   .kop .logo.morf { display: flex; align-items: center; gap: 12px; position: relative; height: 46px; } /* .kop .logo uit vivo.css weegt zwaarder dan .morf */
   .kop .morf .lm-merk svg { height: 28px; width: auto; display: block; transition: transform .5s var(--ease); }
   .kop .w { max-width: none; } /* kopbalk over de volle breedte: logo helemaal links */
+  /* Menu: één witte pil die meeschuift naar het item onder de muis (stijl van de Contact-knop; door difference zwart op licht) */
+  .kop nav { position: relative; gap: 2px; margin-right: 12px; }
+  .kop nav a { position: relative; z-index: 1; padding: 12px 18px; border-radius: var(--r-pil); font-weight: 500; transition: color .3s var(--ease), opacity .3s var(--ease); }
+  .kop nav a:hover, .kop nav a:focus-visible { opacity: 1; color: #000; outline: none; }
+  .nav-pil { position: absolute; top: 0; left: 0; height: 100%; width: 0; background: #fff; border-radius: var(--r-pil); opacity: 0; pointer-events: none; transition: transform .5s cubic-bezier(.16, 1, .3, 1), width .5s cubic-bezier(.16, 1, .3, 1), opacity .25s var(--ease); }
+  .nav-pil.direct { transition: opacity .25s var(--ease); }
   .kop .morf .lm-woord svg { height: 13px; width: auto; display: block; overflow: visible; }
   .lm-woord svg g > * { transition: opacity .45s ease, transform .55s var(--ease); }
   /* terugkomen: van links naar rechts (V, I, V, O) */
@@ -300,10 +311,12 @@ const html = `<!doctype html>
   .zv.schijven i:first-child { margin-top: 0; }
 
   /* ── Zachte vormen (Higgsfield-renders) achter de dienstfoto's ── */
-  .vorm-3d { position: absolute; z-index: 0; width: clamp(280px, 34vw, 540px); aspect-ratio: 1; top: -30%; left: calc((100% - var(--dgap)) * .7439 + var(--dgap)); translate: -50% 0; pointer-events: none; } /* boven het midden van de foto (rechterkolom, 1.05fr) */
+  .vorm-3d { position: absolute; z-index: 0; width: clamp(280px, 34vw, 540px); aspect-ratio: 1; top: -30%; left: 42%; pointer-events: none; } /* rechts van het paginamidden (±148 px op 1440) */
   .vorm-3d canvas { width: 100%; height: 100%; display: block; }
-  .dienst.om .vorm-3d { left: calc((100% - var(--dgap)) * .2439); } /* foto in de linkerkolom (1fr) */
-  @media (max-width: 860px) { .vorm-3d, .dienst.om .vorm-3d { position: relative; order: 1; justify-self: end; width: 56vw; top: auto; left: auto; translate: none; margin: -2vw -2vw -24vw 0; } .dienst .dmedia { order: 2; } /* mobiel: tussen tekst en foto, de foto valt er half overheen */ }
+  .dienst.om .vorm-3d { left: auto; right: 42%; } /* links van het paginamidden */
+  .diensten2 .sectiekop { position: relative; z-index: 2; } /* kop en intro altijd boven de vormen */
+  @media (min-width: 861px) { .sectiekop + .dienst .vorm-3d { top: 0; } } /* eerste vorm niet de sectiekop in laten steken */
+  @media (max-width: 860px) { .vorm-3d, .dienst.om .vorm-3d { position: relative; order: 1; justify-self: end; width: 56vw; top: auto; left: auto; right: auto; margin: -2vw -2vw -24vw 0; } .dienst .dmedia { order: 2; } /* mobiel: tussen tekst en foto, de foto valt er half overheen */ }
   .vorm-img { position: absolute; z-index: 0; width: clamp(240px, 30vw, 470px); height: auto; top: -10%; right: -5%; pointer-events: none; will-change: transform; filter: drop-shadow(0 40px 50px rgba(70, 80, 120, .12)); }
   .dienst.om .vorm-img { right: auto; left: -5%; }
   .vorm-img.gespiegeld { scale: -1 1; }
@@ -313,6 +326,13 @@ const html = `<!doctype html>
   .js .onthul { --clay: cubic-bezier(.16, 1, .3, 1); opacity: 0; translate: 0 32px; scale: .93; transition: opacity 1s var(--clay), translate 1.2s var(--clay), scale 1.4s var(--clay); transition-delay: var(--vertraging, 0s); }
   .js .onthul.in { opacity: 1; translate: 0 0; scale: 1; }
   @media (prefers-reduced-motion: reduce) { .js .onthul { opacity: 1; translate: none; scale: none; transition: none; } }
+  /* ── Dienstbeelden zoals Clay: staand 3:4, scherpe hoeken, aan de buitenrand van de kolom ── */
+  .comp.foto { aspect-ratio: 3 / 4; border-radius: 0; box-shadow: none; }
+  .dienst .dmedia { width: min(100%, 500px); justify-self: end; } .dienst.om .dmedia { justify-self: start; }
+  .werkvlak { background: linear-gradient(160deg, #5a46e0, #3f2fb8); }
+  .werkvlak .wk { position: absolute; border-radius: 1.6cqw; overflow: hidden; background: #fff; box-shadow: 0 6cqw 10cqw -4cqw rgba(16, 10, 70, .6); }
+  .werkvlak .wk img { display: block; width: 100%; height: auto; }
+  .werkvlak .wk1 { width: 150%; left: 16%; top: 12%; } .werkvlak .wk2 { width: 112%; left: -22%; top: 54%; }
   /* ── Diensten ── */
   .diensten2 { position: relative; overflow: hidden; }
   .dienst { --dgap: clamp(32px, 6vw, 96px); display: grid; grid-template-columns: 1fr 1.05fr; gap: var(--dgap); align-items: center; padding: clamp(48px, 7vw, 110px) 0; position: relative; }
@@ -321,10 +341,10 @@ const html = `<!doctype html>
   .dmedia { will-change: transform; }
   .dtekst h3 { font-size: var(--h2); margin: 16px 0 18px; }
   .dtekst p { color: var(--grijs); margin: 0 0 24px; max-width: 46ch; }
-  .dtekst ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 10px 24px; }
+  .dtekst ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr; gap: 12px; } /* onder elkaar: de staande beelden geven genoeg hoogte */
   .dtekst li { font-weight: var(--w-nadruk); font-size: 16px; padding-left: 20px; position: relative; }
   .dtekst li::before { content: ''; position: absolute; left: 0; top: .55em; width: 10px; height: 10px; background: currentColor; clip-path: polygon(0 0, 35% 0, 50% 55%, 65% 0, 100% 0, 50% 100%); }
-  @media (max-width: 860px) { .dienst { grid-template-columns: 1fr; } .dienst.om .dtekst { order: 0; } .vormen { width: 80%; height: 40%; top: auto; bottom: 10%; opacity: .7; } }
+  @media (max-width: 860px) { .dienst .dmedia, .dienst.om .dmedia { width: 100%; justify-self: stretch; } .comp.foto { aspect-ratio: 4 / 5; } .dienst { grid-template-columns: 1fr; } .dienst.om .dtekst { order: 0; } .vormen { width: 80%; height: 40%; top: auto; bottom: 10%; opacity: .7; } }
 
   /* ── Techniek ── */
   .tabel { border-top: 1px solid var(--lijn-n); }
@@ -391,6 +411,9 @@ const html = `<!doctype html>
   .glas { position: relative; overflow: hidden; background: #fff; }
   .glas img.site { width: 100%; height: auto; display: block; will-change: transform; }
   .glas img.dia { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top left; }
+  .vlak.modus-scherm { display: grid; place-items: center; }
+  .scherm-kaart { width: 86%; aspect-ratio: 1972 / 1150; border-radius: 12px; overflow: hidden; box-shadow: 0 50px 90px -30px rgba(0, 0, 0, .6), 0 0 0 1px rgba(255, 255, 255, .1); will-change: transform; } /* zelfde verhouding als de schermen: niets valt weg */
+  .scherm-kaart .glas { width: 100%; height: 100%; }
   .glas.vol { position: absolute; inset: 0; transform-origin: 50% 0; background: var(--case); }
   .glas.vol img.site { min-height: 100%; object-fit: cover; object-position: top center; } /* startbeeld vult het vlak; de lange pagina scrolt daarna */
   .tablet { position: absolute; left: 12%; top: 14%; width: 76%; aspect-ratio: 4 / 3; border-radius: 22px; background: #0b0c0f; padding: 10px; box-shadow: 0 40px 80px rgba(0,0,0,.35); transform-origin: 50% 50%; will-change: transform; }
@@ -430,7 +453,7 @@ const html = `<!doctype html>
 </style>
 </head>
 <body>
-<header class="kop"><div class="w"><a class="logo morf" href="#" aria-label="ViVo — naar boven"><span class="lm-merk">${logo('vivo-beeldmerk')}</span><span class="lm-woord">${logo('vivo-woordmerk')}</span></a><nav><a href="#diensten">Diensten</a><a href="#techniek">Techniek</a><a href="#werkwijze">Werkwijze</a><a href="#projecten">Projecten</a></nav><a class="pil" href="#contact">Contact</a></div></header>
+<header class="kop"><div class="w"><a class="logo morf" href="#" aria-label="ViVo — naar boven"><span class="lm-merk">${logo('vivo-beeldmerk')}</span><span class="lm-woord">${logo('vivo-woordmerk')}</span></a><nav><span class="nav-pil" aria-hidden="true"></span><a href="#diensten">Diensten</a><a href="#techniek">Techniek</a><a href="#werkwijze">Werkwijze</a><a href="#projecten">Projecten</a></nav><a class="pil" href="#contact">Contact</a></div></header>
 
 <section class="mhero" aria-labelledby="hero-kop">
   <div class="podium" aria-hidden="true"><div class="ring"></div><div class="letters">${logo('vivo-woordmerk')}</div></div>
@@ -605,6 +628,8 @@ const html = `<!doctype html>
         speel.to(tablet, { rotateX: 0, rotateY: 0, rotateZ: 0, scale: 1, duration: 0.55 }, 0)
           .to(tablet, { scale: () => Math.max(vlak.offsetWidth / glas.offsetWidth, vlak.offsetHeight / glas.offsetHeight) * 1.03, y: () => (vlak.offsetHeight / 2) - (tablet.offsetTop + tablet.offsetHeight / 2), duration: 0.7 }, 0.45);
         start = 1.15;
+      } else if (modus === 'scherm') {
+        speel.to(kaartEl.querySelector('.scherm-kaart'), { scale: 1.07, y: -8, duration: 0.6 }, 0); start = 0.35;
       } else if (modus === 'browser') {
         speel.to(browser, { y: -10, scale: 1.04, duration: 0.6 }, 0); start = 0.35;
       } else {
@@ -630,6 +655,19 @@ const html = `<!doctype html>
     document.querySelectorAll('.illu .palet circle').forEach(e => e.setAttribute('r', 6));
   }
   addEventListener('resize', () => { lengte = tekenPad(); });
+  // ── Menu-pil: schuift naar het item onder de muis; verschijnt ter plekke (zonder te glijden) als hij nog verborgen was ──
+  const navEl = document.querySelector('.kop nav'), navPil = navEl.querySelector('.nav-pil');
+  navEl.querySelectorAll('a').forEach(a => {
+    const zet = () => {
+      const verborgen = navPil.style.opacity !== '1';
+      if (verborgen) navPil.classList.add('direct');
+      navPil.style.width = a.offsetWidth + 'px'; navPil.style.transform = 'translateX(' + a.offsetLeft + 'px)'; navPil.style.opacity = '1';
+      if (verborgen) { navPil.offsetWidth; navPil.classList.remove('direct'); }
+    };
+    a.addEventListener('pointerenter', zet); a.addEventListener('focus', zet);
+    a.addEventListener('blur', () => { navPil.style.opacity = '0'; });
+  });
+  navEl.addEventListener('pointerleave', () => { navPil.style.opacity = '0'; });
   const kopEl = document.querySelector('.kop'), compact = () => kopEl.classList.toggle('compact', scrollY > 80);
   addEventListener('scroll', compact, { passive: true }); compact();
 </script>
