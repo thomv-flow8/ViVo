@@ -224,6 +224,7 @@ const CSS = `
   .kop nav a:hover, .kop nav a:focus-visible { opacity: 1; color: #000; outline: none; }
   .nav-pil { position: absolute; top: 0; left: 0; height: 100%; width: 0; background: #fff; border-radius: var(--r-pil); opacity: 0; pointer-events: none; transition: transform .5s cubic-bezier(.16, 1, .3, 1), width .5s cubic-bezier(.16, 1, .3, 1), opacity .25s var(--ease); }
   .nav-pil.direct { transition: opacity .25s var(--ease); }
+  .nav-pil.rust { background: transparent; box-shadow: inset 0 0 0 1.5px #fff; } /* omlijnd: hier ben je */
   .kop .morf .lm-woord svg { height: 13px; width: auto; display: block; overflow: visible; }
   .lm-woord svg g > * { transition: opacity .45s ease, transform .55s var(--ease); }
   /* terugkomen: van links naar rechts (V, I, V, O) */
@@ -470,6 +471,34 @@ const AFSLUITER = (thuis = '') => `<footer class="afsluiter donker" id="contact"
 </footer>`;
 
 
+// ── Menu-pil (gedeeld): gevuld boven het item onder de muis; omlijnd in rust op het onderdeel waar je bent ──
+const NAV_JS = `
+  const navEl = document.querySelector('.kop nav'), navPil = navEl.querySelector('.nav-pil'), navLinks = [...navEl.querySelectorAll('a')];
+  let navActief = null;
+  const plaatsPil = (a, rust) => {
+    if (!a) { navPil.style.opacity = '0'; return; }
+    const verborgen = navPil.style.opacity !== '1';
+    if (verborgen) navPil.classList.add('direct');
+    navPil.classList.toggle('rust', rust);
+    navPil.style.width = a.offsetWidth + 'px'; navPil.style.transform = 'translateX(' + a.offsetLeft + 'px)'; navPil.style.opacity = '1';
+    if (verborgen) { navPil.offsetWidth; navPil.classList.remove('direct'); }
+  };
+  const terug = () => plaatsPil(navActief, true);
+  navLinks.forEach(a => { a.addEventListener('pointerenter', () => plaatsPil(a, false)); a.addEventListener('focus', () => plaatsPil(a, false)); a.addEventListener('blur', terug); });
+  navEl.addEventListener('pointerleave', terug);
+  const zetActief = a => { if (a === navActief) return; navLinks.forEach(l => l === a ? l.setAttribute('aria-current', 'true') : l.removeAttribute('aria-current')); navActief = a; if (!navEl.matches(':hover')) terug(); };
+  if (document.querySelector('.chero')) zetActief(navLinks.find(a => a.hash === '#projecten')); // case-pagina's horen bij Projecten
+  else {
+    // Homepage: het onderdeel dat de middenlijn van het scherm raakt is actief; in de hero en bij Contact geen pil
+    const secties = navLinks.map(a => [a, document.getElementById(a.hash.slice(1))]).filter(([, s]) => s);
+    const kijker = new IntersectionObserver(items => items.forEach(({ isIntersecting, target }) => {
+      if (isIntersecting) zetActief((secties.find(([, s]) => s === target) || [null])[0]);
+      else if (navActief && navActief.hash === '#' + target.id) zetActief(null);
+    }), { rootMargin: '-50% 0px -50% 0px' });
+    secties.forEach(([, s]) => kijker.observe(s));
+  }
+  addEventListener('resize', terug);`;
+
 // ── Tweede cursor (Baunfire): cirkel die de muis volgt en groeit boven knoppen, links en beelden. Alleen met muis. ──
 const CURSOR_CSS = `
   .muiscirkel { position: fixed; left: 0; top: 0; z-index: 200; width: 8px; height: 8px; margin: -4px 0 0 -4px; border-radius: 50%; border: 1.5px solid transparent; background-color: #fff; mix-blend-mode: difference; pointer-events: none; opacity: 0; transition: opacity .3s, width .4s cubic-bezier(.16, 1, .3, 1), height .4s cubic-bezier(.16, 1, .3, 1), margin .4s cubic-bezier(.16, 1, .3, 1), background-color .3s, border-color .3s, scale .2s; }
@@ -707,18 +736,7 @@ ${AFSLUITER()}
   }
   addEventListener('resize', () => { lengte = tekenPad(); });
   // ── Menu-pil: schuift naar het item onder de muis; verschijnt ter plekke (zonder te glijden) als hij nog verborgen was ──
-  const navEl = document.querySelector('.kop nav'), navPil = navEl.querySelector('.nav-pil');
-  navEl.querySelectorAll('a').forEach(a => {
-    const zet = () => {
-      const verborgen = navPil.style.opacity !== '1';
-      if (verborgen) navPil.classList.add('direct');
-      navPil.style.width = a.offsetWidth + 'px'; navPil.style.transform = 'translateX(' + a.offsetLeft + 'px)'; navPil.style.opacity = '1';
-      if (verborgen) { navPil.offsetWidth; navPil.classList.remove('direct'); }
-    };
-    a.addEventListener('pointerenter', zet); a.addEventListener('focus', zet);
-    a.addEventListener('blur', () => { navPil.style.opacity = '0'; });
-  });
-  navEl.addEventListener('pointerleave', () => { navPil.style.opacity = '0'; });
+${NAV_JS}
   const kopEl = document.querySelector('.kop'), compact = () => kopEl.classList.toggle('compact', scrollY > 80);
   addEventListener('scroll', compact, { passive: true }); compact();
 ${CURSOR_JS}
@@ -753,17 +771,23 @@ const CASE_CSS = `
   .cfeiten .clogo img { display: block; width: auto; height: auto; max-width: 120px; max-height: 60px; mix-blend-mode: multiply; } /* witte logo-achtergrond valt weg */
   .cstatus { display: inline-block; vertical-align: middle; margin-left: 14px; padding: 7px 12px; border-radius: var(--r-pil); font: 500 var(--label)/1 var(--mono); letter-spacing: var(--ls-label); text-transform: uppercase; background: rgba(10, 11, 13, .07); }
   .chero.donker .cstatus { background: rgba(255, 255, 255, .1); }
-  .ctoestel.zonder-tel .ctablet { inset: 8% 1% 10% 1%; }
   .cschermen { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(20px, 3vw, 40px); }
   .cschermen figure { margin: 0; } .cschermen img { width: 100%; display: block; aspect-ratio: 1972 / 1150; object-fit: cover; object-position: top; }
   .cschermen figcaption { margin-top: 12px; color: var(--grijs); font-size: 15px; } .cnoot { margin: 28px 0 0; color: var(--grijs); font-size: 14px; } /* lichte achtergrond van de uitsnede valt weg */ .cfeiten a { color: inherit; text-underline-offset: 4px; }
-  .ctoestel { position: relative; aspect-ratio: 4 / 3; perspective: 1400px; }
-  .ctablet { transform: perspective(1400px) rotateY(-14deg) rotateX(8deg) rotateZ(2deg); position: absolute; inset: 3% 9% 7% 0; border-radius: clamp(16px, 2.2vw, 30px); background: #0f1115; padding: 2.2%; box-shadow: 0 60px 100px -40px rgba(20, 30, 60, .45); will-change: transform; }
-  .ctablet .glas, .ctel .glas { width: 100%; height: 100%; overflow: hidden; background: #fff; border-radius: clamp(9px, 1.3vw, 18px); }
-  .ctablet img, .ctel img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
-  .chero .ctel { transform: perspective(1400px) rotateY(-10deg) rotateX(6deg) rotateZ(4deg); }
-  .ctel { position: absolute; right: 0; bottom: 0; width: 25%; aspect-ratio: 390 / 844; border-radius: clamp(16px, 2.2vw, 30px); background: #0f1115; padding: 1.4%; box-shadow: 0 40px 70px -24px rgba(20, 30, 60, .5); will-change: transform; }
-  .ctel .glas { border-radius: clamp(12px, 1.8vw, 24px); }
+  /* Toestellen: het scherm (.glas) heeft exact de verhouding van de schermafbeelding (--beeld), de behuizing groeit eromheen.
+     Maten in cqw (breedte van het toestel): telefoon naar een iPhone (71,5 × 146,6 mm, scherm 393 × 852 pt): rand 4,1%,
+     hoek 13,5%; tablet naar een iPad: rand 3,2%, hoek 4,8%. Binnenhoek = buitenhoek − rand (concentrisch). */
+  .ctoestel { position: relative; display: grid; align-items: center; perspective: 1400px; padding-bottom: 7%; }
+  .ctablet, .ctel { container-type: inline-size; will-change: transform; }
+  .ctablet { grid-area: 1 / 1; width: 91%; transform: perspective(1400px) rotateY(-14deg) rotateX(8deg) rotateZ(2deg); }
+  .ctoestel.zonder-tel .ctablet { width: 100%; }
+  .romp { background: #0f1115; }
+  .ctablet .romp { padding: 3.2cqw; border-radius: 4.8cqw; box-shadow: 0 60px 100px -40px rgba(20, 30, 60, .45); }
+  .ctel .romp { padding: 4.1cqw; border-radius: 13.5cqw; box-shadow: 0 40px 70px -24px rgba(20, 30, 60, .5); }
+  .ctablet .glas, .ctel .glas { aspect-ratio: var(--beeld); overflow: hidden; background: #fff; }
+  .ctablet .glas { border-radius: 1.6cqw; } .ctel .glas { border-radius: 9.4cqw; }
+  .ctablet img, .ctel img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; } /* verhouding gelijk: niets valt weg */
+  .chero .ctel { grid-area: 1 / 1; justify-self: end; align-self: end; width: 25%; margin-bottom: -7%; transform: perspective(1400px) rotateY(-10deg) rotateX(6deg) rotateZ(4deg); }
   .cverhaal { background: var(--nacht); color: var(--maan); padding: clamp(64px, 8vw, 112px) 0; }
   .cverhaal .w { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(28px, 4vw, 56px); }
   .cstap h2 { font-size: var(--h3); margin: 14px 0 12px; } .cstap p { color: var(--grijs-n); margin: 0; font-size: 17px; line-height: 1.6; }
@@ -774,7 +798,7 @@ const CASE_CSS = `
   .cvenster .balk { height: 38px; display: flex; gap: 7px; align-items: center; padding: 0 16px; background: #eceef1; }
   .cvenster .balk i { width: 11px; height: 11px; border-radius: 50%; background: #c9ccd2; }
   .cmobiel { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: clamp(32px, 6vw, 96px); align-items: center; margin-top: var(--sectie); }
-  .cmobiel .ctel { position: relative; width: min(100%, 420px); aspect-ratio: 430 / 932; margin: 0 auto; right: auto; bottom: auto; padding: 11px; } /* iPhone Plus: breder */
+  .cmobiel .ctel { width: min(100%, 420px); margin: 0 auto; } /* iPhone Plus-breedte */
   .cmobiel h2 { font-size: var(--h2); margin: 16px 0 20px; } .cmobiel p { color: var(--grijs); font-size: clamp(18px, 1.5vw, 21px); max-width: 40ch; margin: 0 0 32px; }
   .cvolgende { display: block; position: relative; overflow: hidden; background: var(--case); color: var(--inkt); text-decoration: none; padding: clamp(48px, 6vw, 88px) 0 0; }
   .cvolgende .w { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px clamp(32px, 5vw, 80px); align-items: end; }
@@ -790,6 +814,17 @@ const CASE_CSS = `
     .chero .ctoestel { margin-top: 12px; }
   }`;
 
+// Breedte × hoogte uit een JPEG (SOF-marker), zonder extra pakket
+function jpgMaat(pad) {
+  const b = readFileSync(pad);
+  for (let i = 2; i < b.length;) {
+    if (b[i] !== 0xff) { i++; continue; }
+    const m = b[i + 1], len = b.readUInt16BE(i + 2);
+    if (m >= 0xc0 && m <= 0xcf && ![0xc4, 0xc8, 0xcc].includes(m)) return [b.readUInt16BE(i + 7), b.readUInt16BE(i + 5)];
+    i += 2 + len;
+  }
+  throw new Error('Geen JPEG-maat: ' + pad);
+}
 function casePagina(c) {
   const i = CASES.indexOf(c), volgende = CASES[(i + 1) % CASES.length];
   const donker = DONKER.has(c.slug) ? ' donker' : '';
@@ -797,6 +832,7 @@ function casePagina(c) {
   const thuis = 'motion.html'; // preview; publiceer-preview.mjs zet dit om naar '../../'
   const maat = f => { const b = readFileSync(join(root, 'docs/img/cases', c.slug, f)); return [b.readUInt32BE(16), b.readUInt32BE(20)]; }; // PNG-breedte/hoogte
   const logo = heeft(c.slug, 'logo.png') ? maat('logo.png') : null;
+  const verh = f => { const [w, h] = jpgMaat(join(root, 'docs/img/cases', c.slug, f)); return `${w} / ${h}`; }; // exacte beeldverhouding
   const heroBeeld = HERO_BEELD[c.slug] || 'desktop.jpg', tel = heeft(c.slug, 'mobiel.jpg');
   return `<!doctype html>
 <html lang="nl">
@@ -829,8 +865,8 @@ ${KOP(thuis)}
       </dl>
     </div>
     <div class="ctoestel${tel ? '' : ' zonder-tel'}" aria-hidden="true">
-      <div class="ctablet"><div class="glas"><img src="${img(c.slug, heroBeeld)}" alt=""></div></div>
-      ${tel ? `<div class="ctel"><div class="glas"><img src="${img(c.slug, 'mobiel.jpg')}" alt=""></div></div>` : ''}
+      <div class="ctablet"><div class="romp"><div class="glas" style="--beeld:${verh(heroBeeld)}"><img src="${img(c.slug, heroBeeld)}" alt=""></div></div></div>
+      ${tel ? `<div class="ctel"><div class="romp"><div class="glas" style="--beeld:${verh('mobiel.jpg')}"><img src="${img(c.slug, 'mobiel.jpg')}" alt=""></div></div></div>` : ''}
     </div>
   </div>
 </section>
@@ -846,7 +882,7 @@ ${KOP(thuis)}
     ${heeft(c.slug, 'pagina.jpg') ? `<div class="sectiekop"><div><span class="label">De website</span><h2>Scroll door de site</h2></div></div>
     <div class="doorkijk onthul" style="--case:${c.kleur};--case-tekst:${c.kleurTekst}"><div class="venster"><div class="balk"><i></i><i></i><i></i></div><div class="rol" tabindex="0" aria-label="Volledige pagina van ${c.naam}, scrollbaar"><img src="${img(c.slug, 'pagina.jpg')}" alt="De volledige homepage van ${c.naam}" loading="lazy" width="1440"></div></div><p>Scroll door de site</p></div>` : ''}
     ${heeft(c.slug, 'mobiel.jpg') ? `<div class="cmobiel">
-      <div class="ctel onthul"><div class="glas"><img src="${img(c.slug, 'mobiel.jpg')}" alt="${c.naam} op mobiel" loading="lazy"></div></div>
+      <div class="ctel onthul"><div class="romp"><div class="glas" style="--beeld:${verh('mobiel.jpg')}"><img src="${img(c.slug, 'mobiel.jpg')}" alt="${c.naam} op mobiel" loading="lazy"></div></div></div>
       <div class="onthul"><span class="label">Mobiel</span><h2>Net zo sterk op de telefoon</h2><p>Elke pagina is ontworpen en getest op telefoon, tablet en desktop — zodat bezoekers overal snel vinden wat ze zoeken.</p>${c.live ? `<a class="pil" href="${c.live}" target="_blank" rel="noopener">Bekijk de live site ↗</a>` : ''}</div>
     </div>` : ''}
     ${c.galerij ? `<div class="sectiekop"><div><span class="label">Het product</span><h2>Een kijkje in ${c.naam}</h2></div></div>
@@ -875,18 +911,7 @@ ${AFSLUITER(thuis)}
     Promise.resolve(img && !img.complete ? img.decode().catch(() => {}) : null).then(() => target.classList.add('in'));
   }), { rootMargin: '0px 0px -12% 0px' });
   document.querySelectorAll('.onthul').forEach(el => rustig ? el.classList.add('in') : onthulKijker.observe(el));
-  const navEl = document.querySelector('.kop nav'), navPil = navEl.querySelector('.nav-pil');
-  navEl.querySelectorAll('a').forEach(a => {
-    const zet = () => {
-      const verborgen = navPil.style.opacity !== '1';
-      if (verborgen) navPil.classList.add('direct');
-      navPil.style.width = a.offsetWidth + 'px'; navPil.style.transform = 'translateX(' + a.offsetLeft + 'px)'; navPil.style.opacity = '1';
-      if (verborgen) { navPil.offsetWidth; navPil.classList.remove('direct'); }
-    };
-    a.addEventListener('pointerenter', zet); a.addEventListener('focus', zet);
-    a.addEventListener('blur', () => { navPil.style.opacity = '0'; });
-  });
-  navEl.addEventListener('pointerleave', () => { navPil.style.opacity = '0'; });
+${NAV_JS}
   const kopEl = document.querySelector('.kop'), compact = () => kopEl.classList.toggle('compact', scrollY > 80);
   addEventListener('scroll', compact, { passive: true }); compact();
 ${CURSOR_JS}
