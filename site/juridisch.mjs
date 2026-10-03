@@ -11,6 +11,8 @@ const BIJGEWERKT = '3 oktober 2026';
 export const PRIVACY = {
   slug: 'privacy',
   titel: 'Privacyverklaring',
+  seoTitel: 'Privacyverklaring — hoe ViVo met je gegevens omgaat',
+  omschrijving: 'Hoe ViVo omgaat met persoonsgegevens: geen tracking, wat we bewaren als je contact opneemt of klant wordt, en welke rechten je hebt.',
   intro: 'Kort gezegd: deze website volgt je niet. Geen cookies, geen statistieken, geen advertenties. Persoonsgegevens krijgen we alleen als jij contact opneemt of klant wordt.',
   bijgewerkt: BIJGEWERKT,
   secties: [
@@ -43,7 +45,7 @@ export const PRIVACY = {
       'We gebruiken deze gegevens alleen om je vraag te beantwoorden en, als je dat wilt, een offerte te maken. Grondslag: de stappen die nodig zijn vóór een eventuele overeenkomst, en ons gerechtvaardigd belang om berichten te kunnen beantwoorden.',
     ] },
     { titel: 'Als je klant wordt', blokken: [
-      'Voor het uitvoeren van een opdracht verwerken we contact- en factuurgegevens, afspraken en de correspondentie over het project. Grondslag: de uitvoering van de overeenkomst. Facturen en de bijbehorende administratie bewaren we omdat de wet dat verplicht.',
+      'Voor het uitvoeren van een opdracht verwerken we contact- en factuurgegevens, afspraken en de correspondentie over het project. Grondslag: de uitvoering van de overeenkomst. Facturen en de bijbehorende administratie bewaren we omdat de wet dat verplicht. De afspraken over opdrachten staan in onze {voorwaarden}.',
       'Bouwen of beheren we voor jou een website of app waarin persoonsgegevens van jouw klanten of medewerkers staan, dan ben jij daarvoor verantwoordelijk en verwerken wij die gegevens alleen in jouw opdracht. Daarvoor sluiten we een verwerkersovereenkomst.',
     ] },
     { titel: 'Hoe lang we gegevens bewaren', blokken: [
@@ -70,6 +72,8 @@ export const PRIVACY = {
 export const VOORWAARDEN = {
   slug: 'voorwaarden',
   titel: 'Algemene voorwaarden',
+  seoTitel: 'Algemene voorwaarden — ViVo webdesign Gorinchem',
+  omschrijving: 'De algemene voorwaarden van ViVo voor offertes, websites, webshops, hosting en onderhoud: betaling, oplevering, eigendom en aansprakelijkheid.',
   intro: 'Heldere afspraken maken samenwerken makkelijker. Deze voorwaarden gelden voor alle offertes en opdrachten van ViVo.',
   bijgewerkt: BIJGEWERKT,
   secties: [
@@ -144,6 +148,8 @@ export const VOORWAARDEN = {
 export const COOKIES = {
   slug: 'cookies',
   titel: 'Cookieverklaring',
+  seoTitel: 'Cookieverklaring — welke cookies ViVo gebruikt',
+  omschrijving: 'Welke cookies de website van ViVo gebruikt, waarvoor en hoe lang — en hoe je je keuze voor statistiek en marketing altijd kunt wijzigen.',
   intro: 'Welke cookies deze website gebruikt, waarvoor en hoe lang. Statistiek- en marketingcookies plaatsen we alleen met jouw toestemming.',
   bijgewerkt: BIJGEWERKT,
   secties: [

@@ -13,7 +13,9 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as si from 'simple-icons';
-import { CASES } from './inhoud.mjs';
+import { CASES, SITE } from './inhoud.mjs';
+import { PRIVACY, VOORWAARDEN, COOKIES } from './juridisch.mjs';
+import { maakJuridisch, meetVlaggen } from './juridisch-render.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const logo = (naam, cls = '') => readFileSync(join(root, 'merk/svg', `${naam}-wit.svg`), 'utf8').trim()
@@ -97,12 +99,12 @@ const DIENSTEN = [
 ];
 // Beeldvak: foto uit beelden/diensten/<comp>.jpg als die bestaat (Higgsfield), anders de compositie
 // Afwisseling in beeldsoort (Clay): een echt project op een kleurvlak, een foto, en verder renders
-const BEELD_VERSIE = 4; // ophogen bij nieuwe beelden met dezelfde naam (anders toont de browser de oude uit de cache)
+const BEELD_VERSIE = 5; // ophogen bij nieuwe beelden met dezelfde naam (anders toont de browser de oude uit de cache)
 const BEELD = {}; // bv. { ui: 'werk' } (Flow8-schermen op kleurvlak) of { web: 'foto-websites.jpg' }; nu één doorlopende renderreeks
 const media = (d) => {
   if (BEELD[d.comp] === 'werk') return `<div class="comp foto werkvlak"><div class="wk wk1"><img src="${img('flow8', 'rapportage.jpg')}" alt=""></div><div class="wk wk2"><img src="${img('flow8', 'desktop.jpg')}" alt=""></div></div>`;
-  const f = `beelden/diensten/${BEELD[d.comp] || d.comp + '.jpg'}`;
-  return existsSync(join(root, f)) ? `<div class="comp foto"><img src="../${f}?v=${BEELD_VERSIE}" alt=""></div>` : COMPOSITIES[d.comp];
+  const f = `beelden/diensten/${BEELD[d.comp] || d.comp + '.jpg'}`, w = f.replace(/\.jpg$/, '.webp');
+  return existsSync(join(root, f)) ? `<div class="comp foto"><img src="../${existsSync(join(root, w)) ? w : f}?v=${BEELD_VERSIE}" alt="" width="1200" height="1600" loading="lazy" decoding="async"></div>` : COMPOSITIES[d.comp];
 };
 const dienst = (d, i) => `<article class="dienst${i % 2 ? ' om' : ''}"><div class="vorm-3d" data-vorm="${VORMEN[i]}" aria-hidden="true"><canvas></canvas></div><div class="dtekst"><span class="label">0${i + 1}</span><h3>${d.titel}</h3><p>${d.tekst}</p><ul>${d.lijst.map(l => `<li>${l}</li>`).join('')}</ul></div><div class="dmedia">${media(d)}</div></article>`;
 
@@ -163,7 +165,10 @@ const ILLU = [
 ];
 
 // ── Cases: elk een eigen startbeeld ──
-const img = (slug, f) => `../docs/img/cases/${slug}/${f}`;
+const webp = (slug, f) => { const w = f.replace(/\.jpg$/, '.webp'); return w !== f && existsSync(join(root, 'docs/img/cases', slug, w)) ? w : f; }; // tools/webp.mjs
+const img = (slug, f) => `../docs/img/cases/${slug}/${webp(slug, f)}`;
+const pngMaat = p => { const b = readFileSync(p); return [b.readUInt32BE(16), b.readUInt32BE(20)]; };
+const afm = (slug, f) => { const p = join(root, 'docs/img/cases', slug, f); if (!existsSync(p)) return ''; const [w, h] = f.endsWith('.png') ? pngMaat(p) : jpgMaat(p); return ` width="${w}" height="${h}"`; };
 const heeft = (slug, f) => existsSync(join(root, 'docs/img/cases', slug, f));
 const MODUS = { thnk: 'vol', delphi: 'tablet', mozi: 'tablet-scroll', flow8: 'scherm' };
 const VOLGORDE = { flow8: ['login.jpg', 'rapportage.jpg', 'desktop.jpg', 'route.jpg', 'kaart.jpg'] };
@@ -173,10 +178,10 @@ const kaart = (c) => {
   const vol = heeft(c.slug, 'pagina.jpg');
   const reeks = vol ? [] : (VOLGORDE[c.slug] || ['desktop.jpg', ...(c.galerij || []).map(g => g.bestand)]).filter(f => heeft(c.slug, f)).slice(0, 5);
   const scherm = vol
-    ? `<img class="site" data-src="${img(c.slug, 'pagina.jpg')}" src="${img(c.slug, 'desktop.jpg')}" alt="">`
-    : reeks.map((f, j) => `<img class="dia" src="${img(c.slug, f)}" alt="" style="opacity:${j ? 0 : 1}">`).join('');
+    ? `<img class="site" data-src="${img(c.slug, 'pagina.jpg')}" src="${img(c.slug, 'desktop.jpg')}" alt=""${afm(c.slug, 'desktop.jpg')} loading="lazy" decoding="async">`
+    : reeks.map((f, j) => `<img class="dia" src="${img(c.slug, f)}" alt=""${afm(c.slug, f)} loading="lazy" decoding="async" style="opacity:${j ? 0 : 1}">`).join('');
   const modus = MODUS[c.slug] || 'tablet';
-  const tel = modus.startsWith('tablet') && heeft(c.slug, 'mobiel.jpg') ? `<div class="tel"><img src="${img(c.slug, 'mobiel.jpg')}" alt=""></div>` : '';
+  const tel = modus.startsWith('tablet') && heeft(c.slug, 'mobiel.jpg') ? `<div class="tel"><img src="${img(c.slug, 'mobiel.jpg')}" alt=""${afm(c.slug, 'mobiel.jpg')} loading="lazy" decoding="async"></div>` : '';
   const toestel = modus === 'vol' ? `<div class="glas vol">${scherm}</div>`
     : modus === 'scherm' ? `<div class="scherm-kaart"><div class="glas">${scherm}</div></div>` // app-schermen als zwevende kaart (Clay, Digital Products)
     : modus === 'browser' ? `<div class="browser"><div class="balk"><i></i><i></i><i></i></div><div class="glas">${scherm}</div></div>`
@@ -451,14 +456,15 @@ const CSS = `
   @media (max-width: 860px) { .praat-raster { grid-template-columns: 1fr; } .lus { width: 180vw; left: -60%; top: 10%; } }
   .noot { position: fixed; left: 50%; bottom: 14px; transform: translateX(-50%); z-index: 60; font: 12px/1.4 system-ui, sans-serif; background: rgba(20,20,20,.88); color: #eee; padding: 8px 14px; border-radius: 100px; }
 `;
-const KOP = (thuis = '') => `<header class="kop"><div class="w"><a class="logo morf" href="${thuis || '#'}" aria-label="ViVo — naar boven"><span class="lm-merk">${logo('vivo-beeldmerk')}</span><span class="lm-woord">${logo('vivo-woordmerk')}</span></a><nav><span class="nav-pil" aria-hidden="true"></span><a href="${thuis}#diensten">Diensten</a><a href="${thuis}#techniek">Techniek</a><a href="${thuis}#werkwijze">Werkwijze</a><a href="${thuis}#projecten">Projecten</a></nav><a class="pil" href="${thuis}#contact">Contact</a><button class="menuknop" type="button" aria-label="Menu openen" aria-expanded="false" aria-controls="menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9h18M8 15h13" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></button></div></header>
+const KOP = (thuis = '') => `<a class="overslaan" href="#inhoud">Direct naar de inhoud</a>
+<header class="kop"><div class="w"><a class="logo morf" href="${thuis || '#'}" aria-label="ViVo — naar boven"><span class="lm-merk">${logo('vivo-beeldmerk')}</span><span class="lm-woord">${logo('vivo-woordmerk')}</span></a><nav><span class="nav-pil" aria-hidden="true"></span><a href="${thuis}#diensten">Diensten</a><a href="${thuis}#techniek">Techniek</a><a href="${thuis}#werkwijze">Werkwijze</a><a href="${thuis}#projecten">Projecten</a></nav><a class="pil" href="${thuis}#contact">Contact</a><button class="menuknop" type="button" aria-label="Menu openen" aria-expanded="false" aria-controls="menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9h18M8 15h13" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></button></div></header>
 <div class="menu" id="menu" role="dialog" aria-modal="true" aria-label="Menu">
   <div class="boven">${logo('vivo-horizontaal', 'logo-svg')}<button class="menuknop" type="button" aria-label="Menu sluiten" data-sluit><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></button></div>
   <ul>${[['Diensten', thuis + '#diensten'], ['Techniek', thuis + '#techniek'], ['Werkwijze', thuis + '#werkwijze'], ['Projecten', thuis + '#projecten'], ['Contact', thuis + '#contact']].map(([t, h]) => `<li><a href="${h}" data-sluit>${t}</a></li>`).join('')}</ul>
   <p class="onder">Een website laten maken?<br><a href="mailto:info@vivoproducts.nl">info@vivoproducts.nl</a> · <a href="tel:+31628702422">06-28702422</a></p>
 </div>`;
 const AFSLUITER = (thuis = '') => `<footer class="afsluiter donker" id="contact" aria-labelledby="afsluiter-kop">
-  <img class="lus-donker" src="../beelden/vormen/lus-donker.png" alt="" aria-hidden="true"> <!-- terug naar de render van v6 (keuze Thomas) -->
+  <img class="lus-donker" src="../beelden/vormen/lus-donker.webp" alt="" aria-hidden="true" width="1000" height="565" loading="lazy" decoding="async">
   <div class="w">
     <span class="label">Contact</span><h2 id="afsluiter-kop">Klaar voor een website die werkt?</h2>
     <div class="knoppen"><a class="pil" href="mailto:info@vivoproducts.nl?subject=Kennismaking%20ViVo">Plan een kennismaking</a><a class="cirkel" href="mailto:info@vivoproducts.nl"><span class="rond">${pijl}</span>info@vivoproducts.nl</a></div>
@@ -533,6 +539,7 @@ ${CURSOR_CSS}
 <body>
 ${KOP()}
 
+<main id="inhoud">
 <section class="mhero" aria-labelledby="hero-kop">
   <div class="podium" aria-hidden="true"><div class="ring"></div><div class="letters">${logo('vivo-woordmerk')}</div></div>
   <div class="intro-wit" aria-hidden="true"><div class="letters">${logo('vivo-woordmerk')}</div></div>
@@ -580,6 +587,7 @@ ${KOP()}
   </div>
 </section>
 
+</main>
 ${AFSLUITER()}
 <div class="noot">Motion-preview v11 · niet live</div>
 
@@ -840,6 +848,7 @@ function casePagina(c) {
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${c.naam} — case | ViVo (preview)</title>
+<link rel="preload" as="image" href="${img(c.slug, heroBeeld)}" fetchpriority="high">
 <script>document.documentElement.classList.add('js')</script>
 <link rel="stylesheet" href="../docs/css/vivo.css">
 <style>
@@ -851,6 +860,7 @@ ${CASE_CSS}
 <body>
 ${KOP(thuis)}
 
+<main id="inhoud">
 <section class="chero${donker}" style="--case:${HERO_KLEUR[c.slug] || c.kleur};--case-tekst:${c.kleurTekst}" aria-labelledby="case-kop">
   <div class="w">
     <div class="ctekst">
@@ -865,8 +875,8 @@ ${KOP(thuis)}
       </dl>
     </div>
     <div class="ctoestel${tel ? '' : ' zonder-tel'}" aria-hidden="true">
-      <div class="ctablet"><div class="romp"><div class="glas" style="--beeld:${verh(heroBeeld)}"><img src="${img(c.slug, heroBeeld)}" alt=""></div></div></div>
-      ${tel ? `<div class="ctel"><div class="romp"><div class="glas" style="--beeld:${verh('mobiel.jpg')}"><img src="${img(c.slug, 'mobiel.jpg')}" alt=""></div></div></div>` : ''}
+      <div class="ctablet"><div class="romp"><div class="glas" style="--beeld:${verh(heroBeeld)}"><img src="${img(c.slug, heroBeeld)}" alt=""${afm(c.slug, heroBeeld)} fetchpriority="high"></div></div></div>
+      ${tel ? `<div class="ctel"><div class="romp"><div class="glas" style="--beeld:${verh('mobiel.jpg')}"><img src="${img(c.slug, 'mobiel.jpg')}" alt=""${afm(c.slug, 'mobiel.jpg')}></div></div></div>` : ''}
     </div>
   </div>
 </section>
@@ -880,21 +890,22 @@ ${KOP(thuis)}
 <section class="cgalerij" aria-label="Beelden van ${c.naam}">
   <div class="w">
     ${heeft(c.slug, 'pagina.jpg') ? `<div class="sectiekop"><div><span class="label">De website</span><h2>Scroll door de site</h2></div></div>
-    <div class="doorkijk onthul" style="--case:${c.kleur};--case-tekst:${c.kleurTekst}"><div class="venster"><div class="balk"><i></i><i></i><i></i></div><div class="rol" tabindex="0" aria-label="Volledige pagina van ${c.naam}, scrollbaar"><img src="${img(c.slug, 'pagina.jpg')}" alt="De volledige homepage van ${c.naam}" loading="lazy" width="1440"></div></div><p>Scroll door de site</p></div>` : ''}
+    <div class="doorkijk onthul" style="--case:${c.kleur};--case-tekst:${c.kleurTekst}"><div class="venster"><div class="balk"><i></i><i></i><i></i></div><div class="rol" tabindex="0" aria-label="Volledige pagina van ${c.naam}, scrollbaar"><img src="${img(c.slug, 'pagina.jpg')}" alt="De volledige homepage van ${c.naam}"${afm(c.slug, 'pagina.jpg')} loading="lazy" decoding="async"></div></div><p>Scroll door de site</p></div>` : ''}
     ${heeft(c.slug, 'mobiel.jpg') ? `<div class="cmobiel">
-      <div class="ctel onthul"><div class="romp"><div class="glas" style="--beeld:${verh('mobiel.jpg')}"><img src="${img(c.slug, 'mobiel.jpg')}" alt="${c.naam} op mobiel" loading="lazy"></div></div></div>
+      <div class="ctel onthul"><div class="romp"><div class="glas" style="--beeld:${verh('mobiel.jpg')}"><img src="${img(c.slug, 'mobiel.jpg')}" alt="${c.naam} op mobiel"${afm(c.slug, 'mobiel.jpg')} loading="lazy" decoding="async"></div></div></div>
       <div class="onthul"><span class="label">Mobiel</span><h2>Net zo sterk op de telefoon</h2><p>Elke pagina is ontworpen en getest op telefoon, tablet en desktop — zodat bezoekers overal snel vinden wat ze zoeken.</p>${c.live ? `<a class="pil" href="${c.live}" target="_blank" rel="noopener">Bekijk de live site ↗</a>` : ''}</div>
     </div>` : ''}
     ${c.galerij ? `<div class="sectiekop"><div><span class="label">Het product</span><h2>Een kijkje in ${c.naam}</h2></div></div>
-    <div class="cschermen">${c.galerij.map((g, n) => `<figure class="onthul" style="--vertraging:${(n % 2) * 0.1}s"><div class="cvenster"><div class="balk"><i></i><i></i><i></i></div><img src="${img(c.slug, g.bestand)}" alt="${g.bijschrift}" loading="lazy"></div><figcaption>${g.bijschrift}</figcaption></figure>`).join('')}</div>${c.galerijNoot ? `<p class="cnoot">${c.galerijNoot}</p>` : ''}` : ''}
+    <div class="cschermen">${c.galerij.map((g, n) => `<figure class="onthul" style="--vertraging:${(n % 2) * 0.1}s"><div class="cvenster"><div class="balk"><i></i><i></i><i></i></div><img src="${img(c.slug, g.bestand)}" alt=""${afm(c.slug, g.bestand)} loading="lazy" decoding="async"></div><figcaption>${g.bijschrift}</figcaption></figure>`).join('')}</div>${c.galerijNoot ? `<p class="cnoot">${c.galerijNoot}</p>` : ''}` : ''}
   </div>
 </section>
 
 <a class="cvolgende${DONKER.has(volgende.slug) ? ' donker' : ''}" href="case-${volgende.slug}.html" style="--case:${volgende.kleur}">
   <div class="w"><div class="ctekst onthul"><span class="label">Volgende case</span><h2>${volgende.naam} ${pijl}</h2></div>
-  <div class="cvenster"><div class="balk"><i></i><i></i><i></i></div><img src="${img(volgende.slug, 'desktop.jpg')}" alt="" loading="lazy"></div></div>
+  <div class="cvenster"><div class="balk"><i></i><i></i><i></i></div><img src="${img(volgende.slug, 'desktop.jpg')}" alt=""${afm(volgende.slug, 'desktop.jpg')} loading="lazy" decoding="async"></div></div>
 </a>
 
+</main>
 ${AFSLUITER(thuis)}
 
 <script src="../docs/js/vivo.js" defer></script>
@@ -944,3 +955,50 @@ ${CURSOR_JS}
 }
 for (const c of CASES) writeFileSync(join(root, 'docs-preview', `case-${c.slug}.html`), casePagina(c));
 console.log(`Geschreven: docs-preview/case-{${CASES.map(c => c.slug).join(',')}}.html`);
+
+// ════ Juridische pagina's in de nieuwe stijl (privacy, voorwaarden, cookies) ════
+// Tekst en voorwaarden uit site/juridisch.mjs, opmaak gedeeld met bouw.mjs (site/juridisch-render.mjs).
+const MEET = meetVlaggen(SITE.meten);
+const JUR = maakJuridisch(MEET);
+function juridischPagina(doc) {
+  const thuis = 'motion.html';
+  return `<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>${doc.titel} | ViVo (preview)</title>
+<script>document.documentElement.classList.add('js')</script>
+<link rel="stylesheet" href="../docs/css/vivo.css">
+<style>
+${CSS}
+${CURSOR_CSS}
+</style>
+</head>
+<body>
+${KOP(thuis)}
+
+<main id="inhoud">
+${JUR.inhoud(doc, '../docs/')}
+</main>
+
+${AFSLUITER(thuis)}
+
+<script src="../docs/js/vivo.js" defer></script>
+<script src="../node_modules/gsap/dist/gsap.min.js"></script>
+<script src="../node_modules/gsap/dist/ScrollTrigger.min.js"></script>
+<script>
+  const rustig = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  gsap.registerPlugin(ScrollTrigger);
+${NAV_JS}
+  const kopEl = document.querySelector('.kop'), compact = () => kopEl.classList.toggle('compact', scrollY > 80);
+  addEventListener('scroll', compact, { passive: true }); compact();
+${CURSOR_JS}
+  if (!rustig) gsap.to('.lus-donker', { rotate: -10, x: -60, y: 30, scale: 1.08, duration: 18, ease: 'sine.inOut', yoyo: true, repeat: -1 });
+</script>
+</body>
+</html>
+`;
+}
+for (const doc of [PRIVACY, VOORWAARDEN, ...(MEET.meten ? [COOKIES] : [])]) writeFileSync(join(root, 'docs-preview', `${doc.slug}.html`), juridischPagina(doc));
+console.log('Geschreven: docs-preview/privacy.html, voorwaarden.html' + (MEET.meten ? ', cookies.html' : ''));

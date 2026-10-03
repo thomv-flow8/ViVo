@@ -6,16 +6,14 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { SITE, DIENSTEN, STAPPEN, CASES } from './inhoud.mjs';
 import { PRIVACY, VOORWAARDEN, COOKIES } from './juridisch.mjs';
+import { maakJuridisch, meetVlaggen, volledigAdres } from './juridisch-render.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 // METEN_TEST=1 npm run bouw → bouwt met test-ID's naar docs-preview/meten-test/ (cookiemelding zichtbaar, géén echte scripts)
 const TEST = process.env.METEN_TEST === '1';
 const uit = join(root, TEST ? 'docs-preview/meten-test' : 'docs');
 const METEN = TEST ? { ga4: 'G-TEST', googleAds: 'AW-TEST', metaPixel: 'TEST', test: true } : SITE.meten;
-const MEET = { ga4: !!METEN.ga4, googleAds: !!METEN.googleAds, metaPixel: !!METEN.metaPixel };
-MEET.google = MEET.ga4 || MEET.googleAds; MEET.marketing = MEET.googleAds || MEET.metaPixel; MEET.meten = MEET.ga4 || MEET.marketing; MEET.geenMeten = !MEET.meten;
-const geldt = als => !als || !!MEET[als];
-const opsomming = l => l.length > 1 ? l.slice(0, -1).join(', ') + ' en ' + l.at(-1) : (l[0] || '');
+const MEET = meetVlaggen(METEN);
 const lees = p => readFileSync(join(root, p), 'utf8');
 const schrijf = (p, s) => { mkdirSync(dirname(join(uit, p)), { recursive: true }); writeFileSync(join(uit, p), s); };
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -35,7 +33,6 @@ const kruis = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M1
 const mockup = `<svg class="mockup" viewBox="0 0 320 210" aria-hidden="true"><rect x=".75" y=".75" width="318.5" height="208.5" rx="10" fill="#fff"/><rect x=".75" y=".75" width="318.5" height="22" rx="10" fill="#eceef1"/><circle cx="14" cy="12" r="3.5" fill="#c9ccd2"/><circle cx="26" cy="12" r="3.5" fill="#c9ccd2"/><circle cx="38" cy="12" r="3.5" fill="#c9ccd2"/><rect x="0" y="23" width="64" height="187" fill="#15171c"/><rect x="12" y="38" width="40" height="5" rx="2" fill="#4f6ef5"/><rect x="12" y="52" width="34" height="4" rx="2" fill="#9aa0ab"/><rect x="12" y="62" width="38" height="4" rx="2" fill="#9aa0ab"/><rect x="12" y="72" width="30" height="4" rx="2" fill="#9aa0ab"/>${[0, 1, 2, 3, 4].map(i => `<rect x="${76 + i * 47}" y="36" width="41" height="6" rx="2" fill="#646a76" opacity=".5"/>`).join('')}${[[78, 52, 70, '#4f6ef5'], [125, 66, 40, '#35c4e3'], [172, 52, 56, '#4f6ef5'], [219, 88, 44, '#f5a524'], [266, 58, 36, '#35c4e3'], [78, 128, 52, '#f5a524'], [172, 116, 40, '#4f6ef5'], [266, 104, 64, '#4f6ef5']].map(([x, y, h, c]) => `<rect x="${x}" y="${y}" width="39" height="${h}" rx="4" fill="${c}" opacity=".85"/>`).join('')}</svg>`;
 
 const relPad = diepte => '../'.repeat(diepte);
-const volledigAdres = () => `${SITE.adres}, ${SITE.postcode ? SITE.postcode + ' ' : ''}${SITE.plaats}`;
 
 function vlak(c, r, opties = {}) {
   const img = existsSync(join(root, 'cases', c.slug, 'desktop.jpg'));
@@ -87,7 +84,7 @@ function slot(r) {
 }
 
 function pagina({ titel, beschrijving, r, pad, inhoud, actief, donkereKop }) {
-  const url = `${SITE.url}${pad}`;
+  const url = `${SITE.basis}${pad}`;
   return `<!doctype html>
 <html lang="nl">
 <head>
@@ -217,50 +214,11 @@ ${c.galerij ? `<section style="padding-bottom:var(--sectie)" aria-label="Scherme
   return pagina({ titel: `${c.naam} — case | ${SITE.bedrijfKort}`, beschrijving: c.intro, r, pad: `/werk/${c.slug}/`, inhoud, actief: 'projecten' });
 }
 
-// ── Juridische pagina's (privacy, voorwaarden) ──
-// Tekst is platte tekst (veilig ge-escaped); daarna worden de vaste plaatshouders vervangen door links.
-function opmaak(t, r) {
-  return esc(t)
-    .replace(/\{mail\}/g, `<a href="mailto:${SITE.mail}">${SITE.mail}</a>`)
-    .replace(/\{tel\}/g, `<a href="tel:${SITE.telefoonLink}">${esc(SITE.telefoon)}</a>`)
-    .replace(/\{adres\}/g, esc(volledigAdres()))
-    .replace(/\{kvk\}/g, esc(SITE.kvk))
-    .replace(/\{privacy\}/g, `<a href="${r}privacy/">privacyverklaring</a>`)
-    .replace(/\{cookies\}/g, `<a href="${r}cookies/">cookieverklaring</a>`)
-    .replace(/\{instellingen\}/g, '<a href="#" data-cookie-instellingen>Cookie-instellingen</a>')
-    .replace(/\{marketingdiensten\}/g, opsomming([MEET.metaPixel && 'de Meta-pixel', MEET.googleAds && 'Google Ads'].filter(Boolean)))
-    .replace(/\{meetpartijen\}/g, opsomming([MEET.google && 'Google (Google Ireland Ltd.)', MEET.metaPixel && 'Meta (Meta Platforms Ireland Ltd.)'].filter(Boolean)))
-    .replace(/\{vsPartijen\}/g, opsomming(['GitHub', MEET.google && 'Google', MEET.metaPixel && 'Meta'].filter(Boolean)).replace(/ en ([^,]+)$/, ' of $1'))
-    .replace(/\{ap\}/g, '<a href="https://autoriteitpersoonsgegevens.nl" target="_blank" rel="noopener">Autoriteit Persoonsgegevens</a>');
-}
-// Blok: string = alinea, array = opsomming, { tabel } = cookietabel, { als, blok|tekst } = alleen als de voorwaarde geldt
-function blok(b, r) {
-  if (b && !Array.isArray(b) && typeof b === 'object') {
-    if (!geldt(b.als)) return '';
-    if (b.tabel) {
-      const rijen = b.tabel.map(x => Array.isArray(x) ? x : geldt(x.als) ? x.rij : null).filter(Boolean);
-      return `<div class="jtabel"><table><thead><tr><th>Cookie</th><th>Doel</th><th>Bewaartermijn</th><th>Van</th></tr></thead><tbody>${rijen.map(rij => `<tr>${rij.map((c, i) => i ? `<td>${esc(c)}</td>` : `<td><code>${esc(c)}</code></td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
-    }
-    return blok(b.blok ?? b.tekst, r);
-  }
-  if (Array.isArray(b)) { const items = b.filter(li => typeof li === 'string' || geldt(li.als)).map(li => typeof li === 'string' ? li : li.tekst); return `<ul>${items.map(li => `<li>${opmaak(li, r)}</li>`).join('')}</ul>`; }
-  return `<p>${opmaak(b, r)}</p>`;
-}
+// ── Juridische pagina's: opmaak uit site/juridisch-render.mjs (gedeeld met de nieuwe stijl in preview-motion.mjs) ──
+const JUR = maakJuridisch(MEET);
 function juridischePagina(doc) {
   const r = relPad(1);
-  const inhoud = `<section class="casekop" aria-labelledby="jur-kop">
-  <div class="w">
-    <span class="label">Laatst bijgewerkt · ${esc(doc.bijgewerkt)}</span>
-    <h1 id="jur-kop">${esc(doc.titel)}</h1>
-    <p class="intro">${esc(doc.intro)}</p>
-  </div>
-</section>
-<section class="blok juridisch" style="padding-top:0">
-  <div class="w"><div class="jtekst">
-    ${doc.secties.filter(s => geldt(s.als)).map((s, i) => `<section aria-labelledby="j${i + 1}"><h2 id="j${i + 1}"><span>${String(i + 1).padStart(2, '0')}</span>${esc(s.titel)}</h2>${s.blokken.map(b => blok(b, r)).join('')}</section>`).join('\n    ')}
-  </div></div>
-</section>`;
-  return pagina({ titel: `${doc.titel} | ${SITE.bedrijfKort}`, beschrijving: doc.intro, r, pad: `/${doc.slug}/`, inhoud });
+  return pagina({ titel: doc.seoTitel || `${doc.titel} | ${SITE.bedrijfKort}`, beschrijving: doc.omschrijving || doc.intro, r, pad: `/${doc.slug}/`, inhoud: JUR.inhoud(doc, r) });
 }
 
 // ── Schrijven ──
@@ -281,8 +239,54 @@ schrijf('index.html', home()); // oude homepage; wordt in npm run bouw overschre
 CASES.forEach((c, i) => schrijf(`werk/${c.slug}/index.html`, casePagina(c, i)));
 for (const doc of [PRIVACY, VOORWAARDEN, ...(MEET.meten ? [COOKIES] : [])]) schrijf(`${doc.slug}/index.html`, juridischePagina(doc));
 if (MEET.meten) schrijf('js/toestemming.js', lees('site/toestemming.js'));
-for (const c of CASES) for (const f of ['desktop.jpg', 'mobiel.jpg', 'pagina.jpg', 'logo.png', ...(c.galerij || []).map(g => g.bestand)]) {
+for (const c of CASES) for (const f of ['desktop.jpg', 'mobiel.jpg', 'pagina.jpg', 'logo.png', ...(c.galerij || []).map(g => g.bestand)].flatMap(f => [f, f.replace(/\.jpg$/, '.webp')])) { // + WebP-variant (tools/webp.mjs)
   const bron = join(root, 'cases', c.slug, f);
   if (existsSync(bron)) { mkdirSync(join(uit, 'img/cases', c.slug), { recursive: true }); copyFileSync(bron, join(uit, 'img/cases', c.slug, f)); }
+}
+// ── Vindbaarheid: robots.txt, sitemap.xml, llms.txt (adressen via SITE.basis) ──
+if (!TEST) {
+  const paden = ['/', ...CASES.map(c => `/werk/${c.slug}/`), '/privacy/', '/voorwaarden/', ...(MEET.meten ? ['/cookies/'] : [])];
+  const vandaag = new Date().toISOString().slice(0, 10);
+  schrijf('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${paden.map(p => `  <url><loc>${SITE.basis}${p}</loc><lastmod>${vandaag}</lastmod></url>`).join('\n')}
+</urlset>
+`);
+  schrijf('robots.txt', `User-agent: *
+Allow: /
+
+Sitemap: ${SITE.basis}/sitemap.xml
+`);
+  schrijf('llms.txt', `# ${SITE.bedrijfKort}
+
+> ${SITE.beschrijving}
+
+${SITE.bedrijfKort} (${SITE.bedrijf}) is een webdesignbureau uit ${SITE.plaats}. Eén vast aanspreekpunt, van eerste schets tot livegang en onderhoud.
+
+## Diensten
+
+- Branding: logo, huisstijl, kleuren en typografie, merkrichtlijnen
+- Ontwerp & UI/UX: UI-design, klikbare prototypes, design systems, toegankelijkheid
+- Websites & webshops: websites op maat, webshops, eigen CMS, SEO en vindbaarheid, meertalig
+- Content: fotografie, video, animatie en 3D-visuals, teksten
+- Development: webapps, SaaS-platforms, databases en login, koppelingen en API's, PWA
+- Hosting & onderhoud: hosting en domein, updates en back-ups, statistieken, snelheid en veiligheid
+
+## Projecten
+
+${CASES.map(c => `- [${c.naam}](${SITE.basis}/werk/${c.slug}/): ${c.kort}`).join('\n')}
+
+## Contact
+
+- E-mail: ${SITE.mail}
+- Telefoon: ${SITE.telefoon}
+- Bezoekadres: ${volledigAdres()}
+- KvK: ${SITE.kvk}
+
+## Juridisch
+
+- [Privacyverklaring](${SITE.basis}/privacy/)
+- [Algemene voorwaarden](${SITE.basis}/voorwaarden/)
+`);
 }
 console.log(`${TEST ? 'docs-preview/meten-test/ (TEST-ID\'s)' : 'docs/'} gebouwd: homepage + ${CASES.length} case-pagina's + privacy + voorwaarden${MEET.meten ? ' + cookies (meten aan)' : ' (meten uit)'}`);

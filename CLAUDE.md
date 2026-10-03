@@ -109,6 +109,16 @@ Ook als `vivo-preview` in `.claude/launch.json`.
      Infades via `.onthul` (IntersectionObserver) — níet via ScrollTrigger-start, die mist bij lazy beelden.
    - **Tweede cursor (Baunfire):** `.muiscirkel` volgt de muis, groeit boven links/knoppen/beelden; alleen met muis, niet
      bij minder beweging. Let op: `.cursor` is al in gebruik (muispijl in een werkwijze-illustratie).
+   - **Audit (squirrelscan, 3 okt 2026) en fixes:** draaien met `NO_TELEMETRY=1 npx -y squirrelscan audit <url> --format llm`
+     (geen installatie nodig). Doorgevoerd: `robots.txt`, `sitemap.xml`, `llms.txt` (bouw.mjs); **`SITE.basis`** = basisadres voor
+     canonical/og/sitemap — nu het GitHub-adres, **na koppelen vivoproducts.nl omzetten naar SITE.url**; SEO-titels en
+     -omschrijvingen (SITE.seoTitel, doc.seoTitel/omschrijving, cases automatisch); deelbeelden `beelden/og/*.jpg` via
+     `node tools/og-beelden.mjs` (server nodig, daarna opnieuw bouwen); **WebP** via `node tools/webp.mjs` (na nieuwe opnames/renders);
+     beeldmaten (width/height), lazy/eager + fetchpriority/preload; `<main>` + overslaan-link; inline CSS/JS verkleind bij
+     publiceren; **three.js gebundeld met esbuild** (devDependency) → `docs/js/drie.js` (±585 kB i.p.v. 2,1 MB).
+     Juridische pagina's nu ook in de nieuwe stijl (opmaak gedeeld via `site/juridisch-render.mjs`).
+     Niet op te lossen op GitHub Pages: CSP/X-Frame-headers (later via Cloudflare), /ViVo/ in de URL (weg na eigen domein).
+     Open (keuze Thomas): meer tekst per case (>300 woorden), een Over ViVo-pagina.
    - **Cookies / meten (keuze Thomas: analytics + marketing):** ID's in `SITE.meten` (`ga4`, `googleAds`, `metaPixel`).
      **Leeg = uit**: geen melding, geen scripts, privacytekst "geen cookies". Ingevuld → automatisch cookiemelding
      (`site/toestemming.js`: niets laden vóór toestemming, weigeren even makkelijk als accepteren, Consent Mode v2,

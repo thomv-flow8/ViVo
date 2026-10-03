@@ -5,6 +5,10 @@ export const SITE = {
   bedrijf: 'ViVo Products',
   bedrijfKort: 'ViVo',
   url: 'https://vivoproducts.nl',
+  // Basisadres voor canonical, deelbeelden (og), sitemap en robots. Zolang vivoproducts.nl niet gekoppeld is: het GitHub-adres.
+  // Na het koppelen van het domein: basis = url.
+  basis: 'https://thomv-flow8.github.io/ViVo',
+  seoTitel: 'ViVo — Webdesign en websites laten maken in Gorinchem',
   mail: 'info@vivoproducts.nl',
   adres: 'Einsteinstraat 3e',
   postcode: '4207 HW',
@@ -22,7 +26,7 @@ export const SITE = {
     metaPixel: '',    // Meta-pixel, bv. '1234567890123456'       → categorie marketing
   },
   intro: 'ViVo ontwerpt en bouwt snelle, heldere websites, webshops en webapps voor ondernemers die gevonden willen worden — en klanten willen overtuigen.',
-  beschrijving: 'ViVo ontwerpt en bouwt snelle, heldere websites, webshops en webapps. Persoonlijk, van eerste schets tot livegang.',
+  beschrijving: 'ViVo ontwerpt en bouwt snelle, heldere websites, webshops en webapps voor ondernemers. Persoonlijk, van eerste schets tot livegang — vanuit Gorinchem.',
 };
 
 export const DIENSTEN = [
