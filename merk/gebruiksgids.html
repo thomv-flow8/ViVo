@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ViVo merkgids</title>
+<link rel="icon" href="favicon/favicon.svg" type="image/svg+xml">
+<style>
+  :root { --bg:#0b0b0b; --kaart:#141414; --rand:#262626; --fg:#f2f1ec; --muted:#8a8a85; --zwart:#0b0b0b; --wit:#f2f1ec; }
+  body.licht { --bg:#ecebe6; --kaart:#f6f5f1; --rand:#d9d8d2; --fg:#111; --muted:#6b6b66; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg); font:15px/1.55 system-ui, -apple-system, sans-serif; }
+  .wrap { max-width:1100px; margin:0 auto; padding:0 16px; }
+  header { padding:40px 0 24px; display:flex; flex-wrap:wrap; gap:16px; align-items:center; justify-content:space-between; border-bottom:1px solid var(--rand); }
+  header img { height:44px; display:block; }
+  body:not(.licht) .op-licht, body.licht .op-donker { display:none !important; }
+  button { font:inherit; font-size:14px; color:var(--fg); background:transparent; border:1px solid var(--rand); border-radius:100px; padding:6px 14px; cursor:pointer; }
+  h2 { font:13px ui-monospace, monospace; text-transform:uppercase; letter-spacing:.1em; color:var(--muted); margin:44px 0 6px; }
+  .intro { color:var(--muted); margin:0 0 16px; max-width:70ch; }
+  .raster { display:grid; gap:16px; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr)); }
+  .kaart { background:var(--kaart); border:1px solid var(--rand); border-radius:14px; padding:16px; min-width:0; }
+  .kaart h3 { margin:14px 0 2px; font-size:16px; }
+  .kaart p { margin:0; color:var(--muted); font-size:14px; }
+  .kaart .dl { margin-top:8px; font-size:12px; word-break:break-all; }
+  a { color:inherit; }
+  .duo { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .vlak { border-radius:10px; height:120px; display:grid; place-items:center; padding:16px; border:1px solid var(--rand); }
+  .donker { background:var(--zwart); } .licht:not(body) { background:var(--wit); }
+  .vlak img { max-width:100%; max-height:100%; }
+  .i-beeld { height:64px; } .i-klein { height:32px; } .i-hor { height:40px; } .i-ver { height:84px; } .i-woord { height:22px; }
+  .vrij { color:var(--fg); }
+  .vrijsvg { width:100%; max-width:640px; height:auto; display:block; }
+  .maten { display:flex; flex-wrap:wrap; gap:28px; align-items:flex-end; }
+  .maten figure { margin:0; text-align:center; }
+  .maten figcaption { font:12px ui-monospace, monospace; color:var(--muted); margin-top:6px; }
+  .kleuren { display:flex; flex-wrap:wrap; gap:16px; }
+  .staal { width:180px; border-radius:14px; overflow:hidden; border:1px solid var(--rand); background:var(--kaart); }
+  .staal div { height:90px; } .staal p { margin:0; padding:10px 12px; font:13px ui-monospace, monospace; }
+  ul.regels { margin:0; padding-left:18px; color:var(--muted); } ul.regels li { margin:4px 0; } ul.regels b { color:var(--fg); }
+  .twee { display:grid; grid-template-columns:1fr 1fr; gap:16px; } @media (max-width:700px) { .twee, .duo { grid-template-columns:1fr; } }
+  pre { background:var(--kaart); border:1px solid var(--rand); border-radius:12px; padding:14px; overflow-x:auto; font-size:13px; }
+  .ico { display:flex; gap:20px; align-items:center; flex-wrap:wrap; }
+  .favtegel { display:flex; gap:14px; align-items:center; padding:14px 18px; border-radius:12px; border:1px solid var(--rand); }
+  .ico img.app { width:88px; height:88px; border-radius:20px; } .ico img.fav { width:16px; height:16px; } .ico img.fav32 { width:32px; height:32px; }
+  footer { padding:40px 0 56px; color:var(--muted); font-size:13px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div><img class="op-donker" src="svg/vivo-horizontaal-wit.svg" alt="ViVo"><img class="op-licht" src="svg/vivo-horizontaal-zwart.svg" alt="ViVo"></div>
+  <button id="thema" type="button">Licht thema</button>
+</header>
+
+<h2>Merkgids</h2>
+<p class="intro">Het logo van ViVo bestaat uit het beeldmerk (twee in elkaar liggende chevrons, voor de twee V's in ViVo) en het woordmerk VIVO in een fijne, ruim gespatieerde lijn. Alle bestanden zijn SVG: scherp op elk formaat.</p>
+
+<h2>Onderdelen</h2>
+<div class="raster">
+<article class="kaart">
+  <div class="duo"><div class="vlak donker"><img src="svg/vivo-horizontaal-wit.svg" class="i-hor" alt="ViVo"></div><div class="vlak licht"><img src="svg/vivo-horizontaal-zwart.svg" class="i-hor" alt="ViVo"></div></div>
+  <h3>Horizontaal</h3><p>De hoofdversie. Navigatie, e-mail, facturen, documenten.</p>
+  <p class="dl"><a href="svg/vivo-horizontaal-zwart.svg" download>vivo-horizontaal-zwart.svg</a> · <a href="svg/vivo-horizontaal-wit.svg" download>vivo-horizontaal-wit.svg</a></p>
+</article>
+<article class="kaart">
+  <div class="duo"><div class="vlak donker"><img src="svg/vivo-verticaal-wit.svg" class="i-ver" alt="ViVo"></div><div class="vlak licht"><img src="svg/vivo-verticaal-zwart.svg" class="i-ver" alt="ViVo"></div></div>
+  <h3>Verticaal</h3><p>Voor vierkante of staande vlakken: social, visitekaartje, sticker.</p>
+  <p class="dl"><a href="svg/vivo-verticaal-zwart.svg" download>vivo-verticaal-zwart.svg</a> · <a href="svg/vivo-verticaal-wit.svg" download>vivo-verticaal-wit.svg</a></p>
+</article>
+<article class="kaart">
+  <div class="duo"><div class="vlak donker"><img src="svg/vivo-beeldmerk-wit.svg" class="i-beeld" alt="ViVo"></div><div class="vlak licht"><img src="svg/vivo-beeldmerk-zwart.svg" class="i-beeld" alt="ViVo"></div></div>
+  <h3>Beeldmerk</h3><p>Los, vanaf 33 px. Avatar, watermerk, groot formaat.</p>
+  <p class="dl"><a href="svg/vivo-beeldmerk-zwart.svg" download>vivo-beeldmerk-zwart.svg</a> · <a href="svg/vivo-beeldmerk-wit.svg" download>vivo-beeldmerk-wit.svg</a></p>
+</article>
+<article class="kaart">
+  <div class="duo"><div class="vlak donker"><img src="svg/vivo-beeldmerk-klein-wit.svg" class="i-klein" alt="ViVo"></div><div class="vlak licht"><img src="svg/vivo-beeldmerk-klein-zwart.svg" class="i-klein" alt="ViVo"></div></div>
+  <h3>Beeldmerk klein</h3><p>Speciaal voor 16–32 px: dikkere lijn en meer lucht. Favicon en heel kleine plekken.</p>
+  <p class="dl"><a href="svg/vivo-beeldmerk-klein-zwart.svg" download>vivo-beeldmerk-klein-zwart.svg</a> · <a href="svg/vivo-beeldmerk-klein-wit.svg" download>vivo-beeldmerk-klein-wit.svg</a></p>
+</article>
+<article class="kaart">
+  <div class="duo"><div class="vlak donker"><img src="svg/vivo-woordmerk-wit.svg" class="i-woord" alt="ViVo"></div><div class="vlak licht"><img src="svg/vivo-woordmerk-zwart.svg" class="i-woord" alt="ViVo"></div></div>
+  <h3>Woordmerk</h3><p>VIVO los, als tekstelement op de site of in een hero. Vanaf 14 px hoog.</p>
+  <p class="dl"><a href="svg/vivo-woordmerk-zwart.svg" download>vivo-woordmerk-zwart.svg</a> · <a href="svg/vivo-woordmerk-wit.svg" download>vivo-woordmerk-wit.svg</a></p>
+</article>
+</div>
+
+<h2>Vrije ruimte</h2>
+<p class="intro">Houd rondom het logo minstens <b>x</b> vrij, waarbij x de hoogte van het woordmerk VIVO is. Bij het losse beeldmerk: de helft van zijn hoogte.</p>
+<div class="kaart vrij"><svg viewBox="-44 -44 409.8 188" class="vrijsvg" role="img" aria-label="Vrije ruimte rond het logo">
+    <rect x="-40" y="-40" width="401.8" height="180" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="4 4" opacity=".55"/>
+    <rect x="0" y="0" width="321.8" height="100" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="4 4" opacity=".55"/>
+    <g transform="translate(-4.51 -16.32) scale(1.2152040000000002)"><g fill="none" stroke="currentColor" stroke-width="10" stroke-miterlimit="10"><polyline points="8,16 50,86 92,16"/><polyline points="29.6,16 50,50 70.4,16"/></g></g><g transform="translate(140.2 12) scale(1)"><g fill="none" stroke="currentColor" stroke-width="3.2" stroke-miterlimit="10"><polyline points="4,18 20,58 36,18"/><line x1="62" y1="18" x2="62" y2="58"/><polyline points="88,18 104,58 120,18"/><circle cx="160" cy="38" r="20"/></g></g>
+    <line x1="321.8" y1="-20" x2="361.8" y2="-20" stroke="currentColor" stroke-width="1.2"/>
+    <text x="341.8" y="-25" font-size="13" text-anchor="middle" fill="currentColor" font-family="ui-monospace, monospace">x</text>
+    <rect x="142.5" y="30" width="6" height="40" fill="currentColor" opacity=".25"/>
+  </svg></div>
+
+<h2>Minimale formaten</h2>
+<div class="kaart"><div class="maten">
+  <figure><img src="svg/vivo-beeldmerk-klein-zwart.svg" class="op-licht" style="height:16px" alt=""><img src="svg/vivo-beeldmerk-klein-wit.svg" class="op-donker" style="height:16px" alt=""><figcaption>klein · 16 px</figcaption></figure>
+  <figure><img src="svg/vivo-beeldmerk-klein-zwart.svg" class="op-licht" style="height:32px" alt=""><img src="svg/vivo-beeldmerk-klein-wit.svg" class="op-donker" style="height:32px" alt=""><figcaption>klein · 32 px</figcaption></figure>
+  <figure><img src="svg/vivo-beeldmerk-zwart.svg" class="op-licht" style="height:33px" alt=""><img src="svg/vivo-beeldmerk-wit.svg" class="op-donker" style="height:33px" alt=""><figcaption>beeldmerk · ≥ 33 px</figcaption></figure>
+  <figure><img src="svg/vivo-horizontaal-zwart.svg" class="op-licht" style="height:24px" alt=""><img src="svg/vivo-horizontaal-wit.svg" class="op-donker" style="height:24px" alt=""><figcaption>horizontaal · ≥ 24 px</figcaption></figure>
+  <figure><img src="svg/vivo-woordmerk-zwart.svg" class="op-licht" style="height:14px" alt=""><img src="svg/vivo-woordmerk-wit.svg" class="op-donker" style="height:14px" alt=""><figcaption>woordmerk · ≥ 14 px</figcaption></figure>
+</div></div>
+
+<h2>Kleuren</h2>
+<p class="intro">Het logo is altijd eenkleurig. Dit zijn de voorlopige waarden; de definitieve kleuren volgen met de huisstijl (fase 3).</p>
+<div class="kleuren">
+  <div class="staal"><div style="background:#0b0b0b"></div><p>Zwart #0b0b0b</p></div>
+  <div class="staal"><div style="background:#f2f1ec"></div><p>Wit #f2f1ec</p></div>
+</div>
+
+<h2>Wel en niet</h2>
+<div class="twee">
+  <div class="kaart"><h3>Wel</h3><ul class="regels">
+    <li>Zwart logo op lichte vlakken, wit logo op donkere.</li>
+    <li>Onder 33 px altijd de <b>kleine variant</b> van het beeldmerk.</li>
+    <li>Het woordmerk altijd in kapitalen: <b>VIVO</b>. In lopende tekst schrijf je de naam als <b>ViVo</b>.</li>
+    <li>Op een foto alleen op een rustig, egaal deel.</li>
+  </ul></div>
+  <div class="kaart"><h3>Niet</h3><ul class="regels">
+    <li>Niet uitrekken, kantelen of spiegelen.</li>
+    <li>Geen schaduw, gloed, kleurverloop of omlijning toevoegen.</li>
+    <li>De lijndikte van het woordmerk niet aanpassen of het woordmerk in een ander lettertype zetten.</li>
+    <li>Beeldmerk en woordmerk niet anders schikken dan in de horizontale en verticale lockup.</li>
+  </ul></div>
+</div>
+
+<h2>Favicon en app-icoon</h2>
+<div class="kaart"><div class="ico">
+  <div class="favtegel licht"><img class="fav" src="svg/vivo-beeldmerk-klein-zwart.svg" alt="Favicon 16 px, licht tabblad"><img class="fav32" src="svg/vivo-beeldmerk-klein-zwart.svg" alt="Favicon 32 px, licht tabblad"></div><div class="favtegel donker"><img class="fav" src="svg/vivo-beeldmerk-klein-wit.svg" alt="Favicon 16 px, donker tabblad"><img class="fav32" src="svg/vivo-beeldmerk-klein-wit.svg" alt="Favicon 32 px, donker tabblad"></div><img class="app" src="favicon/app-icoon.svg" alt="App-icoon">
+  <p>favicon.svg wisselt vanzelf tussen deze twee, mee met een licht of donker tabblad. Het app-icoon is een vol vierkant; iOS en Android ronden de hoeken zelf af. PNG-versies (180, 192 en 512 px) volgen bij de bouw van de site.</p>
+</div></div>
+<pre>&lt;link rel="icon" href="/favicon.svg" type="image/svg+xml"&gt;</pre>
+
+<footer>Gegenereerd door logo/genereer-merk.mjs — pas het logo daar aan, nooit in de losse bestanden.</footer>
+</div>
+<script>
+  const t = document.getElementById('thema');
+  t.addEventListener('click', () => { const l = document.body.classList.toggle('licht'); t.textContent = l ? 'Donker thema' : 'Licht thema'; });
+</script>
+</body>
+</html>

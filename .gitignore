@@ -1,0 +1,6 @@
+# macOS
+.DS_Store
+
+# Externe skills (code van derden) — opnieuw te installeren via skills-lock.json
+.claude/skills/
+.agents/
