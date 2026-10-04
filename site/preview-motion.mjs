@@ -824,6 +824,7 @@ const CASE_CSS = `
   .cfeiten dt { font: 500 var(--label)/1 var(--mono); letter-spacing: var(--ls-label); text-transform: uppercase; color: var(--case-tekst); margin-bottom: 9px; }
   .cfeiten dd { margin: 0; font-weight: 500; overflow-wrap: anywhere; }
   .cfeiten .clogo img { display: block; width: auto; height: auto; max-width: 120px; max-height: 60px; mix-blend-mode: multiply; } /* witte logo-achtergrond valt weg */
+  .chero.donker .cfeiten .clogo img { mix-blend-mode: normal; } /* donkere hero (THNK): wit logo met transparante achtergrond */
   .cstatus { display: inline-block; vertical-align: middle; margin-left: 14px; padding: 7px 12px; border-radius: var(--r-pil); font: 500 var(--label)/1 var(--mono); letter-spacing: var(--ls-label); text-transform: uppercase; background: rgba(10, 11, 13, .07); }
   .chero.donker .cstatus { background: rgba(255, 255, 255, .1); }
   .cschermen { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(20px, 3vw, 40px); }
