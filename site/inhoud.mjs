@@ -4,10 +4,10 @@
 export const SITE = {
   bedrijf: 'ViVo Products',
   bedrijfKort: 'ViVo',
-  url: 'https://vivoproducts.nl',
+  url: 'https://www.vivoproducts.nl', // hoofdadres met www (keuze Thomas 4 okt 2026); vivoproducts.nl stuurt door
   // Basisadres voor canonical, deelbeelden (og), sitemap, robots en gestructureerde gegevens.
-  // Sinds 4 okt 2026 het eigen domein (DNS bij Strato → GitHub Pages; was https://thomv-flow8.github.io/ViVo).
-  basis: 'https://vivoproducts.nl',
+  // Sinds 4 okt 2026 het eigen domein, hoofdadres met www (DNS bij Strato → GitHub Pages; was https://thomv-flow8.github.io/ViVo).
+  basis: 'https://www.vivoproducts.nl',
   seoTitel: 'ViVo — Webdesign en websites laten maken in Gorinchem',
   mail: 'info@vivoproducts.nl',
   adres: 'Einsteinstraat 3e',

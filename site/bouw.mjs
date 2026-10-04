@@ -245,7 +245,7 @@ for (const c of CASES) for (const f of ['desktop.jpg', 'mobiel.jpg', 'pagina.jpg
 }
 // ── Vindbaarheid: robots.txt, sitemap.xml, llms.txt (adressen via SITE.basis) ──
 if (!TEST) {
-  schrijf('CNAME', 'vivoproducts.nl\n'); // eigen domein voor GitHub Pages (DNS: A/AAAA naar GitHub, MX blijft Strato)
+  schrijf('CNAME', 'www.vivoproducts.nl\n'); // eigen domein voor GitHub Pages (DNS: A/AAAA naar GitHub, MX blijft Strato)
   const paden = ['/', '/over/', '/contact/', ...CASES.map(c => `/werk/${c.slug}/`), '/privacy/', '/voorwaarden/', ...(MEET.meten ? ['/cookies/'] : [])];
   const vandaag = new Date().toISOString().slice(0, 10);
   schrijf('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>

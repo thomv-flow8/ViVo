@@ -133,8 +133,10 @@ Ook als `vivo-preview` in `.claude/launch.json`.
      **Regressietest: `node tools/regressie.mjs [url]`** (alle pagina's, desktop + mobiel).
    - **Eigen domein (4 okt 2026):** vivoproducts.nl → GitHub Pages. Strato-pakket = Mail Plus (domein + mail, géén webhosting).
      DNS bij Strato: A `185.199.108.153`, AAAA `2606:50c0:8000::153` (Strato staat één adres per type toe), www volgt het
-     hoofddomein, **MX `smtp.rzone.de` ongemoeid**. `docs/CNAME` (geschreven door bouw.mjs) + custom domain in Pages-instellingen,
-     https afgedwongen. `SITE.basis` = https://vivoproducts.nl. Het oude adres thomv-flow8.github.io/ViVo stuurt GitHub door.
+     hoofddomein, **MX `smtp.rzone.de` ongemoeid**. www: CNAME `www` → `thomv-flow8.github.io` (Strato: DNS → TXT- en CNAME-records,
+     voorvoegsel www). **Hoofdadres = https://www.vivoproducts.nl** (keuze Thomas); vivoproducts.nl en het oude github.io-adres
+     sturen door. `docs/CNAME` = www.vivoproducts.nl (bouw.mjs) + custom domain in Pages-instellingen, https afgedwongen.
+     `SITE.basis` en `SITE.url` = https://www.vivoproducts.nl.
    - **Cookies / meten (keuze Thomas: analytics + marketing):** ID's in `SITE.meten` (`ga4`, `googleAds`, `metaPixel`).
      **Leeg = uit**: geen melding, geen scripts, privacytekst "geen cookies". Ingevuld → automatisch cookiemelding
      (`site/toestemming.js`: niets laden vóór toestemming, weigeren even makkelijk als accepteren, Consent Mode v2,
