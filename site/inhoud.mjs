@@ -24,7 +24,7 @@ export const SITE = {
   // (gratis account op web3forms.com, aan te maken door Thomas) worden berichten direct verstuurd; de privacytekst past zich aan.
   formulier: { web3forms: '' },
   // Verificatiecodes van Google Search Console en Bing Webmaster Tools (alleen de code uit de meta-tag). Leeg = niets.
-  verificatie: { google: '', bing: '' },
+  verificatie: { google: '-prJz1eX8lO_4SYjlTV2cCBzOfQAcp6z5eXu55q_fzQ', bing: '' },
   meten: {
     ga4: '',          // Google Analytics 4, bv. 'G-XXXXXXXXXX'   → categorie statistiek
     googleAds: '',    // Google Ads, bv. 'AW-XXXXXXXXXX'          → categorie marketing
