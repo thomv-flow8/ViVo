@@ -1097,6 +1097,9 @@ ${KOP(thuis)}
 <section class="overhaal" aria-label="Het verhaal">
   <div class="w"><div><span class="label">Het verhaal</span></div><div class="onthul">${OVER.verhaal.map(p => `<p>${p}</p>`).join('')}</div></div>
 </section>
+<section class="overhaal" aria-labelledby="hulp-kop">
+  <div class="w"><div><span class="label">Waar ik je mee help</span></div><div class="onthul"><h2 id="hulp-kop" style="font-size:var(--h3);margin:0 0 16px">Van merk tot hosting, onder één dak</h2><p>Een logo en huisstijl die blijven hangen, een website of webshop die bezoekers omzet in klanten, of maatwerk zoals een webapp met inloggen, rechten en koppelingen. Ik verzorg ook de teksten en beelden, en na de livegang de hosting, updates en verbeteringen — zodat je er zelf geen omkijken naar hebt.</p><p><a class="link" href="motion.html#diensten">Bekijk alle diensten ${pijl}</a></p></div></div>
+</section>
 <section class="owaarden donker" aria-labelledby="waarden-kop">
   <div class="w"><span class="label">Waar ViVo voor staat</span><h2 id="waarden-kop" style="font-size:var(--h2);margin:16px 0 0">Zo werk ik</h2>
     <div class="raster">${OVER.waarden.map(([t, p], n) => `<div class="onthul" style="--vertraging:${n * 0.1}s"><span class="label">0${n + 1}</span><h3>${t}</h3><p>${p}</p></div>`).join('')}</div>
@@ -1139,7 +1142,7 @@ const CONTACT_CSS = `
   .khero .intro { font-size: clamp(19px, 1.6vw, 23px); line-height: 1.45; color: var(--grijs); margin: 0 0 40px; max-width: 34ch; }
   .kgegevens { display: grid; gap: 26px; padding-top: 28px; border-top: 1px solid var(--lijn); }
   .kgegevens dt { font: 500 var(--label)/1 var(--mono); letter-spacing: var(--ls-label); text-transform: uppercase; color: var(--grijs); margin-bottom: 9px; }
-  .kgegevens dd { margin: 0; font-size: 19px; font-weight: 500; } .kgegevens a { color: inherit; text-underline-offset: 4px; }
+  .kgegevens dd { margin: 0; font-size: 19px; font-weight: 500; } .kgegevens a { color: inherit; text-underline-offset: 4px; display: inline-block; padding: 6px 0; } /* ruim klikvlak op mobiel */
   .kknoppen { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
   .kknoppen .pil.licht { background: transparent; color: var(--inkt); box-shadow: inset 0 0 0 1.5px var(--inkt); }
   .kformulier { background: var(--papier-2); border-radius: var(--r); padding: clamp(24px, 4vw, 48px); display: grid; gap: 18px; }
@@ -1149,7 +1152,10 @@ const CONTACT_CSS = `
   .kveld textarea { min-height: 150px; resize: vertical; }
   .kveld input:focus, .kveld textarea:focus { outline: none; border-color: var(--inkt); }
   .kformulier .pil { justify-self: start; border: 0; cursor: pointer; font: inherit; font-weight: 600; }
-  .kformulier .kopmerking { color: var(--grijs); font-size: 14px; margin: 0; } .kformulier .kopmerking a { color: inherit; }
+  .kformulier .kopmerking { color: var(--grijs); font-size: 14px; margin: 0; } .kformulier .kopmerking a { color: inherit; display: inline-block; padding: 6px 0; }
+  .kverloop { padding: 0 0 var(--sectie); } .kverloop .w > div { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(24px, 4vw, 56px); border-top: 1px solid var(--lijn); padding-top: clamp(32px, 4vw, 56px); margin-top: 24px; }
+  .kverloop h3 { font-size: var(--h3); margin: 12px 0 10px; } .kverloop p { color: var(--grijs); margin: 0; font-size: 17px; line-height: 1.6; }
+  @media (max-width: 860px) { .kverloop .w > div { grid-template-columns: 1fr; } }
   .kmelding { margin: 0; font-weight: 500; min-height: 1.4em; } .kmelding.fout { color: #b42318; }
   .kval { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
   @media (max-width: 860px) { .khero .w { grid-template-columns: 1fr; } }`;
@@ -1190,15 +1196,24 @@ ${KOP(thuis)}
     </div>
     <form class="kformulier" novalidate>
       <h2>Stuur een bericht</h2>
-      <div class="kveld"><label for="k-naam">Naam</label><input id="k-naam" name="naam" autocomplete="name" required></div>
-      <div class="kveld"><label for="k-email">E-mail</label><input id="k-email" name="email" type="email" autocomplete="email" required></div>
-      <div class="kveld"><label for="k-tel">Telefoon <span>(optioneel)</span></label><input id="k-tel" name="telefoon" type="tel" autocomplete="tel"></div>
+      <div class="kveld"><label for="k-naam">Naam</label><input id="k-naam" name="naam" autocomplete="name" enterkeyhint="next" required></div>
+      <div class="kveld"><label for="k-email">E-mail</label><input id="k-email" name="email" type="email" autocomplete="email" enterkeyhint="next" required></div>
+      <div class="kveld"><label for="k-tel">Telefoon <span>(optioneel)</span></label><input id="k-tel" name="telefoon" type="tel" autocomplete="tel" enterkeyhint="next"></div>
       <div class="kveld"><label for="k-bericht">Waar kan ViVo je mee helpen?</label><textarea id="k-bericht" name="bericht" required></textarea></div>
-      <div class="kval" aria-hidden="true"><label for="k-web">Laat dit veld leeg</label><input id="k-web" name="website" tabindex="-1" autocomplete="off"></div>
+      <div class="kval" inert><label for="k-web">Laat dit veld leeg</label><input id="k-web" name="website" tabindex="-1" autocomplete="off"></div>
       <button class="pil" type="submit">${sleutel ? 'Verstuur bericht' : 'Verstuur via je mailprogramma'}</button>
       <p class="kmelding" role="status" aria-live="polite"></p>
       <p class="kopmerking">We gebruiken je gegevens alleen om je bericht te beantwoorden. Zie de <a href="../docs/privacy/">privacyverklaring</a>.</p>
     </form>
+  </div>
+</section>
+<section class="kverloop" aria-labelledby="verloop-kop">
+  <div class="w"><span class="label">Na je bericht</span><h2 id="verloop-kop" style="font-size:var(--h2);margin:16px 0 0">Zo gaat het verder</h2>
+    <div>
+      <div><span class="label">01</span><h3>Kennismaken</h3><p>We gaan om tafel: wat wil je bereiken, wie zijn je klanten en wat moet de site opleveren? Daarna krijg je een helder voorstel met planning en prijs.</p></div>
+      <div><span class="label">02</span><h3>Ontwerpen</h3><p>Je ziet je site eerst als klikbaar ontwerp, voordat er een regel code geschreven is. Met hulp van AI verkennen we snel meerdere richtingen — jij kiest en stuurt bij.</p></div>
+      <div><span class="label">03</span><h3>Bouwen en live</h3><p>ViVo bouwt de site snel, toegankelijk en vindbaar, en test hem op telefoon, tablet en desktop. Na de livegang blijf je één vast aanspreekpunt houden voor onderhoud en verbeteringen.</p></div>
+    </div>
   </div>
 </section>
 </main>
