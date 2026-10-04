@@ -808,6 +808,7 @@ const CASE_CSS = `
   .chero .label { text-decoration: none; }
   .chero h1 { font-size: clamp(40px, 5.2vw, 84px); margin: 22px 0 22px; hyphens: manual; -webkit-hyphens: manual; overflow-wrap: break-word; } /* lange namen alleen afbreken op het vaste breekpunt uit naamKop */
   .chero h1 .w-r { max-width: 100%; }
+  .chero h1.lang { font-size: clamp(36px, 4.4vw, 64px); } /* lange namen: "Sleutelbeheer-" moet ook op brede schermen in de kolom passen */
   .chero .intro { font-size: clamp(19px, 1.6vw, 23px); line-height: 1.45; letter-spacing: -.01em; color: var(--case-tekst); max-width: 34ch; margin: 0; }
   .cfeiten { display: grid; grid-template-columns: 1fr 1fr; gap: 22px 32px; margin: 40px 0 0; padding-top: 28px; border-top: 1px solid var(--lijn); }
   .chero.donker .cfeiten { border-color: var(--lijn-n); }
@@ -907,7 +908,7 @@ ${KOP(thuis)}
   <div class="w">
     <div class="ctekst">
       <a class="label" href="${thuis}#projecten">Projecten · ${c.jaar}</a>${c.status ? `<span class="cstatus">${c.status}</span>` : ''}
-      <h1 id="case-kop">${c.naamKop || c.naam}</h1>
+      <h1 id="case-kop"${c.naam.length > 16 ? ' class="lang"' : ''}>${c.naamKop || c.naam}</h1>
       <p class="intro">${c.intro}</p>
       <dl class="cfeiten">
         <div><dt>Klant</dt><dd${logo ? ` class="clogo"><img src="${img(c.slug, 'logo.png')}" alt="${c.klant}" width="${logo[0]}" height="${logo[1]}">` : '>' + c.klant}</dd></div>
