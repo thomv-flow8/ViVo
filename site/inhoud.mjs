@@ -24,6 +24,8 @@ export const SITE = {
   // (gratis account op web3forms.com, aan te maken door Thomas) worden berichten direct verstuurd; de privacytekst past zich aan.
   formulier: { web3forms: '' },
   // Verificatiecodes van Google Search Console en Bing Webmaster Tools (alleen de code uit de meta-tag). Leeg = niets.
+  // Openingstijden = gelijk aan het Google Bedrijfsprofiel (bereikbaar naast de vaste baan). Dag: Mo Tu We Th Fr Sa Su.
+  openingstijden: [{ dagen: ['Mo', 'Tu', 'We', 'Th', 'Fr'], van: '18:00', tot: '21:00', tekst: 'ma–vr 18:00–21:00' }, { dagen: ['Sa'], van: '10:00', tot: '15:00', tekst: 'za 10:00–15:00' }],
   verificatie: { google: '-prJz1eX8lO_4SYjlTV2cCBzOfQAcp6z5eXu55q_fzQ', bing: '' },
   meten: {
     ga4: '',          // Google Analytics 4, bv. 'G-XXXXXXXXXX'   → categorie statistiek

@@ -470,7 +470,7 @@ const AFSLUITER = (thuis = '') => `<footer class="afsluiter donker" id="contact"
     <div class="knoppen"><a class="pil" href="mailto:info@vivoproducts.nl?subject=Kennismaking%20ViVo">Plan een kennismaking</a><a class="cirkel" href="mailto:info@vivoproducts.nl"><span class="rond">${pijl}</span>info@vivoproducts.nl</a></div>
     <div class="afsl-raster">
       <nav aria-label="Footer"><a href="${thuis}#diensten">Diensten</a><a href="${thuis}#techniek">Techniek</a><a href="${thuis}#werkwijze">Werkwijze</a><a href="${thuis}#projecten">Projecten</a><a href="over.html">Over ViVo</a><a href="contact.html">Contact</a></nav>
-      <div><span class="kopje">Bezoekadres</span><span>Einsteinstraat 3e<br>4207 HW Gorinchem</span><span class="kopje">Contact</span><a href="tel:+31628702422">06-28702422</a><a href="mailto:info@vivoproducts.nl">info@vivoproducts.nl</a><span class="kopje">KvK</span><span>80912532</span></div>
+      <div><span class="kopje">Vestigingsadres</span><span>Einsteinstraat 3e<br>4207 HW Gorinchem</span><span class="kopje">Contact</span><a href="tel:+31628702422">06-28702422</a><a href="mailto:info@vivoproducts.nl">info@vivoproducts.nl</a><span class="kopje">KvK</span><span>80912532</span></div>
     </div>
     <div class="afsl-onder"><small>© 2026 ViVo Products</small><span><a href="../docs/privacy/">Privacy</a><a href="../docs/voorwaarden/">Voorwaarden</a></span></div>
   </div>
@@ -1190,7 +1190,8 @@ ${KOP(thuis)}
       <dl class="kgegevens">
         <div><dt>E-mail</dt><dd><a href="mailto:${SITE.mail}">${SITE.mail}</a></dd></div>
         <div><dt>Telefoon</dt><dd><a href="tel:${SITE.telefoonLink}">${SITE.telefoon}</a></dd></div>
-        <div><dt>Bezoekadres</dt><dd>${SITE.adres}<br>${SITE.postcode} ${SITE.plaats}<br><a href="${route}" target="_blank" rel="noopener" style="font-size:16px;font-weight:400">Route plannen ↗</a></dd></div>
+        <div><dt>Bereikbaar</dt><dd>${(SITE.openingstijden || []).map(o => o.tekst).join('<br>')}</dd></div>
+        <div><dt>Vestigingsadres</dt><dd>${SITE.adres}<br>${SITE.postcode} ${SITE.plaats}<br><a href="${route}" target="_blank" rel="noopener" style="font-size:16px;font-weight:400">Route plannen ↗</a></dd></div>
         <div><dt>KvK</dt><dd>${SITE.kvk}</dd></div>
       </dl>
       <div class="kknoppen"><a class="pil" href="mailto:${SITE.mail}?subject=Kennismaking%20ViVo">Mail direct</a><a class="pil licht" href="tel:${SITE.telefoonLink}">Bel ${SITE.telefoon}</a></div>

@@ -286,7 +286,8 @@ ${CASES.map(c => `- [${c.naam}](${SITE.basis}/werk/${c.slug}/): ${c.kort}`).join
 
 - E-mail: ${SITE.mail}
 - Telefoon: ${SITE.telefoon}
-- Bezoekadres: ${volledigAdres()}
+- Vestigingsadres: ${volledigAdres()}
+- Bereikbaar: ${(SITE.openingstijden || []).map(o => o.tekst).join(', ')}
 - KvK: ${SITE.kvk}
 
 ## Juridisch

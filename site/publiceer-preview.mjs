@@ -95,6 +95,7 @@ const LD_BEDRIJF = {
   address: { '@type': 'PostalAddress', streetAddress: SITE.adres, postalCode: SITE.postcode, addressLocality: SITE.plaats, addressCountry: 'NL' },
   areaServed: { '@type': 'Country', name: 'Nederland' }, founder: PERSOON,
   identifier: { '@type': 'PropertyValue', propertyID: 'KvK', value: SITE.kvk },
+  openingHoursSpecification: (SITE.openingstijden || []).map(o => ({ '@type': 'OpeningHoursSpecification', dayOfWeek: o.dagen.map(d => ({ Mo: 'Monday', Tu: 'Tuesday', We: 'Wednesday', Th: 'Thursday', Fr: 'Friday', Sa: 'Saturday', Su: 'Sunday' })[d]), opens: o.van, closes: o.tot })),
   knowsAbout: ['Webdesign', 'Websites', 'Webshops', 'Webapplicaties', 'Branding', 'UI/UX-ontwerp', 'Hosting en onderhoud'],
 };
 const LD_PERSOON = { '@type': 'Person', ...PERSOON, name: 'Thomas', jobTitle: 'Oprichter, webdesigner en developer', worksFor: BEDRIJF, image: `${B}/beelden/over/thomas.jpg`, url: `${B}/over/` };
