@@ -134,9 +134,11 @@ Ook als `vivo-preview` in `.claude/launch.json`.
    - **Eigen domein (4 okt 2026):** vivoproducts.nl → GitHub Pages. Strato-pakket = Mail Plus (domein + mail, géén webhosting).
      DNS bij Strato: A `185.199.108.153`, AAAA `2606:50c0:8000::153` (Strato staat één adres per type toe), www volgt het
      hoofddomein, **MX `smtp.rzone.de` ongemoeid**. www: CNAME `www` → `thomv-flow8.github.io` (Strato: DNS → TXT- en CNAME-records,
-     voorvoegsel www). **Hoofdadres = https://www.vivoproducts.nl** (keuze Thomas); vivoproducts.nl en het oude github.io-adres
-     sturen door. `docs/CNAME` = www.vivoproducts.nl (bouw.mjs) + custom domain in Pages-instellingen, https afgedwongen.
-     `SITE.basis` en `SITE.url` = https://www.vivoproducts.nl.
+     voorvoegsel www). **Hoofdadres = https://vivoproducts.nl (zonder www).** Thomas koos eerst www, maar het www-certificaat
+     bleef bij GitHub ruim een uur op "dns_changed" hangen → op 4 okt 2026 teruggezet (afspraak met Thomas). www en het oude
+     github.io-adres sturen door. `docs/CNAME` = vivoproducts.nl (bouw.mjs) + custom domain in Pages-instellingen; https afdwingen
+     kan pas als het certificaat "approved" is. **Let op:** custom domain via de API los-/aankoppelen laat GitHub zelf commits
+     "Delete/Create CNAME" maken → daarna `git pull --ff-only`. `SITE.basis` en `SITE.url` = https://vivoproducts.nl.
    - **Cookies / meten (keuze Thomas: analytics + marketing):** ID's in `SITE.meten` (`ga4`, `googleAds`, `metaPixel`).
      **Leeg = uit**: geen melding, geen scripts, privacytekst "geen cookies". Ingevuld → automatisch cookiemelding
      (`site/toestemming.js`: niets laden vóór toestemming, weigeren even makkelijk als accepteren, Consent Mode v2,
