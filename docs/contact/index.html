@@ -315,7 +315,7 @@ section.projecten { position: relative; background: var(--papier-2); padding-top
       <div class="kveld"><label for="k-tel">Telefoon <span>(optioneel)</span></label><input id="k-tel" name="telefoon" type="tel" autocomplete="tel" enterkeyhint="next"></div>
       <div class="kveld"><label for="k-bericht">Waar kan ViVo je mee helpen?</label><textarea id="k-bericht" name="bericht" required></textarea></div>
       <div class="kval" inert><label for="k-web">Laat dit veld leeg</label><input id="k-web" name="website" tabindex="-1" autocomplete="off"></div>
-      <button class="pil" type="submit">Verstuur via je mailprogramma</button>
+      <button class="pil" type="submit">Verstuur bericht</button>
       <p class="kmelding" role="status" aria-live="polite"></p>
       <p class="kopmerking">We gebruiken je gegevens alleen om je bericht te beantwoorden. Zie de <a href="../privacy/">privacyverklaring</a>.</p>
     </form>
@@ -391,7 +391,7 @@ if (!rustig) {
 gsap.to('.lus-donker', { rotate: -10, x: -60, y: 30, scale: 1.08, duration: 18, ease: 'sine.inOut', yoyo: true, repeat: -1 });
 gsap.from('.khero .w > *', { y: 30, opacity: 0, duration: 1, stagger: 0.1, ease: 'power3.out' });
 }
-const SLEUTEL = "", MAIL = "info@vivoproducts.nl";
+const SLEUTEL = "9b22effe-1f4f-4a2b-a741-f642c1b603a7", MAIL = "info@vivoproducts.nl";
 const form = document.querySelector('.kformulier'), melding = form.querySelector('.kmelding'), knop = form.querySelector('button');
 const meld = (tekst, fout) => { melding.textContent = tekst; melding.classList.toggle('fout', !!fout); };
 form.addEventListener('submit', async e => {

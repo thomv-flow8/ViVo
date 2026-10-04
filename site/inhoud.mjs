@@ -22,7 +22,7 @@ export const SITE = {
   // Vul een ID in en de cookiemelding, cookieparagraaf en /cookies/ worden automatisch actief.
   // Contactformulier: leeg = formulier opent het mailprogramma met het bericht ingevuld. Met een Web3Forms-sleutel
   // (gratis account op web3forms.com, aan te maken door Thomas) worden berichten direct verstuurd; de privacytekst past zich aan.
-  formulier: { web3forms: '' },
+  formulier: { web3forms: '9b22effe-1f4f-4a2b-a741-f642c1b603a7' }, // Web3Forms-sleutel (openbaar bedoeld; stuurt alleen naar info@)
   // Verificatiecodes van Google Search Console en Bing Webmaster Tools (alleen de code uit de meta-tag). Leeg = niets.
   // Openingstijden = gelijk aan het Google Bedrijfsprofiel (bereikbaar naast de vaste baan). Dag: Mo Tu We Th Fr Sa Su.
   openingstijden: [{ dagen: ['Mo', 'Tu', 'We', 'Th', 'Fr'], van: '18:00', tot: '21:00', tekst: 'ma–vr 18:00–21:00' }, { dagen: ['Sa'], van: '10:00', tot: '15:00', tekst: 'za 10:00–15:00' }],
