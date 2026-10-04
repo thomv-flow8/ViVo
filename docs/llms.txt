@@ -23,6 +23,7 @@ ViVo (ViVo Products) is een webdesignbureau uit Gorinchem. Eén vast aanspreekpu
 ## Over ViVo
 
 - [Over ViVo](https://thomv-flow8.github.io/ViVo/over/): het verhaal van Thomas, oprichter van ViVo
+- [Contact](https://thomv-flow8.github.io/ViVo/contact/): contactgegevens en contactformulier
 
 ## Contact
 

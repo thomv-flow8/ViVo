@@ -10,6 +10,7 @@ const opsomming = l => l.length > 1 ? l.slice(0, -1).join(', ') + ' en ' + l.at(
 // Welke voorwaarden gelden, op basis van de ingevulde meet-ID's
 export function meetVlaggen(meten = {}) {
   const M = { ga4: !!meten.ga4, googleAds: !!meten.googleAds, metaPixel: !!meten.metaPixel };
+  M.formulier = !!(SITE.formulier && SITE.formulier.web3forms);
   M.google = M.ga4 || M.googleAds; M.marketing = M.googleAds || M.metaPixel; M.meten = M.ga4 || M.marketing; M.geenMeten = !M.meten;
   return M;
 }

@@ -124,6 +124,13 @@ Ook als `vivo-preview` in `.claude/launch.json`.
      kennismaking op de homepage vóór de afsluiter. Cases: `vertrekpunt` + vier `onderdelen` per case (inhoud.mjs) → sectie
      "Wat we bouwden" (>300 woorden per case). Bron: wat Thomas vertelde (DELPHI/Mozi vervangen een verouderde site, THNK
      helemaal nieuw, Flow8 vanuit zijn werk voor planning/workflow) + wat op de sites staat — geen verzonnen cijfers.
+   - **Contact, JSON-LD, sneller (4 okt 2026):** pagina `/contact/` (preview-motion.mjs `contactPagina`): gegevens, route-link (geen
+     ingesloten kaart: cookies/Google), formulier met controle + spamval. **`SITE.formulier.web3forms` leeg** = formulier opent het
+     mailprogramma; met een Web3Forms-sleutel (account door Thomas) wordt direct verstuurd en verschijnt de privacyzin (`als: formulier`).
+     Contact-knop in de kopbalk → /contact/. JSON-LD via `ld` in publiceer(): ProfessionalService + Person + WebSite (home),
+     ProfilePage (over), ContactPage, BreadcrumbList (cases). `SITE.verificatie` {google, bing} → meta-tags op de homepage.
+     three.js laadt pas bij de eerste 3D-vorm in beeld of 1,5 s na load. Publiceren controleert verwijzingen ná alle pagina's.
+     **Regressietest: `node tools/regressie.mjs [url]`** (alle pagina's, desktop + mobiel).
    - **Cookies / meten (keuze Thomas: analytics + marketing):** ID's in `SITE.meten` (`ga4`, `googleAds`, `metaPixel`).
      **Leeg = uit**: geen melding, geen scripts, privacytekst "geen cookies". Ingevuld → automatisch cookiemelding
      (`site/toestemming.js`: niets laden vóór toestemming, weigeren even makkelijk als accepteren, Consent Mode v2,

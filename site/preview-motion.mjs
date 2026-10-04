@@ -457,10 +457,10 @@ const CSS = `
   .noot { position: fixed; left: 50%; bottom: 14px; transform: translateX(-50%); z-index: 60; font: 12px/1.4 system-ui, sans-serif; background: rgba(20,20,20,.88); color: #eee; padding: 8px 14px; border-radius: 100px; }
 `;
 const KOP = (thuis = '') => `<a class="overslaan" href="#inhoud">Direct naar de inhoud</a>
-<header class="kop"><div class="w"><a class="logo morf" href="${thuis || '#'}" aria-label="ViVo — naar boven"><span class="lm-merk">${logo('vivo-beeldmerk')}</span><span class="lm-woord">${logo('vivo-woordmerk')}</span></a><nav><span class="nav-pil" aria-hidden="true"></span><a href="${thuis}#diensten">Diensten</a><a href="${thuis}#techniek">Techniek</a><a href="${thuis}#werkwijze">Werkwijze</a><a href="${thuis}#projecten">Projecten</a><a href="over.html">Over</a></nav><a class="pil" href="${thuis}#contact">Contact</a><button class="menuknop" type="button" aria-label="Menu openen" aria-expanded="false" aria-controls="menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9h18M8 15h13" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></button></div></header>
+<header class="kop"><div class="w"><a class="logo morf" href="${thuis || '#'}" aria-label="ViVo — naar boven"><span class="lm-merk">${logo('vivo-beeldmerk')}</span><span class="lm-woord">${logo('vivo-woordmerk')}</span></a><nav><span class="nav-pil" aria-hidden="true"></span><a href="${thuis}#diensten">Diensten</a><a href="${thuis}#techniek">Techniek</a><a href="${thuis}#werkwijze">Werkwijze</a><a href="${thuis}#projecten">Projecten</a><a href="over.html">Over</a></nav><a class="pil" href="contact.html">Contact</a><button class="menuknop" type="button" aria-label="Menu openen" aria-expanded="false" aria-controls="menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9h18M8 15h13" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></button></div></header>
 <div class="menu" id="menu" role="dialog" aria-modal="true" aria-label="Menu">
   <div class="boven">${logo('vivo-horizontaal', 'logo-svg')}<button class="menuknop" type="button" aria-label="Menu sluiten" data-sluit><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></button></div>
-  <ul>${[['Diensten', thuis + '#diensten'], ['Techniek', thuis + '#techniek'], ['Werkwijze', thuis + '#werkwijze'], ['Projecten', thuis + '#projecten'], ['Over ViVo', 'over.html'], ['Contact', thuis + '#contact']].map(([t, h]) => `<li><a href="${h}" data-sluit>${t}</a></li>`).join('')}</ul>
+  <ul>${[['Diensten', thuis + '#diensten'], ['Techniek', thuis + '#techniek'], ['Werkwijze', thuis + '#werkwijze'], ['Projecten', thuis + '#projecten'], ['Over ViVo', 'over.html'], ['Contact', 'contact.html']].map(([t, h]) => `<li><a href="${h}" data-sluit>${t}</a></li>`).join('')}</ul>
   <p class="onder">Een website laten maken?<br><a href="mailto:info@vivoproducts.nl">info@vivoproducts.nl</a> · <a href="tel:+31628702422">06-28702422</a></p>
 </div>`;
 const AFSLUITER = (thuis = '') => `<footer class="afsluiter donker" id="contact" aria-labelledby="afsluiter-kop">
@@ -469,7 +469,7 @@ const AFSLUITER = (thuis = '') => `<footer class="afsluiter donker" id="contact"
     <span class="label">Contact</span><h2 id="afsluiter-kop">Klaar voor een website die werkt?</h2>
     <div class="knoppen"><a class="pil" href="mailto:info@vivoproducts.nl?subject=Kennismaking%20ViVo">Plan een kennismaking</a><a class="cirkel" href="mailto:info@vivoproducts.nl"><span class="rond">${pijl}</span>info@vivoproducts.nl</a></div>
     <div class="afsl-raster">
-      <nav aria-label="Footer"><a href="${thuis}#diensten">Diensten</a><a href="${thuis}#techniek">Techniek</a><a href="${thuis}#werkwijze">Werkwijze</a><a href="${thuis}#projecten">Projecten</a><a href="over.html">Over ViVo</a></nav>
+      <nav aria-label="Footer"><a href="${thuis}#diensten">Diensten</a><a href="${thuis}#techniek">Techniek</a><a href="${thuis}#werkwijze">Werkwijze</a><a href="${thuis}#projecten">Projecten</a><a href="over.html">Over ViVo</a><a href="contact.html">Contact</a></nav>
       <div><span class="kopje">Bezoekadres</span><span>Einsteinstraat 3e<br>4207 HW Gorinchem</span><span class="kopje">Contact</span><a href="tel:+31628702422">06-28702422</a><a href="mailto:info@vivoproducts.nl">info@vivoproducts.nl</a><span class="kopje">KvK</span><span>80912532</span></div>
     </div>
     <div class="afsl-onder"><small>© 2026 ViVo Products</small><span><a href="../docs/privacy/">Privacy</a><a href="../docs/voorwaarden/">Voorwaarden</a></span></div>
@@ -622,7 +622,15 @@ ${AFSLUITER()}
 
 <script type="importmap">{ "imports": { "three": "../node_modules/three/build/three.module.js", "three/addons/": "../node_modules/three/examples/jsm/" } }</script>
 <script src="../docs/js/vivo.js" defer></script>
-<script type="module" src="../site/drie.js"></script>
+<script type="module">
+  // three.js pas laden als de 3D-vormen (diensten) bijna in beeld komen: de hero laadt sneller
+  const eersteVorm = document.querySelector('.vorm-3d');
+  if (eersteVorm) {
+    let klaar = false; const laad = () => { if (!klaar) { klaar = true; k.disconnect(); import('../site/drie.js'); } };
+    const k = new IntersectionObserver(([e]) => { if (e.isIntersecting) laad(); }, { rootMargin: '0px' }); k.observe(eersteVorm);
+    addEventListener('load', () => setTimeout(laad, 1500)); // of kort na het laden van de pagina, wat eerder komt
+  }
+</script>
 <script src="../node_modules/gsap/dist/gsap.min.js"></script>
 <script src="../node_modules/gsap/dist/ScrollTrigger.min.js"></script>
 <script>
@@ -1122,3 +1130,124 @@ ${CURSOR_JS}
 }
 writeFileSync(join(root, 'docs-preview', 'over.html'), overPagina());
 console.log('Geschreven: docs-preview/over.html');
+
+// ════ Contact (eigen pagina) — gegevens + formulier. Zonder Web3Forms-sleutel opent het formulier het mailprogramma. ════
+const CONTACT_CSS = `
+  .khero { padding: calc(var(--kop-hoogte) + clamp(40px, 6vw, 96px)) 0 var(--sectie); }
+  .khero .w { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: clamp(40px, 7vw, 112px); align-items: start; }
+  .khero h1 { font-size: clamp(44px, 6vw, 96px); margin: 22px 0 24px; }
+  .khero .intro { font-size: clamp(19px, 1.6vw, 23px); line-height: 1.45; color: var(--grijs); margin: 0 0 40px; max-width: 34ch; }
+  .kgegevens { display: grid; gap: 26px; padding-top: 28px; border-top: 1px solid var(--lijn); }
+  .kgegevens dt { font: 500 var(--label)/1 var(--mono); letter-spacing: var(--ls-label); text-transform: uppercase; color: var(--grijs); margin-bottom: 9px; }
+  .kgegevens dd { margin: 0; font-size: 19px; font-weight: 500; } .kgegevens a { color: inherit; text-underline-offset: 4px; }
+  .kknoppen { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+  .kknoppen .pil.licht { background: transparent; color: var(--inkt); box-shadow: inset 0 0 0 1.5px var(--inkt); }
+  .kformulier { background: var(--papier-2); border-radius: var(--r); padding: clamp(24px, 4vw, 48px); display: grid; gap: 18px; }
+  .kformulier h2 { font-size: var(--h3); margin: 0 0 4px; }
+  .kveld { display: grid; gap: 8px; } .kveld label { font-weight: 500; font-size: 15px; } .kveld label span { color: var(--grijs); font-weight: 400; }
+  .kveld input, .kveld textarea { font: inherit; font-size: 17px; color: var(--inkt); background: #fff; border: 1.5px solid var(--lijn); border-radius: 12px; padding: 13px 15px; width: 100%; box-sizing: border-box; transition: border-color .2s; }
+  .kveld textarea { min-height: 150px; resize: vertical; }
+  .kveld input:focus, .kveld textarea:focus { outline: none; border-color: var(--inkt); }
+  .kformulier .pil { justify-self: start; border: 0; cursor: pointer; font: inherit; font-weight: 600; }
+  .kformulier .kopmerking { color: var(--grijs); font-size: 14px; margin: 0; } .kformulier .kopmerking a { color: inherit; }
+  .kmelding { margin: 0; font-weight: 500; min-height: 1.4em; } .kmelding.fout { color: #b42318; }
+  .kval { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+  @media (max-width: 860px) { .khero .w { grid-template-columns: 1fr; } }`;
+function contactPagina() {
+  const thuis = 'motion.html', sleutel = (SITE.formulier || {}).web3forms || '';
+  const route = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(`${SITE.adres}, ${SITE.postcode} ${SITE.plaats}`);
+  return `<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contact (preview)</title>
+<script>document.documentElement.classList.add('js')</script>
+<link rel="stylesheet" href="../docs/css/vivo.css">
+<style>
+${CSS}
+${CURSOR_CSS}
+${CONTACT_CSS}
+</style>
+</head>
+<body>
+${KOP(thuis)}
+
+<main id="inhoud">
+<section class="khero" aria-labelledby="contact-kop">
+  <div class="w">
+    <div>
+      <span class="label">Contact</span>
+      <h1 id="contact-kop">Laten we kennismaken.</h1>
+      <p class="intro">Vertel kort wat je wilt bereiken. Je krijgt persoonlijk antwoord, van Thomas zelf.</p>
+      <dl class="kgegevens">
+        <div><dt>E-mail</dt><dd><a href="mailto:${SITE.mail}">${SITE.mail}</a></dd></div>
+        <div><dt>Telefoon</dt><dd><a href="tel:${SITE.telefoonLink}">${SITE.telefoon}</a></dd></div>
+        <div><dt>Bezoekadres</dt><dd>${SITE.adres}<br>${SITE.postcode} ${SITE.plaats}<br><a href="${route}" target="_blank" rel="noopener" style="font-size:16px;font-weight:400">Route plannen ↗</a></dd></div>
+        <div><dt>KvK</dt><dd>${SITE.kvk}</dd></div>
+      </dl>
+      <div class="kknoppen"><a class="pil" href="mailto:${SITE.mail}?subject=Kennismaking%20ViVo">Mail direct</a><a class="pil licht" href="tel:${SITE.telefoonLink}">Bel ${SITE.telefoon}</a></div>
+    </div>
+    <form class="kformulier" novalidate>
+      <h2>Stuur een bericht</h2>
+      <div class="kveld"><label for="k-naam">Naam</label><input id="k-naam" name="naam" autocomplete="name" required></div>
+      <div class="kveld"><label for="k-email">E-mail</label><input id="k-email" name="email" type="email" autocomplete="email" required></div>
+      <div class="kveld"><label for="k-tel">Telefoon <span>(optioneel)</span></label><input id="k-tel" name="telefoon" type="tel" autocomplete="tel"></div>
+      <div class="kveld"><label for="k-bericht">Waar kan ViVo je mee helpen?</label><textarea id="k-bericht" name="bericht" required></textarea></div>
+      <div class="kval" aria-hidden="true"><label for="k-web">Laat dit veld leeg</label><input id="k-web" name="website" tabindex="-1" autocomplete="off"></div>
+      <button class="pil" type="submit">${sleutel ? 'Verstuur bericht' : 'Verstuur via je mailprogramma'}</button>
+      <p class="kmelding" role="status" aria-live="polite"></p>
+      <p class="kopmerking">We gebruiken je gegevens alleen om je bericht te beantwoorden. Zie de <a href="../docs/privacy/">privacyverklaring</a>.</p>
+    </form>
+  </div>
+</section>
+</main>
+
+${AFSLUITER(thuis)}
+
+<script src="../docs/js/vivo.js" defer></script>
+<script src="../node_modules/gsap/dist/gsap.min.js"></script>
+<script src="../node_modules/gsap/dist/ScrollTrigger.min.js"></script>
+<script>
+  const rustig = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  gsap.registerPlugin(ScrollTrigger);
+${NAV_JS}
+  const kopEl = document.querySelector('.kop'), compact = () => kopEl.classList.toggle('compact', scrollY > 80);
+  addEventListener('scroll', compact, { passive: true }); compact();
+${CURSOR_JS}
+  if (!rustig) {
+    gsap.to('.lus-donker', { rotate: -10, x: -60, y: 30, scale: 1.08, duration: 18, ease: 'sine.inOut', yoyo: true, repeat: -1 });
+    gsap.from('.khero .w > *', { y: 30, opacity: 0, duration: 1, stagger: 0.1, ease: 'power3.out' });
+  }
+  // ── Formulier: controleren, dan versturen via Web3Forms (als er een sleutel is) of het mailprogramma openen ──
+  const SLEUTEL = ${JSON.stringify(sleutel)}, MAIL = ${JSON.stringify(SITE.mail)};
+  const form = document.querySelector('.kformulier'), melding = form.querySelector('.kmelding'), knop = form.querySelector('button');
+  const meld = (tekst, fout) => { melding.textContent = tekst; melding.classList.toggle('fout', !!fout); };
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    if (form.website.value) return; // spamval: dit veld vullen alleen bots in
+    const leeg = [...form.querySelectorAll('[required]')].find(v => !v.value.trim() || (v.type === 'email' && !/^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$/.test(v.value.trim())));
+    if (leeg) { meld(leeg.type === 'email' && leeg.value ? 'Controleer je e-mailadres.' : 'Vul je naam, e-mailadres en bericht in.', true); leeg.focus(); return; }
+    const d = Object.fromEntries(new FormData(form));
+    if (!SLEUTEL) {
+      const tekst = 'Naam: ' + d.naam + '\\nE-mail: ' + d.email + '\\nTelefoon: ' + (d.telefoon || '-') + '\\n\\n' + d.bericht;
+      location.href = 'mailto:' + MAIL + '?subject=' + encodeURIComponent('Kennismaking via de website') + '&body=' + encodeURIComponent(tekst);
+      meld('Je mailprogramma opent met je bericht. Verstuur het daar.');
+      return;
+    }
+    knop.disabled = true; meld('Bezig met versturen…');
+    try {
+      const r = await fetch('https://api.web3forms.com/submit', { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ access_key: SLEUTEL, subject: 'Nieuw bericht via de website van ViVo', from_name: d.naam, email: d.email, telefoon: d.telefoon || '-', message: d.bericht }) });
+      const j = await r.json();
+      if (!j.success) throw new Error(j.message);
+      form.reset(); meld('Bedankt! Je bericht is verstuurd. Je hoort snel van me.');
+    } catch { meld('Versturen lukte niet. Mail of bel gerust direct: ' + MAIL, true); }
+    finally { knop.disabled = false; }
+  });
+</script>
+</body>
+</html>
+`;
+}
+writeFileSync(join(root, 'docs-preview', 'contact.html'), contactPagina());
+console.log('Geschreven: docs-preview/contact.html');

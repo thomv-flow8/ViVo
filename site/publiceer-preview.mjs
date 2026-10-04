@@ -31,17 +31,18 @@ for (const f of OG) kopieer(`beelden/og/${f}`, `og/${f}`);
 
 // ── Eén pagina publiceren ──
 // r = pad van de pagina naar de root van de site ('' voor de homepage, '../../' voor een case)
-function publiceer(bron, doel, r, { titel, beschrijving, pad, og }) {
+function publiceer(bron, doel, r, { titel, beschrijving, pad, og, ld, verif }) {
   let p = readFileSync(join(root, 'docs-preview', bron), 'utf8');
   // 1. Paden van docs-preview/ naar de plek in docs/ (specifiek vóór algemeen)
   const PADEN = [
     ['<script type="importmap">{ "imports": { "three": "../node_modules/three/build/three.module.js", "three/addons/": "../node_modules/three/examples/jsm/" } }</script>\n', ''],
-    ['<script type="module" src="../site/drie.js"></script>', `<script type="module" src="${r}js/drie.js"></script>`],
+    ["import('../site/drie.js')", `import('./${r}js/drie.js')`], // three.js pas laden als de vormen in beeld komen
     ['../node_modules/gsap/dist/', `${r}js/`],
     ['../beelden/', `${r}beelden/`],
     ['../docs/', r],
     ['motion.html', r || './'],
     ['over.html', `${r}over/`],
+    ['contact.html', `${r}contact/`],
     ...CASES.map(c => [`case-${c.slug}.html`, `${r}werk/${c.slug}/`]),
   ];
   for (const [van, naar] of PADEN) p = p.split(van).join(naar);
@@ -64,6 +65,8 @@ function publiceer(bron, doel, r, { titel, beschrijving, pad, og }) {
 <meta name="theme-color" content="#15171c">
 <link rel="icon" href="${r}favicon.svg" type="image/svg+xml">
 <link rel="sitemap" type="application/xml" href="${r}sitemap.xml">`);
+  if (verif) p = vervang(p, '</head>', verif + '\n</head>');
+  if (ld) p = vervang(p, '</head>', `<script type="application/ld+json">${JSON.stringify({ '@context': 'https://schema.org', '@graph': ld })}</script>\n</head>`);
   p = p.replace(/<div class="noot">[^<]*<\/div>\s*/, '').replace(/\n  \.noot \{[^}]*\}/, ''); // previewlabel + stijl eruit
   // 3. Verkleinen: commentaar en overbodige witruimte uit inline <style> en <script> (geen JSON/importmap)
   p = p.replace(/<!--[\s\S]*?-->/g, '');
@@ -75,16 +78,27 @@ function publiceer(bron, doel, r, { titel, beschrijving, pad, og }) {
       `<a href="${r}privacy/">Privacy</a><a href="${r}voorwaarden/">Voorwaarden</a><a href="${r}cookies/">Cookies</a><a href="#" data-cookie-instellingen>Cookie-instellingen</a>`);
     p = vervang(p, '</body>', `<script>window.VIVO_METEN = ${JSON.stringify({ ...M, pad: r })};</script>\n<script src="${r}js/toestemming.js" defer></script>\n</body>`);
   }
-  // 5. Controle: elke lokale verwijzing moet in docs/ bestaan
+  // 5. Schrijven; de controle op lokale verwijzingen volgt als alle pagina's er staan (ze verwijzen naar elkaar)
   const map = join(docs, dirname(doel));
-  for (const [, ref] of p.matchAll(/(?:src|href)="(?!https?:|#|mailto:|tel:|data:)([^"#?]*)/g)) {
-    if (!ref) continue;
-    const pad2 = join(map, ref.endsWith('/') ? ref + 'index.html' : ref);
-    if (pad2 !== join(docs, doel) && !existsSync(pad2)) throw new Error(`${doel}: ontbreekt ${ref}`); // verwijzing naar zichzelf mag
-  }
   mkdirSync(map, { recursive: true });
   writeFileSync(join(docs, doel), p);
+  for (const [, ref] of p.matchAll(/(?:src|href)="(?!https?:|#|mailto:|tel:|data:)([^"#?]*)/g)) if (ref) CONTROLES.push([doel, ref, join(map, ref.endsWith('/') ? ref + 'index.html' : ref)]);
 }
+const CONTROLES = [];
+
+// ── Gestructureerde gegevens (schema.org, JSON-LD) — adressen via SITE.basis ──
+const B = SITE.basis, BEDRIJF = { '@id': `${B}/#bedrijf` }, PERSOON = { '@id': `${B}/over/#thomas` };
+const LD_BEDRIJF = {
+  '@type': 'ProfessionalService', ...BEDRIJF, name: SITE.bedrijfKort, legalName: SITE.bedrijf, url: `${B}/`,
+  image: `${B}/og/home.jpg`, logo: `${B}/favicon.svg`, description: SITE.beschrijving,
+  email: SITE.mail, telephone: SITE.telefoonLink,
+  address: { '@type': 'PostalAddress', streetAddress: SITE.adres, postalCode: SITE.postcode, addressLocality: SITE.plaats, addressCountry: 'NL' },
+  areaServed: { '@type': 'Country', name: 'Nederland' }, founder: PERSOON,
+  identifier: { '@type': 'PropertyValue', propertyID: 'KvK', value: SITE.kvk },
+  knowsAbout: ['Webdesign', 'Websites', 'Webshops', 'Webapplicaties', 'Branding', 'UI/UX-ontwerp', 'Hosting en onderhoud'],
+};
+const LD_PERSOON = { '@type': 'Person', ...PERSOON, name: 'Thomas', jobTitle: 'Oprichter, webdesigner en developer', worksFor: BEDRIJF, image: `${B}/beelden/over/thomas.jpg`, url: `${B}/over/` };
+const kruimel = (...stappen) => ({ '@type': 'BreadcrumbList', itemListElement: stappen.map(([naam, url], i) => ({ '@type': 'ListItem', position: i + 1, name: naam, item: url })) });
 
 // ── Titels en beschrijvingen ──
 const kortNaam = c => c.naam.length > 20 ? c.klant : c.naam;
@@ -94,12 +108,21 @@ const caseBeschrijving = c => {           // ±120–160 tekens: intro, zo nodig
 };
 
 // Volgorde: eerst Over (daar verwijzen alle menu's naar), dan cases en juridisch, als laatste de homepage
-publiceer('over.html', 'over/index.html', '../', { titel: 'Over ViVo — Thomas, webdesign en websites uit Gorinchem', beschrijving: 'Achter ViVo staat Thomas: altijd al handig met computers en IT, nu bouwer van websites, webshops en webapps voor ondernemers. Eén vast aanspreekpunt.', pad: '/over/', og: 'over.jpg' });
+publiceer('over.html', 'over/index.html', '../', { titel: 'Over ViVo — Thomas, webdesign en websites uit Gorinchem', beschrijving: 'Achter ViVo staat Thomas: altijd al handig met computers en IT, nu bouwer van websites, webshops en webapps voor ondernemers. Eén vast aanspreekpunt.', pad: '/over/', og: 'over.jpg', ld: [LD_PERSOON, { '@type': 'ProfilePage', url: `${B}/over/`, mainEntity: PERSOON }, kruimel(['Home', `${B}/`], ['Over ViVo', `${B}/over/`])] });
 for (const c of CASES) publiceer(`case-${c.slug}.html`, `werk/${c.slug}/index.html`, '../../',
-  { titel: `${kortNaam(c)} — case | ViVo webdesign Gorinchem`, beschrijving: caseBeschrijving(c), pad: `/werk/${c.slug}/`, og: `${c.slug}.jpg` });
+  { titel: `${kortNaam(c)} — case | ViVo webdesign Gorinchem`, beschrijving: caseBeschrijving(c), pad: `/werk/${c.slug}/`, og: `${c.slug}.jpg`, ld: [kruimel(['Home', `${B}/`], ['Projecten', `${B}/#projecten`], [c.naam, `${B}/werk/${c.slug}/`])] });
 for (const doc of [PRIVACY, VOORWAARDEN, ...(MEET.meten ? [COOKIES] : [])]) publiceer(`${doc.slug}.html`, `${doc.slug}/index.html`, '../',
   { titel: doc.seoTitel, beschrijving: doc.omschrijving, pad: `/${doc.slug}/`, og: 'home.jpg' });
-publiceer('motion.html', 'index.html', '', { titel: SITE.seoTitel, beschrijving: SITE.beschrijving, pad: '/', og: 'home.jpg' });
+// Verificatie voor Search Console / Bing (alleen op de homepage nodig)
+const VERIF = SITE.verificatie || {};
+const verifTags = [VERIF.google && `<meta name="google-site-verification" content="${esc(VERIF.google)}">`, VERIF.bing && `<meta name="msvalidate.01" content="${esc(VERIF.bing)}">`].filter(Boolean).join('\n');
+publiceer('motion.html', 'index.html', '', { verif: verifTags, titel: SITE.seoTitel, beschrijving: SITE.beschrijving, pad: '/', og: 'home.jpg', ld: [LD_BEDRIJF, LD_PERSOON, { '@type': 'WebSite', url: `${B}/`, name: SITE.bedrijfKort, inLanguage: 'nl-NL', publisher: BEDRIJF }] });
+
+publiceer('contact.html', 'contact/index.html', '../', { titel: 'Contact — ViVo webdesign Gorinchem', beschrijving: 'Neem contact op met ViVo voor een website, webshop of webapp. Mail, bel of stuur een bericht — je krijgt persoonlijk antwoord van Thomas, in Gorinchem.', pad: '/contact/', og: 'contact.jpg', ld: [{ '@type': 'ContactPage', url: `${B}/contact/`, about: BEDRIJF }, kruimel(['Home', `${B}/`], ['Contact', `${B}/contact/`])] });
+
+// Controle: elke lokale verwijzing in alle gepubliceerde pagina's moet bestaan
+const kapot = CONTROLES.filter(([, , pad]) => !existsSync(pad));
+if (kapot.length) throw new Error('Ontbrekende verwijzingen:\n' + kapot.map(([d, r]) => `  ${d} → ${r}`).join('\n'));
 
 // Oud previewadres → homepage
 mkdirSync(join(docs, 'preview'), { recursive: true });

@@ -42,6 +42,7 @@ export const PRIVACY = {
     { titel: 'Als je contact opneemt', blokken: [
       'Mail of bel je ons, dan verwerken we de gegevens die je zelf deelt:',
       ['je naam en eventueel je bedrijfsnaam', 'je e-mailadres en/of telefoonnummer', 'de inhoud van je bericht en wat we daarna afspreken'],
+      { als: 'formulier', blok: 'Gebruik je het contactformulier op de website, dan wordt je bericht verstuurd via Web3Forms, een dienst die formulieren doorstuurt naar ons e-mailadres. Web3Forms gebruikt je gegevens alleen om het bericht af te leveren.' },
       'We gebruiken deze gegevens alleen om je vraag te beantwoorden en, als je dat wilt, een offerte te maken. Grondslag: de stappen die nodig zijn vóór een eventuele overeenkomst, en ons gerechtvaardigd belang om berichten te kunnen beantwoorden.',
     ] },
     { titel: 'Als je klant wordt', blokken: [

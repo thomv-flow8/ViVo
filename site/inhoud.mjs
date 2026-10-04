@@ -20,6 +20,11 @@ export const SITE = {
   jaar: 2026,
   // Meten (statistiek + marketing). Leeg = uit: geen cookiemelding, geen scripts, privacytekst 'geen cookies'.
   // Vul een ID in en de cookiemelding, cookieparagraaf en /cookies/ worden automatisch actief.
+  // Contactformulier: leeg = formulier opent het mailprogramma met het bericht ingevuld. Met een Web3Forms-sleutel
+  // (gratis account op web3forms.com, aan te maken door Thomas) worden berichten direct verstuurd; de privacytekst past zich aan.
+  formulier: { web3forms: '' },
+  // Verificatiecodes van Google Search Console en Bing Webmaster Tools (alleen de code uit de meta-tag). Leeg = niets.
+  verificatie: { google: '', bing: '' },
   meten: {
     ga4: '',          // Google Analytics 4, bv. 'G-XXXXXXXXXX'   → categorie statistiek
     googleAds: '',    // Google Ads, bv. 'AW-XXXXXXXXXX'          → categorie marketing
