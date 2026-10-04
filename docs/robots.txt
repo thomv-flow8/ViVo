@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://www.vivoproducts.nl/sitemap.xml
+Sitemap: https://vivoproducts.nl/sitemap.xml

@@ -15,15 +15,15 @@ ViVo (ViVo Products) is een webdesignbureau uit Gorinchem. Eén vast aanspreekpu
 
 ## Projecten
 
-- [THNK](https://www.vivoproducts.nl/werk/thnk/): Een donkere, grootse site voor techno- en progressive-dj en producer THNK.
-- [DELPHI Sleutelbeheersystemen](https://www.vivoproducts.nl/werk/delphi/): Een heldere, tweetalige productsite voor elektronisch sleutelbeheer.
-- [Huidzorg Mozi](https://www.vivoproducts.nl/werk/mozi/): Een warme, elegante website met webshop voor een praktijk voor huidtherapie.
-- [Flow8](https://www.vivoproducts.nl/werk/flow8/): Planning, digitale werkbonnen en klantbeheer voor de installatie- en servicebranche.
+- [THNK](https://vivoproducts.nl/werk/thnk/): Een donkere, grootse site voor techno- en progressive-dj en producer THNK.
+- [DELPHI Sleutelbeheersystemen](https://vivoproducts.nl/werk/delphi/): Een heldere, tweetalige productsite voor elektronisch sleutelbeheer.
+- [Huidzorg Mozi](https://vivoproducts.nl/werk/mozi/): Een warme, elegante website met webshop voor een praktijk voor huidtherapie.
+- [Flow8](https://vivoproducts.nl/werk/flow8/): Planning, digitale werkbonnen en klantbeheer voor de installatie- en servicebranche.
 
 ## Over ViVo
 
-- [Over ViVo](https://www.vivoproducts.nl/over/): het verhaal van Thomas, oprichter van ViVo
-- [Contact](https://www.vivoproducts.nl/contact/): contactgegevens en contactformulier
+- [Over ViVo](https://vivoproducts.nl/over/): het verhaal van Thomas, oprichter van ViVo
+- [Contact](https://vivoproducts.nl/contact/): contactgegevens en contactformulier
 
 ## Contact
 
@@ -35,5 +35,5 @@ ViVo (ViVo Products) is een webdesignbureau uit Gorinchem. Eén vast aanspreekpu
 
 ## Juridisch
 
-- [Privacyverklaring](https://www.vivoproducts.nl/privacy/)
-- [Algemene voorwaarden](https://www.vivoproducts.nl/voorwaarden/)
+- [Privacyverklaring](https://vivoproducts.nl/privacy/)
+- [Algemene voorwaarden](https://vivoproducts.nl/voorwaarden/)
