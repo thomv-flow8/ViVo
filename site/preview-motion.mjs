@@ -205,7 +205,9 @@ const CSS = `
   .mhero .cirkel { margin-top: 36px; } .mhero .cirkel:hover .rond { background: var(--maan); color: var(--nacht); border-color: var(--maan); }
   .podium { position: absolute; inset: 0; z-index: 1; overflow: hidden; }
   /* Intro (Baunfire): wit vlak met zwarte letters; het donker schuift er van links naar rechts onder vandaan */
-  .intro-wit { display: none; position: absolute; inset: 0; z-index: 5; overflow: hidden; background: var(--papier); clip-path: inset(0 0 0 0); }
+  .intro-wit { display: none; position: absolute; inset: 0; z-index: 5; overflow: hidden; background: var(--papier); will-change: transform; }
+  .intro-wit .binnen { position: absolute; inset: 0; will-change: transform; } /* schuift tegengesteld mee: inhoud blijft op zijn plek */
+  .intro .mhero .w-r > span, .intro .chev3d { will-change: transform, opacity; } /* eigen grafische laag tijdens de intro: geen haperen */
   .intro .intro-wit { display: block; animation: intro-vangnet .4s 6s forwards; } .intro-wit .letters { color: var(--inkt); }
   @keyframes intro-vangnet { to { visibility: hidden; opacity: 0; } } /* laden de scripts niet, dan blijft het niet wit */
   .mhero .w-r { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: .08em; margin-bottom: -.08em; } .mhero .w-r > span { display: inline-block; }
@@ -551,6 +553,9 @@ const html = `<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ViVo — motion-preview v11</title>
+<link rel="preload" href="../docs/fonts/Geist-SemiBold.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../docs/fonts/Geist-Regular.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../docs/fonts/GeistMono-Medium.woff2" as="font" type="font/woff2" crossorigin>
 <script>document.documentElement.classList.add('js'); if (!matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('intro')</script>
 <link rel="stylesheet" href="../docs/css/vivo.css">
 <style>
@@ -565,7 +570,7 @@ ${KOP()}
 <main id="inhoud">
 <section class="mhero" aria-labelledby="hero-kop">
   <div class="podium" aria-hidden="true"><div class="ring"></div><div class="letters">${logo('vivo-woordmerk')}</div></div>
-  <div class="intro-wit" aria-hidden="true"><div class="letters">${logo('vivo-woordmerk')}</div></div>
+  <div class="intro-wit" aria-hidden="true"><div class="binnen"><div class="letters">${logo('vivo-woordmerk')}</div></div></div>
   <div class="chev3d" aria-hidden="true"><div class="draai"><div class="zweef">${chevron3d()}</div></div></div>
   <div class="stip-groep" style="left:44%;top:22%" aria-hidden="true">${'<i></i>'.repeat(10)}</div>
   <div class="w inhoud"><div class="tekst">
@@ -628,7 +633,9 @@ ${AFSLUITER()}
   if (eersteVorm) {
     let klaar = false; const laad = () => { if (!klaar) { klaar = true; k.disconnect(); import('../site/drie.js'); } };
     const k = new IntersectionObserver(([e]) => { if (e.isIntersecting) laad(); }, { rootMargin: '0px' }); k.observe(eersteVorm);
-    addEventListener('load', () => setTimeout(laad, 1500)); // of kort na het laden van de pagina, wat eerder komt
+    // of na de intro (niet tijdens: dan hapert de kop), met een vangnet; zonder intro kort na het laden
+    if (document.documentElement.classList.contains('intro')) { document.addEventListener('vivo:intro-klaar', () => setTimeout(laad, 400), { once: true }); setTimeout(laad, 8000); }
+    else addEventListener('load', () => setTimeout(laad, 1500));
   }
 </script>
 <script src="../node_modules/gsap/dist/gsap.min.js"></script>
@@ -689,8 +696,10 @@ ${AFSLUITER()}
     label.setAttribute('aria-label', label.textContent); kopH1.setAttribute('aria-label', kopH1.textContent);
     label.innerHTML = '<span aria-hidden="true">' + [...label.textContent].map(c => '<span class="lt">' + (c === ' ' ? '&nbsp;' : c) + '</span>').join('') + '</span>'; // één binnenrij: het label is een flexbox met gap
     kopH1.innerHTML = kopH1.textContent.split(' ').map(w => '<span class="w-r" aria-hidden="true"><span>' + w + '</span></span>').join(' ');
-    const intro = gsap.timeline({ defaults: { ease: 'power4.out' }, onComplete: () => document.documentElement.classList.remove('intro') });
-    intro.to('.intro-wit', { clipPath: 'inset(0 0 0 100%)', duration: 1.3, ease: 'expo.inOut', delay: 0.35 })
+    const intro = gsap.timeline({ paused: true, defaults: { ease: 'power4.out' }, onComplete: () => { document.documentElement.classList.remove('intro'); document.dispatchEvent(new Event('vivo:intro-klaar')); } });
+    Promise.race([document.fonts.ready, new Promise(r => setTimeout(r, 700))]).then(() => intro.play()); // geen herschikking van de kop midden in de animatie
+    intro.to('.intro-wit', { xPercent: 100, duration: 1.3, ease: 'expo.inOut', delay: 0.35 })
+      .to('.intro-wit .binnen', { xPercent: -100, duration: 1.3, ease: 'expo.inOut' }, '<')
       .from('.mhero .label .lt', { opacity: 0, duration: 0.5, stagger: 0.035, ease: 'none' }, '-=0.35')
       .from('.mhero h1 .w-r > span', { yPercent: 110, duration: 1.1, stagger: 0.09 }, '<0.1')
       .from('.mhero .tekst > p, .mhero .tekst > .cirkel', { y: 24, opacity: 0, duration: 1, stagger: 0.1 }, '<0.45')

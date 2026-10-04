@@ -30,7 +30,9 @@
 .mhero .label { color: var(--grijs-n); } .mhero .label::before { background: var(--maan); }
 .mhero .cirkel { margin-top: 36px; } .mhero .cirkel:hover .rond { background: var(--maan); color: var(--nacht); border-color: var(--maan); }
 .podium { position: absolute; inset: 0; z-index: 1; overflow: hidden; }
-.intro-wit { display: none; position: absolute; inset: 0; z-index: 5; overflow: hidden; background: var(--papier); clip-path: inset(0 0 0 0); }
+.intro-wit { display: none; position: absolute; inset: 0; z-index: 5; overflow: hidden; background: var(--papier); will-change: transform; }
+.intro-wit .binnen { position: absolute; inset: 0; will-change: transform; } 
+.intro .mhero .w-r > span, .intro .chev3d { will-change: transform, opacity; } 
 .intro .intro-wit { display: block; animation: intro-vangnet .4s 6s forwards; } .intro-wit .letters { color: var(--inkt); }
 @keyframes intro-vangnet { to { visibility: hidden; opacity: 0; } } 
 .mhero .w-r { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: .08em; margin-bottom: -.08em; } .mhero .w-r > span { display: inline-block; }
