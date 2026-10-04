@@ -822,9 +822,11 @@ const CASE_CSS = `
   .cfeiten { display: grid; grid-template-columns: 1fr 1fr; gap: 22px 32px; margin: 40px 0 0; padding-top: 28px; border-top: 1px solid var(--lijn); }
   .chero.donker .cfeiten { border-color: var(--lijn-n); }
   .cfeiten dt { font: 500 var(--label)/1 var(--mono); letter-spacing: var(--ls-label); text-transform: uppercase; color: var(--case-tekst); margin-bottom: 9px; }
-  .cfeiten dd { margin: 0; font-weight: 500; overflow-wrap: anywhere; }
+  .cfeiten dd { margin: 0; font-weight: 500; hyphens: auto; -webkit-hyphens: auto; overflow-wrap: break-word; } /* Nederlandse afbreking: Installatie-techniek */
+  .cfeiten dd a { hyphens: manual; -webkit-hyphens: manual; overflow-wrap: anywhere; } /* webadres: geen misleidend afbreekstreepje */
   .cfeiten .clogo img { display: block; width: auto; height: auto; max-width: 120px; max-height: 60px; mix-blend-mode: multiply; } /* witte logo-achtergrond valt weg */
-  .chero.donker .cfeiten .clogo img { mix-blend-mode: normal; } /* donkere hero (THNK): wit logo met transparante achtergrond */
+  .chero.donker .cfeiten .clogo img { mix-blend-mode: normal; }
+  .cfeiten .clogo img.breed { max-width: 170px; } /* brede logo's (Flow8) iets meer ruimte */ /* donkere hero (THNK): wit logo met transparante achtergrond */
   .cstatus { display: inline-block; vertical-align: middle; margin-left: 14px; padding: 7px 12px; border-radius: var(--r-pil); font: 500 var(--label)/1 var(--mono); letter-spacing: var(--ls-label); text-transform: uppercase; background: rgba(10, 11, 13, .07); }
   .chero.donker .cstatus { background: rgba(255, 255, 255, .1); }
   .cschermen { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(20px, 3vw, 40px); }
@@ -895,6 +897,7 @@ function casePagina(c) {
   const logo = heeft(c.slug, 'logo.png') ? maat('logo.png') : null;
   const verh = f => { const [w, h] = jpgMaat(join(root, 'docs/img/cases', c.slug, f)); return `${w} / ${h}`; }; // exacte beeldverhouding
   const heroBeeld = HERO_BEELD[c.slug] || 'desktop.jpg', tel = heeft(c.slug, 'mobiel.jpg');
+  const eigen = /eigen product/i.test(c.klant); // Flow8: eigen product van ViVo → "Product" i.p.v. "Klant"
   return `<!doctype html>
 <html lang="nl">
 <head>
@@ -921,7 +924,7 @@ ${KOP(thuis)}
       <h1 id="case-kop"${c.naam.length > 16 ? ' class="lang"' : ''}>${c.naamKop || c.naam}</h1>
       <p class="intro">${c.intro}</p>
       <dl class="cfeiten">
-        <div><dt>Klant</dt><dd${logo ? ` class="clogo"><img src="${img(c.slug, 'logo.png')}" alt="${c.klant}" width="${logo[0]}" height="${logo[1]}">` : '>' + c.klant}</dd></div>
+        <div><dt>${eigen ? 'Product' : 'Klant'}</dt><dd${logo ? ` class="clogo"><img src="${img(c.slug, 'logo.png')}" alt="${eigen ? c.naam : c.klant}" width="${logo[0]}" height="${logo[1]}"${logo[0] / logo[1] > 3.2 ? ' class="breed"' : ''}>` : '>' + c.klant}</dd></div>
         <div><dt>Sector</dt><dd>${c.sector}</dd></div>
         <div><dt>Wat ViVo deed</dt><dd>${c.rol.join(', ')}</dd></div>
         <div><dt>${c.live ? 'Website' : 'Status'}</dt><dd>${c.live ? `<a href="${c.live}" target="_blank" rel="noopener">${kort(c.live)} ↗</a>` : (c.status || '')}</dd></div>

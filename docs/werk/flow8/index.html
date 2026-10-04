@@ -272,9 +272,11 @@ section.projecten { position: relative; background: var(--papier-2); padding-top
 .cfeiten { display: grid; grid-template-columns: 1fr 1fr; gap: 22px 32px; margin: 40px 0 0; padding-top: 28px; border-top: 1px solid var(--lijn); }
 .chero.donker .cfeiten { border-color: var(--lijn-n); }
 .cfeiten dt { font: 500 var(--label)/1 var(--mono); letter-spacing: var(--ls-label); text-transform: uppercase; color: var(--case-tekst); margin-bottom: 9px; }
-.cfeiten dd { margin: 0; font-weight: 500; overflow-wrap: anywhere; }
+.cfeiten dd { margin: 0; font-weight: 500; hyphens: auto; -webkit-hyphens: auto; overflow-wrap: break-word; } 
+.cfeiten dd a { hyphens: manual; -webkit-hyphens: manual; overflow-wrap: anywhere; } 
 .cfeiten .clogo img { display: block; width: auto; height: auto; max-width: 120px; max-height: 60px; mix-blend-mode: multiply; } 
-.chero.donker .cfeiten .clogo img { mix-blend-mode: normal; } 
+.chero.donker .cfeiten .clogo img { mix-blend-mode: normal; }
+.cfeiten .clogo img.breed { max-width: 170px; }  
 .cstatus { display: inline-block; vertical-align: middle; margin-left: 14px; padding: 7px 12px; border-radius: var(--r-pil); font: 500 var(--label)/1 var(--mono); letter-spacing: var(--ls-label); text-transform: uppercase; background: rgba(10, 11, 13, .07); }
 .chero.donker .cstatus { background: rgba(255, 255, 255, .1); }
 .cschermen { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(20px, 3vw, 40px); }
@@ -340,7 +342,7 @@ section.projecten { position: relative; background: var(--papier-2); padding-top
       <h1 id="case-kop">Flow8</h1>
       <p class="intro">Een eigen platform van ViVo: planning, digitale werkbonnen en klantbeheer voor de installatie- en servicebranche.</p>
       <dl class="cfeiten">
-        <div><dt>Klant</dt><dd>ViVo (eigen product)</dd></div>
+        <div><dt>Product</dt><dd class="clogo"><img src="../../img/cases/flow8/logo.png" alt="Flow8" width="1241" height="341" class="breed"></dd></div>
         <div><dt>Sector</dt><dd>Installatietechniek</dd></div>
         <div><dt>Wat ViVo deed</dt><dd>Concept, Ontwerp, Development</dd></div>
         <div><dt>Status</dt><dd>Eigen product</dd></div>
