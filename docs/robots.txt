@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://thomv-flow8.github.io/ViVo/sitemap.xml
+Sitemap: https://vivoproducts.nl/sitemap.xml

@@ -5,9 +5,9 @@ export const SITE = {
   bedrijf: 'ViVo Products',
   bedrijfKort: 'ViVo',
   url: 'https://vivoproducts.nl',
-  // Basisadres voor canonical, deelbeelden (og), sitemap en robots. Zolang vivoproducts.nl niet gekoppeld is: het GitHub-adres.
-  // Na het koppelen van het domein: basis = url.
-  basis: 'https://thomv-flow8.github.io/ViVo',
+  // Basisadres voor canonical, deelbeelden (og), sitemap, robots en gestructureerde gegevens.
+  // Sinds 4 okt 2026 het eigen domein (DNS bij Strato → GitHub Pages; was https://thomv-flow8.github.io/ViVo).
+  basis: 'https://vivoproducts.nl',
   seoTitel: 'ViVo — Webdesign en websites laten maken in Gorinchem',
   mail: 'info@vivoproducts.nl',
   adres: 'Einsteinstraat 3e',

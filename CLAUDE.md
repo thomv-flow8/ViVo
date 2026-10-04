@@ -131,6 +131,10 @@ Ook als `vivo-preview` in `.claude/launch.json`.
      ProfilePage (over), ContactPage, BreadcrumbList (cases). `SITE.verificatie` {google, bing} → meta-tags op de homepage.
      three.js laadt pas bij de eerste 3D-vorm in beeld of 1,5 s na load. Publiceren controleert verwijzingen ná alle pagina's.
      **Regressietest: `node tools/regressie.mjs [url]`** (alle pagina's, desktop + mobiel).
+   - **Eigen domein (4 okt 2026):** vivoproducts.nl → GitHub Pages. Strato-pakket = Mail Plus (domein + mail, géén webhosting).
+     DNS bij Strato: A `185.199.108.153`, AAAA `2606:50c0:8000::153` (Strato staat één adres per type toe), www volgt het
+     hoofddomein, **MX `smtp.rzone.de` ongemoeid**. `docs/CNAME` (geschreven door bouw.mjs) + custom domain in Pages-instellingen,
+     https afgedwongen. `SITE.basis` = https://vivoproducts.nl. Het oude adres thomv-flow8.github.io/ViVo stuurt GitHub door.
    - **Cookies / meten (keuze Thomas: analytics + marketing):** ID's in `SITE.meten` (`ga4`, `googleAds`, `metaPixel`).
      **Leeg = uit**: geen melding, geen scripts, privacytekst "geen cookies". Ingevuld → automatisch cookiemelding
      (`site/toestemming.js`: niets laden vóór toestemming, weigeren even makkelijk als accepteren, Consent Mode v2,
