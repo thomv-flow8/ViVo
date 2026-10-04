@@ -12,11 +12,11 @@ mkdirSync(uit, { recursive: true });
 const BASIS = 'http://localhost:5178/docs/';
 const b = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'] });
 
-// 1. Logo: wit beeldmerk op nacht, vierkant 720×720
+// 1. Logo: wit beeldmerk op nacht, vierkant 1200×1200, als JPG (Google eist ≥ 10 kB; een PNG van een effen vlak blijft daar onder)
 const merk = readFileSync(join(root, 'merk/svg/vivo-beeldmerk-wit.svg'), 'utf8').replace(/ width="[^"]+" height="[^"]+"/, '');
-const p = await b.newPage({ viewport: { width: 720, height: 720 } });
-await p.setContent(`<body style="margin:0;width:720px;height:720px;display:grid;place-items:center;background:#15171c"><div style="width:340px">${merk.replace('<svg ', '<svg style="width:100%;height:auto;display:block" ')}</div></body>`);
-await p.screenshot({ path: join(uit, '01-logo.png') });
+const p = await b.newPage({ viewport: { width: 1200, height: 1200 } });
+await p.setContent(`<body style="margin:0;width:1200px;height:1200px;display:grid;place-items:center;background:#15171c"><div style="width:560px">${merk.replace('<svg ', '<svg style="width:100%;height:auto;display:block" ')}</div></body>`);
+await p.screenshot({ path: join(uit, '01-logo.jpg'), type: 'jpeg', quality: 100 });
 
 // 2. Omslagfoto: de hero van de homepage, 1920×1080 (zonder intro-animatie)
 const ctx = await b.newContext({ viewport: { width: 1920, height: 1080 }, reducedMotion: 'reduce' });
