@@ -31,6 +31,12 @@ await maak('logo', 150, 44, `<div style="height:44px;display:flex;align-items:ce
   <div style="width:74px">${svg('vivo-woordmerk-zwart.svg').replace('<svg ', '<svg style="width:100%;height:auto;display:block" ')}</div>
 </div>`);
 
+// 1b. Logo wit, voor op een donker vlak
+await maak('logo-wit', 128, 38, `<div style="height:38px;display:flex;align-items:center;gap:10px">
+  <div style="width:26px">${svg('vivo-beeldmerk-wit.svg').replace('<svg ', '<svg style="width:100%;height:auto;display:block" ')}</div>
+  <div style="width:64px">${svg('vivo-woordmerk-wit.svg').replace('<svg ', '<svg style="width:100%;height:auto;display:block" ')}</div>
+</div>`, '#15171c');
+
 // 2. Beeldmerk alleen (compacte variant)
 await maak('beeldmerk', 48, 48, `<div style="width:48px;height:48px;display:grid;place-items:center">
   <div style="width:40px">${svg('vivo-beeldmerk-zwart.svg').replace('<svg ', '<svg style="width:100%;height:auto;display:block" ')}</div></div>`);
@@ -47,6 +53,24 @@ await maak('banner', 520, 96, `<div style="width:520px;height:96px;background:#1
   </div>
 </div>`, '#15171c');
 
+// 4. Brede banner: 600 px is de klassieke leesbreedte van e-mail
+await maak('banner-breed', 600, 104, `<div style="width:600px;height:104px;background:#15171c;display:flex;align-items:center;justify-content:space-between;padding:0 30px;box-sizing:border-box">
+  <div>
+    <div style="color:#f5f6f8;font-size:21px;font-weight:600;letter-spacing:-.4px;line-height:1.25">Websites die werken.</div>
+    <div style="color:#9aa0ab;font-size:13px;margin-top:5px;letter-spacing:.2px">Webdesign &amp; development · Gorinchem</div>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px">
+    <div style="width:24px">${svg('vivo-beeldmerk-wit.svg').replace('<svg ', '<svg style="width:100%;height:auto;display:block" ')}</div>
+    <div style="width:60px">${svg('vivo-woordmerk-wit.svg').replace('<svg ', '<svg style="width:100%;height:auto;display:block" ')}</div>
+  </div>
+</div>`, '#15171c');
+
+// 5. Portret, rond gemaakt in de PNG zelf (border-radius werkt niet in Outlook)
+{
+  const foto = readFileSync(join(root, 'beelden/over/thomas.jpg')).toString('base64');
+  await maak('portret', 72, 72, `<div style="width:72px;height:72px;border-radius:50%;overflow:hidden"><img src="data:image/jpeg;base64,${foto}" style="width:100%;height:100%;object-fit:cover;object-position:50% 22%;display:block"></div>`);
+}
+
 await browser.close();
 
 // ── De handtekeningen ──
@@ -55,6 +79,9 @@ const L = { inkt: '#0a0b0d', grijs: '#646a76', lijn: '#dcdee3', nacht: '#15171c'
 const F = `-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Arial,sans-serif`;
 const link = (tekst, url, extra = '') => `<a href="${url}" style="color:${L.inkt};text-decoration:none;${extra}">${tekst}</a>`;
 const grijsLink = (tekst, url) => `<a href="${url}" style="color:${L.grijs};text-decoration:none">${tekst}</a>`;
+const bannerBreed = `<a href="${SITE.url}?utm_source=mailhandtekening" style="text-decoration:none;display:inline-block">
+            <img src="${BASIS}/banner-breed.png" alt="ViVo — Websites die werken. Webdesign &amp; development, Gorinchem" width="600" height="104" style="display:block;border:0;outline:none;text-decoration:none;max-width:100%;height:auto;border-radius:10px">
+          </a>`;
 const banner = `<a href="${SITE.url}?utm_source=mailhandtekening" style="text-decoration:none;display:inline-block">
             <img src="${BASIS}/banner.png" alt="ViVo — Websites die werken. Webdesign &amp; development, Gorinchem" width="520" height="96" style="display:block;border:0;outline:none;text-decoration:none;max-width:100%;height:auto;border-radius:10px">
           </a>`;
@@ -125,6 +152,78 @@ const VARIANTEN = {
   </tr>
 </table>`,
   },
+  'd-breed': {
+    titel: 'D · Breed',
+    uitleg: 'Banner op 600 px, de klassieke leesbreedte van e-mail. Gegevens erboven op één regel. Het merk vult de hele breedte van de mail.',
+    html: `<table cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px;max-width:100%;font-family:${F};font-size:14px;line-height:1.5;color:${L.inkt};border-collapse:collapse">
+  <tr><td style="padding:0 0 16px">
+    <div style="font-size:15px;font-weight:600;color:${L.inkt}">${naam}<span style="color:${L.grijs};font-weight:400"> · ${functie}</span></div>
+    <div style="padding-top:6px;font-size:13.5px;color:${L.grijs}">
+      ${grijsLink(SITE.telefoon, 'tel:' + SITE.telefoonLink)} &nbsp;·&nbsp;
+      ${grijsLink(SITE.mail, 'mailto:' + SITE.mail)} &nbsp;·&nbsp;
+      ${link('vivoproducts.nl', SITE.url + '?utm_source=mailhandtekening', 'font-weight:600')}
+    </div>
+  </td></tr>
+  <tr><td>${bannerBreed}</td></tr>
+  <tr><td style="padding:12px 0 0;font-size:11.5px;color:${L.grijs}">${SITE.adres}, ${SITE.postcode} ${SITE.plaats} · KvK ${SITE.kvk}</td></tr>
+</table>`,
+  },
+  'e-streep': {
+    titel: 'E · Accentstreep',
+    uitleg: 'Een donkere streep links in plaats van een banner. Strak en klein, maar wel met het merk. Het logo linkt naar de website.',
+    html: `<table cellpadding="0" cellspacing="0" border="0" style="font-family:${F};font-size:14px;line-height:1.5;color:${L.inkt};border-collapse:collapse">
+  <tr>
+    <td width="3" style="width:3px;background:${L.nacht};border-radius:2px">&nbsp;</td>
+    <td style="padding:2px 0 2px 18px">
+      <a href="${SITE.url}?utm_source=mailhandtekening" style="text-decoration:none;display:inline-block"><img src="${BASIS}/logo.png" alt="ViVo" width="118" height="35" style="display:block;border:0"></a>
+      <div style="padding-top:12px;font-size:15px;font-weight:600;color:${L.inkt}">${naam}</div>
+      <div style="font-size:13px;color:${L.grijs};padding-top:2px">${functie}</div>
+      <div style="padding-top:10px;font-size:13.5px;color:${L.grijs}">
+        ${grijsLink(SITE.telefoon, 'tel:' + SITE.telefoonLink)} &nbsp;·&nbsp;
+        ${grijsLink(SITE.mail, 'mailto:' + SITE.mail)} &nbsp;·&nbsp;
+        ${link('vivoproducts.nl', SITE.url + '?utm_source=mailhandtekening', 'font-weight:600')}
+      </div>
+    </td>
+  </tr>
+</table>`,
+  },
+  'f-portret': {
+    titel: 'F · Met portret',
+    uitleg: 'Je foto erbij, naast je gegevens. Persoonlijk — passend bij ViVo, waar je zelf het aanspreekpunt bent.',
+    html: `<table cellpadding="0" cellspacing="0" border="0" style="font-family:${F};font-size:14px;line-height:1.5;color:${L.inkt};border-collapse:collapse">
+  <tr>
+    <td width="72" style="width:72px;padding:0 18px 0 0;vertical-align:top">
+      <img src="${BASIS}/portret.png" alt="${naam}" width="72" height="72" style="display:block;border:0;border-radius:50%">
+    </td>
+    <td style="vertical-align:top;padding-top:2px">
+      <div style="font-size:15px;font-weight:600;color:${L.inkt}">${naam}</div>
+      <div style="font-size:13px;color:${L.grijs};padding-top:2px">${functie} · ViVo</div>
+      <div style="padding-top:10px;font-size:13.5px;color:${L.grijs}">
+        ${grijsLink(SITE.telefoon, 'tel:' + SITE.telefoonLink)} &nbsp;·&nbsp;
+        ${grijsLink(SITE.mail, 'mailto:' + SITE.mail)} &nbsp;·&nbsp;
+        ${link('vivoproducts.nl', SITE.url + '?utm_source=mailhandtekening', 'font-weight:600')}
+      </div>
+    </td>
+  </tr>
+  <tr><td colspan="2" style="padding:18px 0 0">${banner}</td></tr>
+</table>`,
+  },
+  'g-donker': {
+    titel: 'G · Donker vlak',
+    uitleg: 'Alles in één donker vlak, zoals de afsluiter van de website. Valt het meest op. Let op: sommige mailprogramma\'s in donkere modus kleuren vlakken om.',
+    html: `<table cellpadding="0" cellspacing="0" border="0" width="520" style="width:520px;max-width:100%;background:${L.nacht};border-radius:12px;font-family:${F};border-collapse:separate">
+  <tr><td style="padding:26px 30px">
+    <a href="${SITE.url}?utm_source=mailhandtekening" style="text-decoration:none;display:inline-block"><img src="${BASIS}/logo-wit.png" alt="ViVo" width="128" height="38" style="display:block;border:0"></a>
+    <div style="padding-top:18px;font-size:15px;font-weight:600;color:#f5f6f8;font-family:${F}">${naam}</div>
+    <div style="font-size:13px;color:#9aa0ab;padding-top:2px;font-family:${F}">${functie}</div>
+    <div style="padding-top:12px;font-size:13.5px;color:#9aa0ab;font-family:${F}">
+      <a href="tel:${SITE.telefoonLink}" style="color:#9aa0ab;text-decoration:none">${SITE.telefoon}</a> &nbsp;·&nbsp;
+      <a href="mailto:${SITE.mail}" style="color:#9aa0ab;text-decoration:none">${SITE.mail}</a> &nbsp;·&nbsp;
+      <a href="${SITE.url}?utm_source=mailhandtekening" style="color:#f5f6f8;text-decoration:none;font-weight:600">vivoproducts.nl</a>
+    </div>
+  </td></tr>
+</table>`,
+  },
 };
 
 for (const [sleutel, v] of Object.entries(VARIANTEN)) {
@@ -146,7 +245,7 @@ writeFileSync(join(hUit, 'index.html'), `<!doctype html><html lang="nl"><head><m
   code { background:rgba(255,255,255,.1); padding:2px 6px; border-radius:4px; font-size:13px; }
 </style></head><body><div class="w">
 <h1>E-mailhandtekening</h1>
-<p class="in">Drie varianten. Open het losse bestand van je keuze, selecteer alles (⌘A), kopieer (⌘C) en plak het in je mailprogramma.<br><small style='color:#8a9099'>Hieronder staan de beelden lokaal; in de losse bestanden staan ze op vivoproducts.nl, zodat ze bij de ontvanger laden.</small></p>
+<p class="in">${Object.keys(VARIANTEN).length} varianten. Open het losse bestand van je keuze, selecteer alles (⌘A), kopieer (⌘C) en plak het in je mailprogramma.<br><small style='color:#8a9099'>Hieronder staan de beelden lokaal; in de losse bestanden staan ze op vivoproducts.nl, zodat ze bij de ontvanger laden.</small></p>
 ${Object.entries(VARIANTEN).map(([s, v]) => `<div class="kaart"><h2>${v.titel}</h2><p class="u">${v.uitleg} — <a href="${s}.html">los openen om te kopiëren</a></p><div class="proef">${v.html.split(BASIS).join('../beelden/mail')}</div></div>`).join('\n')}
 <div class="hoe"><h2>Instellen in Apple Mail</h2><ol>
   <li>Open het bestand van je keuze (bijvoorbeeld <code>a-compleet.html</code>) in Safari.</li>
