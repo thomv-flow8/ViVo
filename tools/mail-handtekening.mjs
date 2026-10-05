@@ -54,7 +54,7 @@ await maak('banner', 520, 96, `<div style="width:520px;height:96px;background:#1
 </div>`, '#15171c');
 
 // 4. Brede banner: 600 px is de klassieke leesbreedte van e-mail
-await maak('banner-breed', 600, 104, `<div style="width:600px;height:104px;background:#15171c;display:flex;align-items:center;justify-content:space-between;padding:0 30px;box-sizing:border-box">
+await maak('banner-breed', 558, 97, `<div style="width:558px;height:97px;background:#15171c;display:flex;align-items:center;justify-content:space-between;padding:0 30px;box-sizing:border-box">
   <div>
     <div style="color:#f5f6f8;font-size:21px;font-weight:600;letter-spacing:-.4px;line-height:1.25">Websites die werken.</div>
     <div style="color:#9aa0ab;font-size:13px;margin-top:5px;letter-spacing:.2px">Webdesign &amp; development · Gorinchem</div>
@@ -80,10 +80,10 @@ const F = `-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Arial,sa
 const link = (tekst, url, extra = '') => `<a href="${url}" style="color:${L.inkt};text-decoration:none;${extra}">${tekst}</a>`;
 const grijsLink = (tekst, url) => `<a href="${url}" style="color:${L.grijs};text-decoration:none">${tekst}</a>`;
 const bannerBreed = `<a href="${SITE.url}?utm_source=mailhandtekening" style="text-decoration:none;display:inline-block">
-            <img src="${BASIS}/banner-breed.png" alt="ViVo — Websites die werken. Webdesign &amp; development, Gorinchem" width="600" height="104" style="display:block;border:0;outline:none;text-decoration:none;max-width:100%;height:auto;border-radius:10px">
+            <img src="${BASIS}/banner-breed.png" alt="ViVo — Websites die werken. Webdesign &amp; development, Gorinchem" width="558" height="97" style="display:block;border:0;outline:none;text-decoration:none;width:100%;max-width:558px;height:auto;border-radius:8px">
           </a>`;
 const banner = `<a href="${SITE.url}?utm_source=mailhandtekening" style="text-decoration:none;display:inline-block">
-            <img src="${BASIS}/banner.png" alt="ViVo — Websites die werken. Webdesign &amp; development, Gorinchem" width="520" height="96" style="display:block;border:0;outline:none;text-decoration:none;max-width:100%;height:auto;border-radius:10px">
+            <img src="${BASIS}/banner.png" alt="ViVo — Websites die werken. Webdesign &amp; development, Gorinchem" width="520" height="96" style="display:block;border:0;outline:none;text-decoration:none;width:100%;max-width:520px;height:auto;border-radius:10px">
           </a>`;
 const naam = 'Thomas Vink', functie = 'Webdesign &amp; development';
 
@@ -226,8 +226,11 @@ const VARIANTEN = {
   },
   'h-breed-portret': {
     titel: 'H · Breed met portret',
-    uitleg: 'De brede banner van D met je foto erboven — het vertrouwen van een gezicht én een merk dat de volle breedte vult. Mijn voorstel als standaardhandtekening.',
-    html: `<table cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px;max-width:100%;font-family:${F};font-size:14px;line-height:1.5;color:${L.inkt};border-collapse:collapse">
+    uitleg: 'De brede banner met je foto erboven, in een licht kader — het vertrouwen van een gezicht én een merk dat de hele breedte vult. Keuze van Thomas. (Outlook toont het kader met rechte hoeken; de rand blijft.)',
+    // Buitenste tabel = het kader: 558 (banner) + 2×20 padding + 2×1 rand = precies 600 px
+    html: `<table cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px;max-width:100%;border:1px solid ${L.lijn};border-radius:12px;background:#ffffff;border-collapse:separate">
+  <tr><td style="padding:20px">
+<table cellpadding="0" cellspacing="0" border="0" width="558" style="width:100%;max-width:558px;font-family:${F};font-size:14px;line-height:1.5;color:${L.inkt};border-collapse:collapse">
   <tr><td style="padding:0 0 18px">
     <table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse"><tr>
       <td width="64" style="width:64px;padding:0 16px 0 0;vertical-align:top">
@@ -246,6 +249,8 @@ const VARIANTEN = {
   </td></tr>
   <tr><td>${bannerBreed}</td></tr>
   <tr><td style="padding:12px 0 0;font-size:11.5px;color:${L.grijs}">${SITE.adres}, ${SITE.postcode} ${SITE.plaats} · KvK ${SITE.kvk}</td></tr>
+</table>
+  </td></tr>
 </table>`,
   },
   'i-visitekaartje': {
