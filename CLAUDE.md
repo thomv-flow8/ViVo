@@ -139,6 +139,12 @@ Ook als `vivo-preview` in `.claude/launch.json`.
      github.io-adres sturen door. `docs/CNAME` = vivoproducts.nl (bouw.mjs) + custom domain in Pages-instellingen; https afdwingen
      kan pas als het certificaat "approved" is. **Let op:** custom domain via de API los-/aankoppelen laat GitHub zelf commits
      "Delete/Create CNAME" maken → daarna `git pull --ff-only`. `SITE.basis` en `SITE.url` = https://vivoproducts.nl.
+   - **E-mailhandtekening (5 okt 2026):** `node tools/mail-handtekening.mjs` → `beelden/mail/*.png` (2x; e-mailclients tonen
+     geen SVG) en `handtekening/` met negen varianten + instructies. De beelden gaan via publiceer-preview.mjs naar
+     **`docs/mail/`**, zodat de URL kort en stabiel is (vivoproducts.nl/mail/...) — nodig omdat beelden in e-mail extern laden.
+     **Keuze Thomas: variant H (breed met portret)** — portret + gegevens boven, banner 600 px eronder, adres/KvK onderaan.
+     Opbouw met `<table>` en inline opmaak (Outlook gebruikt de Word-rendering: geen flexbox/grid, geen border-radius op img).
+     Banner linkt naar de site met `?utm_source=mailhandtekening`.
    - **Cookies / meten (keuze Thomas: analytics + marketing):** ID's in `SITE.meten` (`ga4`, `googleAds`, `metaPixel`).
      **Leeg = uit**: geen melding, geen scripts, privacytekst "geen cookies". Ingevuld → automatisch cookiemelding
      (`site/toestemming.js`: niets laden vóór toestemming, weigeren even makkelijk als accepteren, Consent Mode v2,
