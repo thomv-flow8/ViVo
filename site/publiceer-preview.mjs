@@ -20,6 +20,8 @@ const M = SITE.meten || {}, MEET = meetVlaggen(M);
 for (const f of readdirSync(join(root, 'beelden/diensten')).filter(f => /\.(jpg|webp)$/.test(f))) kopieer(`beelden/diensten/${f}`, `beelden/diensten/${f}`);
 kopieer('beelden/vormen/lus-donker.webp', 'beelden/vormen/lus-donker.webp');
 for (const f of readdirSync(join(root, 'beelden/over')).filter(f => /\.(jpg|webp)$/.test(f))) kopieer(`beelden/over/${f}`, `beelden/over/${f}`);
+// Beelden voor de e-mailhandtekening: korte, stabiele URL's (vivoproducts.nl/mail/...) — e-mailclients tonen geen SVG
+if (existsSync(join(root, 'beelden/mail'))) for (const f of readdirSync(join(root, 'beelden/mail')).filter(f => f.endsWith('.png'))) kopieer(`beelden/mail/${f}`, `mail/${f}`);
 kopieer('node_modules/gsap/dist/gsap.min.js', 'js/gsap.min.js');
 kopieer('node_modules/gsap/dist/ScrollTrigger.min.js', 'js/ScrollTrigger.min.js');
 kopieer('node_modules/three/LICENSE', 'js/three-LICENSE.txt');
