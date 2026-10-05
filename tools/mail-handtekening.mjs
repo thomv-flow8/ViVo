@@ -224,6 +224,53 @@ const VARIANTEN = {
   </td></tr>
 </table>`,
   },
+  'h-breed-portret': {
+    titel: 'H · Breed met portret',
+    uitleg: 'De brede banner van D met je foto erboven — het vertrouwen van een gezicht én een merk dat de volle breedte vult. Mijn voorstel als standaardhandtekening.',
+    html: `<table cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px;max-width:100%;font-family:${F};font-size:14px;line-height:1.5;color:${L.inkt};border-collapse:collapse">
+  <tr><td style="padding:0 0 18px">
+    <table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse"><tr>
+      <td width="64" style="width:64px;padding:0 16px 0 0;vertical-align:top">
+        <img src="${BASIS}/portret.png" alt="${naam}" width="64" height="64" style="display:block;border:0;border-radius:50%">
+      </td>
+      <td style="vertical-align:top;padding-top:3px">
+        <div style="font-size:15px;font-weight:600;color:${L.inkt}">${naam}</div>
+        <div style="font-size:13px;color:${L.grijs};padding-top:2px">${functie} · ViVo</div>
+        <div style="padding-top:9px;font-size:13.5px;color:${L.grijs}">
+          ${grijsLink(SITE.telefoon, 'tel:' + SITE.telefoonLink)} &nbsp;·&nbsp;
+          ${grijsLink(SITE.mail, 'mailto:' + SITE.mail)} &nbsp;·&nbsp;
+          ${link('vivoproducts.nl', SITE.url + '?utm_source=mailhandtekening', 'font-weight:600')}
+        </div>
+      </td>
+    </tr></table>
+  </td></tr>
+  <tr><td>${bannerBreed}</td></tr>
+  <tr><td style="padding:12px 0 0;font-size:11.5px;color:${L.grijs}">${SITE.adres}, ${SITE.postcode} ${SITE.plaats} · KvK ${SITE.kvk}</td></tr>
+</table>`,
+  },
+  'i-visitekaartje': {
+    titel: 'I · Visitekaartje',
+    uitleg: 'Het donkere vlak van G met je portret erin: één compact kaartje met alles erop. Valt op en blijft hangen — goed voor een eerste kennismaking.',
+    html: `<table cellpadding="0" cellspacing="0" border="0" width="520" style="width:520px;max-width:100%;background:${L.nacht};border-radius:12px;font-family:${F};border-collapse:separate">
+  <tr><td style="padding:26px 30px">
+    <table cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse"><tr>
+      <td width="64" style="width:64px;padding:0 18px 0 0;vertical-align:top">
+        <img src="${BASIS}/portret.png" alt="${naam}" width="64" height="64" style="display:block;border:0;border-radius:50%">
+      </td>
+      <td style="vertical-align:top">
+        <a href="${SITE.url}?utm_source=mailhandtekening" style="text-decoration:none;display:inline-block"><img src="${BASIS}/logo-wit.png" alt="ViVo" width="108" height="32" style="display:block;border:0"></a>
+        <div style="padding-top:12px;font-size:15px;font-weight:600;color:#f5f6f8;font-family:${F}">${naam}</div>
+        <div style="font-size:13px;color:#9aa0ab;padding-top:2px;font-family:${F}">${functie}</div>
+      </td>
+    </tr></table>
+    <div style="padding-top:18px;margin-top:18px;border-top:1px solid rgba(245,246,248,.14);font-size:13.5px;color:#9aa0ab;font-family:${F}">
+      <a href="tel:${SITE.telefoonLink}" style="color:#9aa0ab;text-decoration:none">${SITE.telefoon}</a> &nbsp;·&nbsp;
+      <a href="mailto:${SITE.mail}" style="color:#9aa0ab;text-decoration:none">${SITE.mail}</a> &nbsp;·&nbsp;
+      <a href="${SITE.url}?utm_source=mailhandtekening" style="color:#f5f6f8;text-decoration:none;font-weight:600">vivoproducts.nl</a>
+    </div>
+  </td></tr>
+</table>`,
+  },
 };
 
 for (const [sleutel, v] of Object.entries(VARIANTEN)) {
